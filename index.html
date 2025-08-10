@@ -450,32 +450,33 @@
                             </div>
                         </div>
 
-                        <!-- Vuelo de vuelta (obligatorio) -->
+                        <!-- Vuelo de vuelta (opcional) -->
                         <div class="flight-item" data-flight="1">
+                            <button type="button" class="btn-remove-flight" onclick="removeFlight(this)">×</button>
                             <div class="flight-header">
-                                <h4>🛬 Vuelo de Vuelta</h4>
+                                <h4>🛬 Vuelo de Vuelta (Opcional)</h4>
                                 <span class="flight-price" id="price-1">Fecha pendiente</span>
                             </div>
                             <div class="form-row">
                                 <div>
                                     <label for="origin-1">Origen (OACI)</label>
-                                    <input type="text" id="origin-1" name="flights[1][origin]" placeholder="Ej: LESL" maxlength="4" required class="icao-input">
+                                    <input type="text" id="origin-1" name="flights[1][origin]" placeholder="Ej: LESL" maxlength="4" class="icao-input">
                                     <div class="icao-helper">Código OACI de 4 letras</div>
                                 </div>
                                 <div>
                                     <label for="destination-1">Destino (OACI)</label>
-                                    <input type="text" id="destination-1" name="flights[1][destination]" placeholder="Ej: LELL" maxlength="4" required class="icao-input">
+                                    <input type="text" id="destination-1" name="flights[1][destination]" placeholder="Ej: LELL" maxlength="4" class="icao-input">
                                     <div class="icao-helper">Código OACI de 4 letras</div>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div>
                                     <label for="date-1">📅 Fecha</label>
-                                    <input type="date" id="date-1" name="flights[1][date]" required class="flight-date">
+                                    <input type="date" id="date-1" name="flights[1][date]" class="flight-date">
                                 </div>
                                 <div>
                                     <label for="time-1">🕐 Hora</label>
-                                    <input type="time" id="time-1" name="flights[1][time]" required>
+                                    <input type="time" id="time-1" name="flights[1][time]">
                                 </div>
                             </div>
                         </div>
@@ -718,14 +719,14 @@
             updateAddButtonText();
         }
 
-        // Función para eliminar un vuelo (solo vuelos adicionales, no ida ni vuelta)
+        // Función para eliminar un vuelo (ahora se puede eliminar el de vuelta también)
         function removeFlight(button) {
             const flightItem = button.closest('.flight-item');
             const flightNumber = parseInt(flightItem.getAttribute('data-flight'));
             
-            // No permitir eliminar vuelos de ida (0) o vuelta (1)
-            if (flightNumber <= 1) {
-                alert('No se pueden eliminar los vuelos de ida y vuelta');
+            // No permitir eliminar solo el vuelo de ida (0)
+            if (flightNumber === 0) {
+                alert('No se puede eliminar el vuelo de ida');
                 return;
             }
             
@@ -803,32 +804,54 @@
             let validFlights = true;
             
             flightItems.forEach((item, index) => {
-                const origin = item.querySelector(`input[name="flights[${index}][origin]"]`).value;
-                const destination = item.querySelector(`input[name="flights[${index}][destination]"]`).value;
-                const date = item.querySelector(`input[name="flights[${index}][date]"]`).value;
-                const time = item.querySelector(`input[name="flights[${index}][time]"]`).value;
+                const originInput = item.querySelector(`input[name="flights[${index}][origin]"]`);
+                const destinationInput = item.querySelector(`input[name="flights[${index}][destination]"]`);
+                const dateInput = item.querySelector(`input[name="flights[${index}][date]"]`);
+                const timeInput = item.querySelector(`input[name="flights[${index}][time]"]`);
                 
-                if (!date) {
-                    validFlights = false;
-                    alert(`Vuelo ${index + 1}: Por favor, selecciona una fecha`);
-                    return;
-                }
+                const origin = originInput ? originInput.value : '';
+                const destination = destinationInput ? destinationInput.value : '';
+                const date = dateInput ? dateInput.value : '';
+                const time = timeInput ? timeInput.value : '';
                 
-                if (origin.length !== 4 || destination.length !== 4) {
-                    validFlights = false;
-                    alert(`Vuelo ${index + 1}: Por favor, introduce códigos OACI válidos de 4 letras`);
-                    return;
-                }
+                // Validar solo si el vuelo tiene datos (no está vacío)
+                if (origin || destination || date || time) {
+                    // Si tiene algún dato, validar que esté completo
+                    if (!date) {
+                        validFlights = false;
+                        alert(`Vuelo ${index + 1}: Por favor, selecciona una fecha`);
+                        return;
+                    }
+                    
+                    if (!origin || origin.length !== 4 || !destination || destination.length !== 4) {
+                        validFlights = false;
+                        alert(`Vuelo ${index + 1}: Por favor, introduce códigos OACI válidos de 4 letras`);
+                        return;
+                    }
 
-                if (origin === destination) {
-                    validFlights = false;
-                    alert(`Vuelo ${index + 1}: El origen y destino no pueden ser el mismo aeropuerto`);
-                    return;
-                }
+                    if (origin === destination) {
+                        validFlights = false;
+                        alert(`Vuelo ${index + 1}: El origen y destino no pueden ser el mismo aeropuerto`);
+                        return;
+                    }
 
-                uniqueDates.add(date);
-                flights.push({ origin, destination, date, time });
+                    if (!time) {
+                        validFlights = false;
+                        alert(`Vuelo ${index + 1}: Por favor, selecciona una hora`);
+                        return;
+                    }
+
+                    uniqueDates.add(date);
+                    flights.push({ origin, destination, date, time });
+                }
             });
+
+            // Validar que hay al menos el vuelo de ida
+            if (flights.length === 0) {
+                validFlights = false;
+                alert('Debe completar al menos el vuelo de ida');
+                return;
+            }
 
             if (!validFlights) return;
 
@@ -859,12 +882,94 @@
                 uniqueDays: uniqueDates.size
             };
 
+            // Función para enviar email con resumen
+            function sendBookingEmail(bookingData) {
+                const emailData = {
+                    to: 'ivan@tintore.es',
+                    subject: `Nueva Reserva de Piloto - ${bookingData.clientName}`,
+                    html: `
+                        <h2>🚁 Nueva Reserva de Piloto Comercial</h2>
+                        <p><strong>Fecha de reserva:</strong> ${new Date().toLocaleString('es-ES')}</p>
+                        
+                        <h3>👤 Datos del Cliente</h3>
+                        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
+                            <tr style="background-color: #f8f9fa;">
+                                <td><strong>Nombre</strong></td>
+                                <td>${bookingData.clientName}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email</strong></td>
+                                <td>${bookingData.clientEmail}</td>
+                            </tr>
+                            <tr style="background-color: #f8f9fa;">
+                                <td><strong>Teléfono</strong></td>
+                                <td>${bookingData.clientPhone}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pernocta</strong></td>
+                                <td>${bookingData.overnight ? '✅ Sí (gastos incluidos)' : '❌ No'}</td>
+                            </tr>
+                        </table>
+
+                        <h3>✈️ Vuelos Programados</h3>
+                        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
+                            <tr style="background-color: #1E40AF; color: white;">
+                                <th>Vuelo</th>
+                                <th>Origen</th>
+                                <th>Destino</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                            </tr>
+                            ${bookingData.flights.map((flight, index) => `
+                                <tr style="background-color: ${index % 2 === 0 ? '#f8f9fa' : 'white'};">
+                                    <td><strong>${index === 0 ? 'IDA' : index === 1 ? 'VUELTA' : `EXTRA ${index - 1}`}</strong></td>
+                                    <td>${flight.origin}</td>
+                                    <td>${flight.destination}</td>
+                                    <td>${flight.date}</td>
+                                    <td>${flight.time}</td>
+                                </tr>
+                            `).join('')}
+                        </table>
+
+                        <h3>💰 Resumen de Precios</h3>
+                        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
+                            ${dayPrices.map(dayPrice => `
+                                <tr>
+                                    <td>${dayPrice}</td>
+                                </tr>
+                            `).join('')}
+                            <tr style="background-color: #1E40AF; color: white;">
+                                <td><strong>TOTAL: ${bookingData.totalPrice}€</strong></td>
+                            </tr>
+                        </table>
+
+                        ${bookingData.additionalInfo ? `
+                            <h3>📝 Información Adicional</h3>
+                            <p style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">${bookingData.additionalInfo}</p>
+                        ` : ''}
+
+                        <hr>
+                        <p style="color: #666; font-size: 0.9em;">
+                            <strong>SexyFly.es</strong> - Sistema de Reservas de Piloto Comercial<br>
+                            Esta reserva requiere confirmación y pago para ser válida.
+                        </p>
+                    `
+                };
+
+                // Simular envío de email (aquí integrarías con tu servicio de email)
+                console.log('Email enviado:', emailData);
+                return true;
+            }
+
             // Simular envío
             setTimeout(() => {
                 const flightSummary = flights.map((f, i) => `Vuelo ${i + 1}: ${f.origin} → ${f.destination} (${f.date})`).join('\n');
                 const daysSummary = dayPrices.join('\n');
                 
-                alert(`Reserva procesada correctamente!\n\n${flightSummary}\n\n${daysSummary}\n\nTotal: ${totalPrice}€\n\nSerás redirigido al sistema de pago.`);
+                // Enviar email con resumen
+                const emailSent = sendBookingEmail(bookingData);
+                
+                alert(`Reserva procesada correctamente!\n\n${flightSummary}\n\n${daysSummary}\n\nTotal: ${totalPrice}€\n\n✅ Email enviado a ivan@tintore.es\n\nSerás redirigido al sistema de pago.`);
                 
                 // Aquí rediriges a tu pasarela de pagos existente
                 // window.location.href = 'tu-url-de-pago';
