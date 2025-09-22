@@ -125,15 +125,22 @@ class SexyFlyCalendar {
 
     renderCalendarGrid() {
         const grid = document.getElementById('calendarGrid');
+        
+        // Empezar desde el lunes de la semana actual
         const startDate = new Date(this.currentDate);
-        startDate.setDate(startDate.getDate() - startDate.getDay() + 1); // Empezar en lunes
+        startDate.setHours(0, 0, 0, 0);
+        
+        // Encontrar el lunes de esta semana
+        const dayOfWeek = startDate.getDay();
+        const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Si es domingo, retroceder 6 días
+        startDate.setDate(startDate.getDate() + mondayOffset);
         
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
         let html = '';
         
-        // Renderizar 4 semanas (28 días)
+        // Renderizar 4 semanas (28 días) desde el lunes
         for (let week = 0; week < this.options.weeksVisible; week++) {
             for (let day = 0; day < 7; day++) {
                 const currentDay = new Date(startDate);
@@ -271,36 +278,54 @@ class SexyFlyCalendar {
     }
 
     selectDate(date) {
-        if (!this.selectedDates.departure || this.isSelectingReturn) {
-            if (!this.selectedDates.departure) {
-                // Seleccionar fecha de ida
-                this.selectedDates.departure = new Date(date);
-                this.isSelectingReturn = true;
-                this.updateCalendarTitle('Selecciona fecha de vuelta');
-            } else {
-                // Seleccionar fecha de vuelta
-                if (date <= this.selectedDates.departure) {
-                    // Si selecciona una fecha anterior o igual, resetear
-                    this.selectedDates.departure = new Date(date);
-                    this.selectedDates.return = null;
-                    this.updateCalendarTitle('Selecciona fecha de vuelta');
-                } else {
-                    this.selectedDates.return = new Date(date);
-                    this.isSelectingReturn = false;
-                    this.updateCalendarTitle('Fechas seleccionadas');
-                    
-                    // Callback con las fechas seleccionadas
-                    this.onDateSelect({
-                        departure: this.selectedDates.departure,
-                        return: this.selectedDates.return
-                    });
-                }
-            }
-        } else {
-            // Reset y empezar de nuevo
-            this.selectedDates = { departure: new Date(date), return: null };
+        console.log('Fecha seleccionada:', date, 'Estado actual:', this.selectedDates);
+        
+        // Crear una nueva fecha para evitar problemas de referencia
+        const selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        
+        if (!this.selectedDates.departure) {
+            // Primera selección: fecha de ida
+            this.selectedDates.departure = selectedDate;
+            this.selectedDates.return = null;
             this.isSelectingReturn = true;
-            this.updateCalendarTitle('Selecciona fecha de vuelta');
+            this.updateCalendarTitle('Ahora selecciona fecha de vuelta');
+            console.log('Fecha de ida seleccionada:', selectedDate);
+        } else if (this.isSelectingReturn) {
+            // Segunda selección: fecha de vuelta
+            if (selectedDate.getTime() === this.selectedDates.departure.getTime()) {
+                // Si hace click en la misma fecha, no hacer nada
+                return;
+            } else if (selectedDate < this.selectedDates.departure) {
+                // Si selecciona una fecha anterior, intercambiar
+                this.selectedDates.return = this.selectedDates.departure;
+                this.selectedDates.departure = selectedDate;
+            } else {
+                // Fecha posterior: fecha de vuelta normal
+                this.selectedDates.return = selectedDate;
+            }
+            
+            this.isSelectingReturn = false;
+            this.updateCalendarTitle('Fechas seleccionadas correctamente');
+            
+            console.log('Fechas finales:', {
+                departure: this.selectedDates.departure,
+                return: this.selectedDates.return
+            });
+            
+            // Callback con las fechas seleccionadas
+            this.onDateSelect({
+                departure: this.selectedDates.departure,
+                return: this.selectedDates.return
+            });
+        } else {
+            // Ya hay dos fechas seleccionadas, empezar de nuevo
+            this.selectedDates = { 
+                departure: selectedDate, 
+                return: null 
+            };
+            this.isSelectingReturn = true;
+            this.updateCalendarTitle('Ahora selecciona fecha de vuelta');
+            console.log('Reset: Nueva fecha de ida seleccionada:', selectedDate);
         }
         
         this.render();
@@ -356,11 +381,15 @@ class SexyFlyCalendar {
 
     // Utilidades de formato
     formatDateString(date) {
-        return date.toISOString().split('T')[0];
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     parseDate(dateStr) {
-        return new Date(dateStr + 'T00:00:00');
+        const [year, month, day] = dateStr.split('-').map(Number);
+        return new Date(year, month - 1, day); // month - 1 porque los meses van de 0-11
     }
 
     formatDisplayDate(date) {
