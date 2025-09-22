@@ -1,5 +1,5 @@
 {
-  "currentVersion": "1.2.0",
+  "currentVersion": "1.2.1",
   "projectName": "SexyFly - Sistema de Reservas",
   "repository": "https://github.com/ivantintore/sexyfly-reservas",
   "liveUrl": "https://ivantintore.github.io/sexyfly-reservas/",
@@ -19,6 +19,21 @@
   },
   
   "versions": [
+    {
+      "version": "1.2.1",
+      "date": "2025-09-22T16:00:00.000Z",
+      "changeType": "patch",
+      "description": "Favicon añadido: Icono de avión ✈️ en la pestaña del navegador para mejor branding y experiencia de usuario.",
+      "dependencies": [],
+      "breaking": false,
+      "features": [],
+      "fixes": [
+        "Favicon personalizado con emoji de avión",
+        "Soporte para Apple Touch Icon"
+      ],
+      "author": "Ivan Tintore",
+      "tested": true
+    },
     {
       "version": "1.2.0",
       "date": "2025-09-22T15:30:00.000Z",
@@ -77,8 +92,8 @@
   ],
   
   "metadata": {
-    "lastUpdated": "2025-09-22T15:30:00.000Z",
-    "totalVersions": 3,
+    "lastUpdated": "2025-09-22T16:00:00.000Z",
+    "totalVersions": 4,
     "environment": "production",
     "mainBranch": "main"
   }
