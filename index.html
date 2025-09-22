@@ -386,9 +386,219 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* ===== SISTEMA DE VERSIONES ===== */
+        .version-badge {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #1E40AF, #3B82F6);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+            transition: all 0.3s ease;
+            user-select: none;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .version-badge:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.4);
+            background: linear-gradient(45deg, #1D4ED8, #2563EB);
+        }
+
+        .version-badge::before {
+            content: "v";
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-right: 2px;
+        }
+
+        .version-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            min-width: 320px;
+            max-width: 400px;
+            border: 1px solid #e5e7eb;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .version-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .version-dropdown-header {
+            background: linear-gradient(45deg, #1F2937, #374151);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px 12px 0 0;
+            border-bottom: 1px solid #4B5563;
+        }
+
+        .version-dropdown-header h4 {
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .version-dropdown-header p {
+            margin: 0;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .version-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .version-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background-color 0.2s ease;
+        }
+
+        .version-item:last-child {
+            border-bottom: none;
+        }
+
+        .version-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .version-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .version-number {
+            font-weight: 600;
+            color: #1E40AF;
+            font-size: 0.9rem;
+        }
+
+        .version-date {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .version-type {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .version-type.initial {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .version-type.minor {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .version-type.patch {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .version-type.major {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .version-description {
+            font-size: 0.85rem;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        .version-features {
+            margin-top: 8px;
+        }
+
+        .version-features ul {
+            margin: 5px 0 0 0;
+            padding-left: 15px;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .version-features li {
+            margin-bottom: 2px;
+        }
+
+        .version-loading {
+            padding: 20px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .version-error {
+            padding: 15px 20px;
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 0.85rem;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .version-badge {
+                top: 10px;
+                right: 10px;
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+            
+            .version-dropdown {
+                min-width: 280px;
+                max-width: calc(100vw - 30px);
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Badge de Versión -->
+    <div id="version-badge" class="version-badge" role="button" tabindex="0" aria-label="Ver historial de versiones">
+        <span id="version-text">Cargando...</span>
+        <div id="version-dropdown" class="version-dropdown" role="tooltip">
+            <div class="version-dropdown-header">
+                <h4>Historial de Versiones</h4>
+                <p>SexyFly - Sistema de Reservas</p>
+            </div>
+            <div id="version-list" class="version-list">
+                <div class="version-loading">Cargando versiones...</div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
             <h1>✈️ Reserva de Piloto Comercial</h1>
@@ -982,6 +1192,178 @@
         // Inicializar
         updateTotalPrice();
         updateAddButtonText();
+
+        // ===== SISTEMA DE VERSIONES =====
+        class VersionManager {
+            constructor() {
+                this.badge = document.getElementById('version-badge');
+                this.versionText = document.getElementById('version-text');
+                this.dropdown = document.getElementById('version-dropdown');
+                this.versionList = document.getElementById('version-list');
+                this.isDropdownVisible = false;
+                this.versionsData = null;
+                
+                this.init();
+            }
+
+            async init() {
+                try {
+                    await this.loadVersions();
+                    this.setupEventListeners();
+                    this.updateBadge();
+                } catch (error) {
+                    console.warn('Error inicializando sistema de versiones:', error);
+                    this.showFallback();
+                }
+            }
+
+            async loadVersions() {
+                try {
+                    const response = await fetch('./versions.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    this.versionsData = await response.json();
+                } catch (error) {
+                    console.warn('Error cargando versions.json:', error);
+                    throw error;
+                }
+            }
+
+            showFallback() {
+                this.versionText.textContent = '1.2.0';
+                this.versionList.innerHTML = `
+                    <div class="version-error">
+                        ⚠️ Error cargando historial de versiones. 
+                        <br><small>Versión actual: v1.2.0</small>
+                    </div>
+                `;
+            }
+
+            updateBadge() {
+                if (this.versionsData) {
+                    this.versionText.textContent = this.versionsData.currentVersion;
+                    this.renderVersionList();
+                }
+            }
+
+            renderVersionList() {
+                if (!this.versionsData || !this.versionsData.versions) {
+                    this.showFallback();
+                    return;
+                }
+
+                // Mostrar solo las últimas 3 versiones
+                const recentVersions = this.versionsData.versions.slice(0, 3);
+                
+                const versionsHTML = recentVersions.map(version => {
+                    const date = new Date(version.date).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+
+                    const featuresHTML = version.features && version.features.length > 0 
+                        ? `<div class="version-features">
+                             <ul>${version.features.map(feature => `<li>${feature}</li>`).join('')}</ul>
+                           </div>`
+                        : '';
+
+                    return `
+                        <div class="version-item">
+                            <div class="version-item-header">
+                                <span class="version-number">v${version.version}</span>
+                                <span class="version-date">${date}</span>
+                            </div>
+                            <div class="version-type ${version.changeType}">${version.changeType}</div>
+                            <div class="version-description">${version.description}</div>
+                            ${featuresHTML}
+                        </div>
+                    `;
+                }).join('');
+
+                this.versionList.innerHTML = versionsHTML;
+            }
+
+            setupEventListeners() {
+                // Toggle dropdown al hacer click
+                this.badge.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggleDropdown();
+                });
+
+                // Soporte para teclado (accesibilidad)
+                this.badge.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.toggleDropdown();
+                    }
+                });
+
+                // Cerrar dropdown al hacer click fuera
+                document.addEventListener('click', (e) => {
+                    if (!this.badge.contains(e.target)) {
+                        this.hideDropdown();
+                    }
+                });
+
+                // Cerrar dropdown con Escape
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.isDropdownVisible) {
+                        this.hideDropdown();
+                        this.badge.focus(); // Devolver foco al badge
+                    }
+                });
+
+                // Prevenir que el dropdown se cierre al hacer click dentro
+                this.dropdown.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            }
+
+            toggleDropdown() {
+                if (this.isDropdownVisible) {
+                    this.hideDropdown();
+                } else {
+                    this.showDropdown();
+                }
+            }
+
+            showDropdown() {
+                this.dropdown.classList.add('show');
+                this.isDropdownVisible = true;
+                this.badge.setAttribute('aria-expanded', 'true');
+            }
+
+            hideDropdown() {
+                this.dropdown.classList.remove('show');
+                this.isDropdownVisible = false;
+                this.badge.setAttribute('aria-expanded', 'false');
+            }
+
+            // Método público para actualizar versiones dinámicamente
+            async refresh() {
+                try {
+                    await this.loadVersions();
+                    this.updateBadge();
+                } catch (error) {
+                    console.warn('Error refrescando versiones:', error);
+                }
+            }
+        }
+
+        // Inicializar el sistema de versiones cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            window.versionManager = new VersionManager();
+        });
+
+        // Si el DOM ya está cargado, inicializar inmediatamente
+        if (document.readyState === 'loading') {
+            // DOM aún se está cargando
+        } else {
+            // DOM ya está cargado
+            window.versionManager = new VersionManager();
+        }
     </script>
 </body>
 </html>

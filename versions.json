@@ -1,0 +1,85 @@
+{
+  "currentVersion": "1.2.0",
+  "projectName": "SexyFly - Sistema de Reservas",
+  "repository": "https://github.com/ivantintore/sexyfly-reservas",
+  "liveUrl": "https://ivantintore.github.io/sexyfly-reservas/",
+  
+  "updateRules": {
+    "major": "Cambios que rompen compatibilidad existente (ej. cambio total de estructura de datos, API incompatible, rediseño completo que afecta funcionalidad).",
+    "minor": "Nuevas funcionalidades que NO afectan lo existente (ej. agregar nuevos tipos de vuelo, integración con calendario, nuevas validaciones).",
+    "patch": "Correcciones de errores, optimizaciones menores, mejoras de UI/UX (ej. fix de responsive, corrección de typos, mejoras de rendimiento).",
+    "whenToUpdate": "Antes de cada push a main, revisa cambios con 'git diff'. Actualiza versión según tipo de cambio. Usa git tags para marcar releases importantes.",
+    "deployProcess": "1. Actualizar versions.json, 2. Commit con mensaje descriptivo, 3. Git tag si es release importante, 4. Push a main (auto-deploy en GitHub Pages)"
+  },
+  
+  "nextAction": {
+    "description": "Probar formulario de reservas en diferentes dispositivos y navegadores",
+    "priority": "medium",
+    "estimatedTime": "30 minutos"
+  },
+  
+  "versions": [
+    {
+      "version": "1.2.0",
+      "date": "2025-09-22T15:30:00.000Z",
+      "changeType": "minor",
+      "description": "Sistema de control de versiones implementado: Badge de versión dinámico, archivo versions.json centralizado, y mejoras en la experiencia de usuario.",
+      "dependencies": [],
+      "breaking": false,
+      "features": [
+        "Badge de versión en tiempo real",
+        "Historial de cambios visible",
+        "Sistema de versionado SemVer"
+      ],
+      "fixes": [],
+      "author": "Ivan Tintore",
+      "tested": true
+    },
+    {
+      "version": "1.1.0", 
+      "date": "2025-09-22T12:00:00.000Z",
+      "changeType": "minor",
+      "description": "Mejoras en validación de formularios: Validación mejorada de códigos OACI, cálculo dinámico de precios por antelación, y sistema de vuelos múltiples optimizado.",
+      "dependencies": [],
+      "breaking": false,
+      "features": [
+        "Validación OACI en tiempo real",
+        "Cálculo automático de precios por días únicos",
+        "Soporte para hasta 10 vuelos",
+        "Detección automática de pernocta"
+      ],
+      "fixes": [
+        "Corrección en cálculo de precios duplicados",
+        "Mejora en responsive design para móviles"
+      ],
+      "author": "Ivan Tintore",
+      "tested": true
+    },
+    {
+      "version": "1.0.0",
+      "date": "2025-09-22T10:00:00.000Z", 
+      "changeType": "initial",
+      "description": "Lanzamiento inicial del sistema de reservas SexyFly: Formulario completo de reservas con validación, sistema de precios dinámico, y diseño responsive moderno.",
+      "dependencies": [],
+      "breaking": false,
+      "features": [
+        "Formulario de reserva de piloto comercial",
+        "Sistema de tarifas (500€ anticipada, 1000€ urgente)",
+        "Validación de códigos OACI",
+        "Políticas de cancelación claras",
+        "Diseño responsive y moderno",
+        "Email de confirmación automático"
+      ],
+      "fixes": [],
+      "author": "Ivan Tintore", 
+      "tested": true
+    }
+  ],
+  
+  "metadata": {
+    "lastUpdated": "2025-09-22T15:30:00.000Z",
+    "totalVersions": 3,
+    "environment": "production",
+    "mainBranch": "main"
+  }
+}
