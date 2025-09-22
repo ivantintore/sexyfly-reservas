@@ -6,7 +6,16 @@
 
 class SexyFlyCalendar {
     constructor(containerId, options = {}) {
+        console.log('📅 SexyFlyCalendar constructor llamado con:', containerId);
+        
         this.container = document.getElementById(containerId);
+        if (!this.container) {
+            console.error('❌ No se encontró el contenedor:', containerId);
+            throw new Error(`Contenedor ${containerId} no encontrado`);
+        }
+        
+        console.log('✅ Contenedor encontrado:', this.container);
+        
         this.options = {
             weeksVisible: 4,
             minDate: new Date(),
@@ -30,13 +39,27 @@ class SexyFlyCalendar {
         this.onDateSelect = options.onDateSelect || (() => {});
         this.onPriceUpdate = options.onPriceUpdate || (() => {});
         
+        console.log('🔧 Inicializando calendario...');
         this.init();
     }
 
     init() {
-        this.createCalendarStructure();
-        this.render();
-        this.setupEventListeners();
+        console.log('📅 Iniciando calendario...');
+        try {
+            console.log('1️⃣ Creando estructura...');
+            this.createCalendarStructure();
+            
+            console.log('2️⃣ Renderizando...');
+            this.render();
+            
+            console.log('3️⃣ Configurando eventos...');
+            this.setupEventListeners();
+            
+            console.log('✅ Calendario inicializado completamente');
+        } catch (error) {
+            console.error('❌ Error en init():', error);
+            throw error;
+        }
     }
 
     createCalendarStructure() {

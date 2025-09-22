@@ -1345,34 +1345,66 @@
         // ===== SEXYFLY 2.0 - SISTEMA INTEGRADO =====
         class SexyFlyApp {
             constructor() {
+                console.log('🚀 Inicializando SexyFlyApp...');
+                
+                // Verificar que las clases existen
+                if (typeof SexyFlyPricing === 'undefined') {
+                    console.error('❌ SexyFlyPricing no está disponible');
+                    return;
+                }
+                if (typeof SexyFlyCalendar === 'undefined') {
+                    console.error('❌ SexyFlyCalendar no está disponible');
+                    return;
+                }
+                
                 this.pricing = new SexyFlyPricing();
                 this.calendar = null;
                 this.selectedDates = null;
                 this.totalPrice = 0;
                 
+                console.log('✅ Clases cargadas correctamente');
                 this.init();
             }
 
             init() {
+                console.log('🔧 Inicializando componentes...');
+                
+                // Verificar que el contenedor existe
+                const container = document.getElementById('flightCalendar');
+                if (!container) {
+                    console.error('❌ Contenedor flightCalendar no encontrado');
+                    return;
+                }
+                
                 this.initializeCalendar();
                 this.setupFormValidation();
                 this.setupICAOInputs();
+                
+                console.log('✅ SexyFlyApp inicializado completamente');
             }
 
             initializeCalendar() {
-                this.calendar = new SexyFlyCalendar('flightCalendar', {
-                    onDateSelect: (dates) => this.handleDateSelection(dates),
-                    onPriceUpdate: (prices) => this.handlePriceUpdate(prices)
-                });
+                console.log('📅 Inicializando calendario...');
+                
+                try {
+                    this.calendar = new SexyFlyCalendar('flightCalendar', {
+                        onDateSelect: (dates) => this.handleDateSelection(dates),
+                        onPriceUpdate: (prices) => this.handlePriceUpdate(prices)
+                    });
 
-                // Integrar pricing con calendar
-                this.calendar.calculatePrice = (date) => {
-                    const priceInfo = this.pricing.calculatePrice(date);
-                    return {
-                        price: priceInfo.price,
-                        class: priceInfo.cssClass
+                    // Integrar pricing con calendar
+                    this.calendar.calculatePrice = (date) => {
+                        const priceInfo = this.pricing.calculatePrice(date);
+                        return {
+                            price: priceInfo.price,
+                            class: priceInfo.cssClass
+                        };
                     };
-                };
+                    
+                    console.log('✅ Calendario inicializado correctamente');
+                } catch (error) {
+                    console.error('❌ Error inicializando calendario:', error);
+                }
             }
 
             handleDateSelection(dates) {
