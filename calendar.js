@@ -252,7 +252,10 @@ class SexyFlyCalendar {
             if (!dayElement || dayElement.classList.contains('disabled')) return;
             
             const dateStr = dayElement.dataset.date;
+            console.log('Click detectado en:', dateStr, 'Elemento:', dayElement);
+            
             const selectedDate = this.parseDate(dateStr);
+            console.log('Fecha parseada:', selectedDate);
             
             this.selectDate(selectedDate);
         });
@@ -278,55 +281,69 @@ class SexyFlyCalendar {
     }
 
     selectDate(date) {
-        console.log('Fecha seleccionada:', date, 'Estado actual:', this.selectedDates);
+        console.log('=== SELECCIÓN DE FECHA ===');
+        console.log('Fecha clickeada:', date);
+        console.log('Estado antes:', JSON.stringify(this.selectedDates));
+        console.log('¿Seleccionando vuelta?:', this.isSelectingReturn);
         
         // Crear una nueva fecha para evitar problemas de referencia
         const selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         
         if (!this.selectedDates.departure) {
-            // Primera selección: fecha de ida
+            // CASO 1: Primera selección - fecha de ida
             this.selectedDates.departure = selectedDate;
             this.selectedDates.return = null;
             this.isSelectingReturn = true;
             this.updateCalendarTitle('Ahora selecciona fecha de vuelta');
-            console.log('Fecha de ida seleccionada:', selectedDate);
+            console.log('✅ Fecha de ida establecida:', selectedDate);
+            
         } else if (this.isSelectingReturn) {
-            // Segunda selección: fecha de vuelta
+            // CASO 2: Segunda selección - fecha de vuelta
             if (selectedDate.getTime() === this.selectedDates.departure.getTime()) {
-                // Si hace click en la misma fecha, no hacer nada
+                console.log('⚠️ Misma fecha clickeada, ignorando');
                 return;
-            } else if (selectedDate < this.selectedDates.departure) {
-                // Si selecciona una fecha anterior, intercambiar
+            }
+            
+            if (selectedDate < this.selectedDates.departure) {
+                // Intercambiar fechas si selecciona una anterior
                 this.selectedDates.return = this.selectedDates.departure;
                 this.selectedDates.departure = selectedDate;
+                console.log('🔄 Fechas intercambiadas');
             } else {
-                // Fecha posterior: fecha de vuelta normal
+                // Fecha posterior normal
                 this.selectedDates.return = selectedDate;
+                console.log('✅ Fecha de vuelta establecida:', selectedDate);
             }
             
             this.isSelectingReturn = false;
-            this.updateCalendarTitle('Fechas seleccionadas correctamente');
+            this.updateCalendarTitle('¡Fechas seleccionadas!');
             
-            console.log('Fechas finales:', {
+            console.log('🎯 SELECCIÓN COMPLETA:', {
                 departure: this.selectedDates.departure,
                 return: this.selectedDates.return
             });
             
-            // Callback con las fechas seleccionadas
-            this.onDateSelect({
-                departure: this.selectedDates.departure,
-                return: this.selectedDates.return
-            });
+            // Llamar callback
+            setTimeout(() => {
+                this.onDateSelect({
+                    departure: this.selectedDates.departure,
+                    return: this.selectedDates.return
+                });
+            }, 100);
+            
         } else {
-            // Ya hay dos fechas seleccionadas, empezar de nuevo
+            // CASO 3: Reset - empezar de nuevo
             this.selectedDates = { 
                 departure: selectedDate, 
                 return: null 
             };
             this.isSelectingReturn = true;
             this.updateCalendarTitle('Ahora selecciona fecha de vuelta');
-            console.log('Reset: Nueva fecha de ida seleccionada:', selectedDate);
+            console.log('🔄 Reset: Nueva selección iniciada');
         }
+        
+        console.log('Estado después:', JSON.stringify(this.selectedDates));
+        console.log('=== FIN SELECCIÓN ===');
         
         this.render();
     }

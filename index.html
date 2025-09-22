@@ -1325,14 +1325,11 @@
             }
         }
 
-        // Inicializar el sistema de versiones cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', () => {
-            window.versionManager = new VersionManager();
-        });
-
-        // Si el DOM ya está cargado, inicializar inmediatamente
+        // Inicializar el sistema de versiones inmediatamente
         if (document.readyState === 'loading') {
-            // DOM aún se está cargando
+            document.addEventListener('DOMContentLoaded', () => {
+                window.versionManager = new VersionManager();
+            });
         } else {
             // DOM ya está cargado
             window.versionManager = new VersionManager();
@@ -1616,10 +1613,22 @@
         }
 
         // Inicializar la aplicación cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', () => {
+        function initializeApp() {
+            // Inicializar sistema de versiones si no existe
+            if (!window.versionManager) {
+                window.versionManager = new VersionManager();
+            }
+            
+            // Inicializar SexyFly App
             window.sexyFlyApp = new SexyFlyApp();
             console.log('🚁 SexyFly 2.0 inicializado correctamente');
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
 
         // Mantener compatibilidad con funciones existentes
         function scrollToTerms() {
