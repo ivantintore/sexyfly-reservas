@@ -1,5 +1,5 @@
 {
-  "currentVersion": "1.2.1",
+  "currentVersion": "2.0.0",
   "projectName": "SexyFly - Sistema de Reservas",
   "repository": "https://github.com/ivantintore/sexyfly-reservas",
   "liveUrl": "https://ivantintore.github.io/sexyfly-reservas/",
@@ -19,6 +19,32 @@
   },
   
   "versions": [
+    {
+      "version": "2.0.0",
+      "date": "2025-09-22T17:00:00.000Z",
+      "changeType": "major",
+      "description": "🚀 SexyFly 2.0 - Rediseño completo con calendario visual: Sistema de calendario interactivo como Booking.com, pricing dinámico con colores, arquitectura modular, y UX completamente renovada.",
+      "dependencies": ["calendar.js", "pricing.js", "calendar.css"],
+      "breaking": true,
+      "features": [
+        "📅 Calendario visual con 4 semanas + navegación",
+        "💰 Pricing dinámico con colores (verde/amarillo/rojo)",
+        "🎨 Diseño inspirado en Booking.com y aerolíneas",
+        "⚡ Arquitectura modular (calendar.js + pricing.js)",
+        "📱 Responsive design mejorado",
+        "🔄 Selección de rango de fechas intuitiva",
+        "💡 Precios en tiempo real en cada día",
+        "🏗️ Sistema escalable para futuras features"
+      ],
+      "fixes": [
+        "UX completamente renovada",
+        "Eliminación de inputs de fecha tradicionales",
+        "Flujo de reserva más intuitivo"
+      ],
+      "author": "Ivan Tintore",
+      "tested": true,
+      "migrationNotes": "Breaking change: Flujo de reserva completamente nuevo. Los usuarios deben usar el calendario visual en lugar de inputs de fecha tradicionales."
+    },
     {
       "version": "1.2.1",
       "date": "2025-09-22T16:00:00.000Z",
@@ -92,8 +118,8 @@
   ],
   
   "metadata": {
-    "lastUpdated": "2025-09-22T16:00:00.000Z",
-    "totalVersions": 4,
+    "lastUpdated": "2025-09-22T17:00:00.000Z",
+    "totalVersions": 5,
     "environment": "production",
     "mainBranch": "main"
   }

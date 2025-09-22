@@ -8,6 +8,9 @@
     <!-- Favicon - Icono de avión -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" type="image/svg+xml">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+    
+    <!-- SexyFly 2.0 - Sistema de Calendar y Pricing -->
+    <link rel="stylesheet" href="calendar.css">
     <style>
         * {
             margin: 0;
@@ -627,72 +630,38 @@
             </div>
 
             <form id="bookingForm">
-                <div class="flights-section">
+                <!-- Nuevo Sistema de Calendario SexyFly 2.0 -->
+                <div class="calendar-section">
+                    <div id="flightCalendar"></div>
+                </div>
+
+                <!-- Sección de detalles de vuelo -->
+                <div class="flight-details-section" id="flightDetailsSection" style="display: none;">
                     <h3 style="color: #1E40AF; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                        ✈️ Vuelos Programados
-                        <button type="button" id="addFlightBtn" class="btn-add-flight">+ Añadir Vuelo Extra</button>
+                        ✈️ Detalles del Vuelo
                     </h3>
                     
-                    <div id="flightsContainer">
-                        <!-- Vuelo de ida (obligatorio) -->
-                        <div class="flight-item" data-flight="0">
-                            <div class="flight-header">
-                                <h4>🛫 Vuelo de Ida</h4>
-                                <span class="flight-price" id="price-0">Fecha pendiente</span>
-                            </div>
-                            <div class="form-row">
-                                <div>
-                                    <label for="origin-0">Origen (OACI)</label>
-                                    <input type="text" id="origin-0" name="flights[0][origin]" placeholder="Ej: LELL" maxlength="4" required class="icao-input">
-                                    <div class="icao-helper">Código OACI de 4 letras</div>
-                                </div>
-                                <div>
-                                    <label for="destination-0">Destino (OACI)</label>
-                                    <input type="text" id="destination-0" name="flights[0][destination]" placeholder="Ej: LESL" maxlength="4" required class="icao-input">
-                                    <div class="icao-helper">Código OACI de 4 letras</div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div>
-                                    <label for="date-0">📅 Fecha</label>
-                                    <input type="date" id="date-0" name="flights[0][date]" required class="flight-date">
-                                </div>
-                                <div>
-                                    <label for="time-0">🕐 Hora</label>
-                                    <input type="time" id="time-0" name="flights[0][time]" required>
-                                </div>
-                            </div>
+                    <div class="form-row">
+                        <div>
+                            <label for="departureTime">🛫 Hora de Salida</label>
+                            <input type="time" id="departureTime" name="departureTime" required>
                         </div>
+                        <div>
+                            <label for="returnTime">🛬 Hora de Regreso</label>
+                            <input type="time" id="returnTime" name="returnTime" required>
+                        </div>
+                    </div>
 
-                        <!-- Vuelo de vuelta (opcional) -->
-                        <div class="flight-item" data-flight="1">
-                            <button type="button" class="btn-remove-flight" onclick="removeFlight(this)">×</button>
-                            <div class="flight-header">
-                                <h4>🛬 Vuelo de Vuelta (Opcional)</h4>
-                                <span class="flight-price" id="price-1">Fecha pendiente</span>
-                            </div>
-                            <div class="form-row">
-                                <div>
-                                    <label for="origin-1">Origen (OACI)</label>
-                                    <input type="text" id="origin-1" name="flights[1][origin]" placeholder="Ej: LESL" maxlength="4" class="icao-input">
-                                    <div class="icao-helper">Código OACI de 4 letras</div>
-                                </div>
-                                <div>
-                                    <label for="destination-1">Destino (OACI)</label>
-                                    <input type="text" id="destination-1" name="flights[1][destination]" placeholder="Ej: LELL" maxlength="4" class="icao-input">
-                                    <div class="icao-helper">Código OACI de 4 letras</div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div>
-                                    <label for="date-1">📅 Fecha</label>
-                                    <input type="date" id="date-1" name="flights[1][date]" class="flight-date">
-                                </div>
-                                <div>
-                                    <label for="time-1">🕐 Hora</label>
-                                    <input type="time" id="time-1" name="flights[1][time]">
-                                </div>
-                            </div>
+                    <div class="form-row">
+                        <div>
+                            <label for="originICAO">🛫 Aeropuerto de Origen (OACI)</label>
+                            <input type="text" id="originICAO" name="originICAO" placeholder="Ej: LELL (Lleida)" maxlength="4" required class="icao-input">
+                            <div class="icao-helper">Código OACI de 4 letras</div>
+                        </div>
+                        <div>
+                            <label for="destinationICAO">🛬 Aeropuerto de Destino (OACI)</label>
+                            <input type="text" id="destinationICAO" name="destinationICAO" placeholder="Ej: LEBL (Barcelona)" maxlength="4" required class="icao-input">
+                            <div class="icao-helper">Código OACI de 4 letras</div>
                         </div>
                     </div>
                 </div>
@@ -728,9 +697,9 @@
                     <textarea id="additionalInfo" name="additionalInfo" rows="4" placeholder="Detalles adicionales del vuelo, pasajeros, equipaje, etc."></textarea>
                 </div>
 
-                <div class="total-flights" id="totalFlights">
-                    <h3 id="totalFlightsPrice">Total: 500€</h3>
-                    <div class="breakdown" id="totalBreakdown">1 día de servicio</div>
+                <div class="total-flights" id="totalFlights" style="display: none;">
+                    <h3 id="totalFlightsPrice">Selecciona fechas para ver el precio</h3>
+                    <div class="breakdown" id="totalBreakdown">El precio se calculará automáticamente</div>
                 </div>
 
                 <div class="form-group">
@@ -1368,6 +1337,300 @@
             // DOM ya está cargado
             window.versionManager = new VersionManager();
         }
+    </script>
+
+    <!-- SexyFly 2.0 - Módulos de Calendar y Pricing -->
+    <script src="pricing.js"></script>
+    <script src="calendar.js"></script>
+    
+    <!-- SexyFly 2.0 - Inicialización y lógica principal -->
+    <script>
+        // ===== SEXYFLY 2.0 - SISTEMA INTEGRADO =====
+        class SexyFlyApp {
+            constructor() {
+                this.pricing = new SexyFlyPricing();
+                this.calendar = null;
+                this.selectedDates = null;
+                this.totalPrice = 0;
+                
+                this.init();
+            }
+
+            init() {
+                this.initializeCalendar();
+                this.setupFormValidation();
+                this.setupICAOInputs();
+            }
+
+            initializeCalendar() {
+                this.calendar = new SexyFlyCalendar('flightCalendar', {
+                    onDateSelect: (dates) => this.handleDateSelection(dates),
+                    onPriceUpdate: (prices) => this.handlePriceUpdate(prices)
+                });
+
+                // Integrar pricing con calendar
+                this.calendar.calculatePrice = (date) => {
+                    const priceInfo = this.pricing.calculatePrice(date);
+                    return {
+                        price: priceInfo.price,
+                        class: priceInfo.cssClass
+                    };
+                };
+            }
+
+            handleDateSelection(dates) {
+                this.selectedDates = dates;
+                
+                // Mostrar sección de detalles de vuelo
+                const flightDetailsSection = document.getElementById('flightDetailsSection');
+                flightDetailsSection.style.display = 'block';
+                
+                // Mostrar sección de pernocta si es necesario
+                this.updateOvernightVisibility(dates);
+                
+                // Actualizar precios
+                this.updateTotalPrice(dates);
+                
+                console.log('Fechas seleccionadas:', dates);
+            }
+
+            handlePriceUpdate(prices) {
+                this.totalPrice = prices.total;
+                
+                // Mostrar sección de total
+                const totalSection = document.getElementById('totalFlights');
+                totalSection.style.display = 'block';
+                
+                // Actualizar textos
+                document.getElementById('totalFlightsPrice').textContent = `Total: ${prices.total}€`;
+                document.getElementById('totalBreakdown').innerHTML = `
+                    🛫 Ida: ${prices.departure}€ • 🛬 Vuelta: ${prices.return}€
+                `;
+            }
+
+            updateOvernightVisibility(dates) {
+                const overnightSection = document.getElementById('overnightSection');
+                const departureDate = dates.departure.toISOString().split('T')[0];
+                const returnDate = dates.return.toISOString().split('T')[0];
+                
+                if (departureDate !== returnDate) {
+                    overnightSection.style.display = 'block';
+                } else {
+                    overnightSection.style.display = 'none';
+                    document.getElementById('overnight').checked = false;
+                }
+            }
+
+            updateTotalPrice(dates) {
+                const departurePrice = this.pricing.calculatePrice(dates.departure);
+                const returnPrice = this.pricing.calculatePrice(dates.return);
+                
+                const total = departurePrice.price + returnPrice.price;
+                this.totalPrice = total;
+                
+                // Actualizar display
+                this.handlePriceUpdate({
+                    departure: departurePrice.price,
+                    return: returnPrice.price,
+                    total: total
+                });
+            }
+
+            setupICAOInputs() {
+                const icaoInputs = document.querySelectorAll('.icao-input');
+                
+                icaoInputs.forEach(input => {
+                    input.addEventListener('input', function() {
+                        this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
+                        
+                        // Validación básica
+                        if (this.value.length === 4) {
+                            this.style.borderColor = '#10B981';
+                        } else {
+                            this.style.borderColor = '#E5E7EB';
+                        }
+                    });
+
+                    // Sugerencias básicas
+                    input.addEventListener('focus', function() {
+                        // TODO: Implementar autocompletado inteligente
+                        console.log('ICAO input focused:', this.id);
+                    });
+                });
+            }
+
+            setupFormValidation() {
+                const form = document.getElementById('bookingForm');
+                
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleFormSubmit();
+                });
+            }
+
+            handleFormSubmit() {
+                // Validar que se han seleccionado fechas
+                if (!this.selectedDates) {
+                    alert('Por favor, selecciona las fechas de ida y vuelta en el calendario.');
+                    return;
+                }
+
+                // Validar códigos ICAO
+                const originICAO = document.getElementById('originICAO').value;
+                const destinationICAO = document.getElementById('destinationICAO').value;
+                
+                if (!originICAO || originICAO.length !== 4) {
+                    alert('Por favor, introduce un código OACI válido para el origen (4 letras).');
+                    document.getElementById('originICAO').focus();
+                    return;
+                }
+                
+                if (!destinationICAO || destinationICAO.length !== 4) {
+                    alert('Por favor, introduce un código OACI válido para el destino (4 letras).');
+                    document.getElementById('destinationICAO').focus();
+                    return;
+                }
+
+                if (originICAO === destinationICAO) {
+                    alert('El aeropuerto de origen y destino no pueden ser el mismo.');
+                    return;
+                }
+
+                // Validar horas
+                const departureTime = document.getElementById('departureTime').value;
+                const returnTime = document.getElementById('returnTime').value;
+                
+                if (!departureTime || !returnTime) {
+                    alert('Por favor, especifica las horas de salida y regreso.');
+                    return;
+                }
+
+                // Validar términos y condiciones
+                const acceptTerms = document.getElementById('acceptTerms');
+                if (!acceptTerms.checked) {
+                    alert('Debe aceptar los términos y condiciones para continuar');
+                    acceptTerms.focus();
+                    return;
+                }
+
+                // Procesar reserva
+                this.processBooking();
+            }
+
+            processBooking() {
+                const loadingDiv = document.getElementById('loadingDiv');
+                const submitBtn = document.getElementById('submitBtn');
+                
+                // Mostrar loading
+                loadingDiv.style.display = 'block';
+                submitBtn.disabled = true;
+
+                // Recopilar datos
+                const bookingData = this.collectBookingData();
+                
+                // Simular procesamiento
+                setTimeout(() => {
+                    this.completeBooking(bookingData);
+                }, 2000);
+            }
+
+            collectBookingData() {
+                const formData = new FormData(document.getElementById('bookingForm'));
+                
+                return {
+                    dates: {
+                        departure: this.selectedDates.departure,
+                        return: this.selectedDates.return
+                    },
+                    times: {
+                        departure: formData.get('departureTime'),
+                        return: formData.get('returnTime')
+                    },
+                    airports: {
+                        origin: formData.get('originICAO'),
+                        destination: formData.get('destinationICAO')
+                    },
+                    client: {
+                        name: formData.get('clientName'),
+                        email: formData.get('clientEmail'),
+                        phone: formData.get('clientPhone')
+                    },
+                    options: {
+                        overnight: formData.get('overnight') === 'on',
+                        additionalInfo: formData.get('additionalInfo')
+                    },
+                    pricing: {
+                        total: this.totalPrice,
+                        departure: this.pricing.calculatePrice(this.selectedDates.departure).price,
+                        return: this.pricing.calculatePrice(this.selectedDates.return).price
+                    }
+                };
+            }
+
+            completeBooking(bookingData) {
+                const loadingDiv = document.getElementById('loadingDiv');
+                const submitBtn = document.getElementById('submitBtn');
+                
+                // Generar resumen
+                const summary = this.generateBookingSummary(bookingData);
+                
+                alert(`✅ Reserva procesada correctamente!\n\n${summary}\n\n📧 Email enviado a ivan@tintore.es\n\nSerás redirigido al sistema de pago.`);
+                
+                // Ocultar loading
+                loadingDiv.style.display = 'none';
+                submitBtn.disabled = false;
+                
+                console.log('Booking completed:', bookingData);
+            }
+
+            generateBookingSummary(data) {
+                const depDate = data.dates.departure.toLocaleDateString('es-ES');
+                const retDate = data.dates.return.toLocaleDateString('es-ES');
+                
+                return [
+                    `🛫 Salida: ${depDate} a las ${data.times.departure}`,
+                    `🛬 Regreso: ${retDate} a las ${data.times.return}`,
+                    `✈️ Ruta: ${data.airports.origin} → ${data.airports.destination}`,
+                    `💰 Total: ${data.pricing.total}€`,
+                    `👤 Cliente: ${data.client.name}`
+                ].join('\n');
+            }
+
+            // API pública
+            getSelectedDates() {
+                return this.selectedDates;
+            }
+
+            getTotalPrice() {
+                return this.totalPrice;
+            }
+
+            resetForm() {
+                this.calendar.clearSelection();
+                this.selectedDates = null;
+                this.totalPrice = 0;
+                document.getElementById('flightDetailsSection').style.display = 'none';
+                document.getElementById('totalFlights').style.display = 'none';
+                document.getElementById('bookingForm').reset();
+            }
+        }
+
+        // Inicializar la aplicación cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            window.sexyFlyApp = new SexyFlyApp();
+            console.log('🚁 SexyFly 2.0 inicializado correctamente');
+        });
+
+        // Mantener compatibilidad con funciones existentes
+        function scrollToTerms() {
+            document.getElementById('terms').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Hacer funciones globales
+        window.scrollToTerms = scrollToTerms;
     </script>
 </body>
 </html>

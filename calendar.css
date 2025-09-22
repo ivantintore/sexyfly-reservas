@@ -1,0 +1,418 @@
+/**
+ * SexyFly Calendar Styles v2.0
+ * Diseño inspirado en Booking.com y sistemas de aerolíneas
+ */
+
+.sexyfly-calendar {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ===== HEADER ===== */
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 25px 30px;
+    background: linear-gradient(45deg, #1E40AF, #3B82F6);
+    color: white;
+}
+
+.calendar-title h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.calendar-title p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ===== LEYENDA DE PRECIOS ===== */
+.price-legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px 30px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.legend-color.available {
+    background: linear-gradient(45deg, #10B981, #34D399);
+}
+
+.legend-color.medium {
+    background: linear-gradient(45deg, #F59E0B, #FBBF24);
+}
+
+.legend-color.urgent {
+    background: linear-gradient(45deg, #EF4444, #F87171);
+}
+
+/* ===== DÍAS DE LA SEMANA ===== */
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #374151;
+    color: white;
+}
+
+.weekday {
+    padding: 15px 8px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ===== GRID DE DÍAS ===== */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: white;
+}
+
+.calendar-day {
+    position: relative;
+    min-height: 80px;
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.calendar-day:hover:not(.disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+/* Estados de días */
+.calendar-day.disabled {
+    background: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.calendar-day.today {
+    border: 2px solid #3B82F6;
+    font-weight: 600;
+}
+
+.calendar-day.weekend:not(.disabled) {
+    background: #fef7f7;
+}
+
+/* Colores por precio */
+.calendar-day.available:not(.disabled) {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border-color: #10b981;
+}
+
+.calendar-day.medium:not(.disabled) {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-color: #f59e0b;
+}
+
+.calendar-day.urgent:not(.disabled) {
+    background: linear-gradient(135deg, #fef2f2, #fecaca);
+    border-color: #ef4444;
+}
+
+/* Estados de selección */
+.calendar-day.selected {
+    border: 2px solid #1E40AF !important;
+    transform: scale(1.05);
+    z-index: 20;
+}
+
+.calendar-day.selected.departure {
+    background: linear-gradient(135deg, #1E40AF, #3B82F6) !important;
+    color: white;
+}
+
+.calendar-day.selected.return {
+    background: linear-gradient(135deg, #059669, #10B981) !important;
+    color: white;
+}
+
+.calendar-day.in-range {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe) !important;
+    border-color: #3b82f6;
+}
+
+.calendar-day.hovered {
+    background: linear-gradient(135deg, #e0f2fe, #b3e5fc) !important;
+    border-color: #0ea5e9;
+}
+
+/* Contenido de los días */
+.day-number {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.day-price {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    color: #374151;
+}
+
+.calendar-day.selected .day-price {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.today-indicator {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 0.6rem;
+    background: #3B82F6;
+    color: white;
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* ===== RESUMEN DE SELECCIÓN ===== */
+.selection-summary {
+    padding: 25px 30px;
+    background: linear-gradient(45deg, #f8fafc, #f1f5f9);
+    border-top: 1px solid #e2e8f0;
+}
+
+.summary-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.selected-dates {
+    display: flex;
+    gap: 20px;
+}
+
+.date-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+}
+
+.date-item.departure {
+    border-left: 4px solid #1E40AF;
+}
+
+.date-item.return {
+    border-left: 4px solid #059669;
+}
+
+.date-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.date-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.date-price {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #059669;
+}
+
+.total-price {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 20px;
+    background: linear-gradient(45deg, #1E40AF, #3B82F6);
+    color: white;
+    border-radius: 15px;
+    min-width: 120px;
+}
+
+.total-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.total-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .sexyfly-calendar {
+        margin: 10px;
+        border-radius: 15px;
+    }
+    
+    .calendar-header {
+        padding: 20px;
+    }
+    
+    .calendar-title h3 {
+        font-size: 1.2rem;
+    }
+    
+    .price-legend {
+        padding: 15px 20px;
+        gap: 15px;
+    }
+    
+    .legend-item {
+        font-size: 0.8rem;
+    }
+    
+    .calendar-day {
+        min-height: 60px;
+        padding: 4px;
+    }
+    
+    .day-number {
+        font-size: 1rem;
+    }
+    
+    .day-price {
+        font-size: 0.7rem;
+    }
+    
+    .selection-summary {
+        padding: 20px;
+    }
+    
+    .summary-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .selected-dates {
+        width: 100%;
+        justify-content: space-around;
+    }
+    
+    .date-item {
+        min-width: auto;
+        flex: 1;
+        padding: 12px;
+    }
+    
+    .total-price {
+        width: 100%;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .calendar-header {
+        padding: 15px;
+    }
+    
+    .nav-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .weekday {
+        padding: 12px 4px;
+        font-size: 0.75rem;
+    }
+    
+    .calendar-day {
+        min-height: 50px;
+        padding: 2px;
+    }
+    
+    .day-number {
+        font-size: 0.9rem;
+    }
+    
+    .day-price {
+        font-size: 0.65rem;
+        padding: 1px 4px;
+    }
+    
+    .selected-dates {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .date-item {
+        padding: 10px;
+    }
+}
