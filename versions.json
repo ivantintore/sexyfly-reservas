@@ -1,5 +1,5 @@
 {
-  "currentVersion": "2.0.1",
+  "currentVersion": "2.0.2",
   "projectName": "SexyFly - Sistema de Reservas",
   "repository": "https://github.com/ivantintore/sexyfly-reservas",
   "liveUrl": "https://ivantintore.github.io/sexyfly-reservas/",
@@ -19,6 +19,25 @@
   },
   
   "versions": [
+    {
+      "version": "2.0.2",
+      "date": "2025-09-22T18:00:00.000Z",
+      "changeType": "patch",
+      "description": "🐛 Arreglos críticos: Fix selección de fecha de vuelta y sistema de versiones que se quedaba en 'Cargando'. Lógica de selección completamente reescrita con debugging detallado.",
+      "dependencies": [],
+      "breaking": false,
+      "features": [],
+      "fixes": [
+        "Fix selección de fecha de vuelta (no se seleccionaba)",
+        "Fix sistema de versiones que se quedaba en 'Cargando'",
+        "Fix conflicto entre inicializaciones de DOMContentLoaded",
+        "Lógica de selección de fechas más robusta",
+        "Debugging detallado con logs en consola",
+        "Timeout para callbacks para evitar race conditions"
+      ],
+      "author": "Ivan Tintore",
+      "tested": true
+    },
     {
       "version": "2.0.1",
       "date": "2025-09-22T17:30:00.000Z",
@@ -136,8 +155,8 @@
   ],
   
   "metadata": {
-    "lastUpdated": "2025-09-22T17:30:00.000Z",
-    "totalVersions": 6,
+    "lastUpdated": "2025-09-22T18:00:00.000Z",
+    "totalVersions": 7,
     "environment": "production",
     "mainBranch": "main"
   }
