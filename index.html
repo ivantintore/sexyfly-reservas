@@ -9,7 +9,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" type="image/svg+xml">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
     
-    <!-- SexyFly 2.0 - Sistema de Calendar y Pricing -->
+    <!-- SexyFly 2.0 - Estilos integrados -->
     <link rel="stylesheet" href="calendar.css">
     <style>
         * {
@@ -575,6 +575,110 @@
             border-radius: 0 0 12px 12px;
         }
 
+        /* ===== CALENDARIO FUNCIONAL ===== */
+        .simple-calendar {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .calendar-header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1E40AF;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .calendar-day {
+            padding: 15px 10px;
+            text-align: center;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calendar-day:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .calendar-day.available {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-color: #10b981;
+        }
+
+        .calendar-day.medium {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border-color: #f59e0b;
+        }
+
+        .calendar-day.urgent {
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            border-color: #ef4444;
+        }
+
+        .calendar-day.selected {
+            background: linear-gradient(135deg, #1E40AF, #3B82F6) !important;
+            color: white;
+            border-color: #1E40AF;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.disabled {
+            background: #f3f4f6;
+            color: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .day-number {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .day-price {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            padding: 2px 6px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+
+        .selected-dates {
+            background: #f0f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            border: 2px solid #3b82f6;
+        }
+
+        .weekday-header {
+            font-weight: 600;
+            color: #1E40AF;
+            padding: 10px;
+            text-align: center;
+            background: #f1f5f9;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .version-badge {
@@ -587,6 +691,15 @@
             .version-dropdown {
                 min-width: 280px;
                 max-width: calc(100vw - 30px);
+            }
+            
+            .calendar-grid {
+                gap: 5px;
+            }
+            
+            .calendar-day {
+                padding: 10px 5px;
+                min-height: 50px;
             }
         }
     </style>
@@ -630,9 +743,24 @@
             </div>
 
             <form id="bookingForm">
-                <!-- Nuevo Sistema de Calendario SexyFly 2.0 -->
+                <!-- Sistema de Calendario Funcional -->
                 <div class="calendar-section">
-                    <div id="flightCalendar"></div>
+                    <div class="simple-calendar">
+                        <div class="calendar-header">
+                            <h2>📅 Selecciona tus fechas</h2>
+                            <p id="calendarStatus">Selecciona fecha de ida</p>
+                        </div>
+                        
+                        <div class="calendar-grid" id="calendarGrid">
+                            <!-- Se genera con JavaScript -->
+                        </div>
+                        
+                        <div class="selected-dates" id="selectedDatesSection" style="display: none;">
+                            <h3>Fechas Seleccionadas</h3>
+                            <p><strong>🛫 Ida:</strong> <span id="departureDisplay">-</span></p>
+                            <p><strong>🛬 Vuelta:</strong> <span id="returnDisplay">-</span></p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Sección de detalles de vuelo -->
@@ -1336,341 +1464,236 @@
         }
     </script>
 
-    <!-- SexyFly 2.0 - Módulos de Calendar y Pricing -->
-    <script src="pricing.js"></script>
-    <script src="calendar.js"></script>
-    
-    <!-- SexyFly 2.0 - Inicialización y lógica principal -->
+    <!-- SexyFly 2.0 - Sistema Integrado Funcional -->
     <script>
-        // ===== SEXYFLY 2.0 - SISTEMA INTEGRADO =====
-        class SexyFlyApp {
+        // ===== SISTEMA DE CALENDARIO FUNCIONAL =====
+        class FunctionalCalendar {
             constructor() {
-                console.log('🚀 Inicializando SexyFlyApp...');
-                
-                // Verificar que las clases existen
-                if (typeof SexyFlyPricing === 'undefined') {
-                    console.error('❌ SexyFlyPricing no está disponible');
-                    return;
-                }
-                if (typeof SexyFlyCalendar === 'undefined') {
-                    console.error('❌ SexyFlyCalendar no está disponible');
-                    return;
-                }
-                
-                this.pricing = new SexyFlyPricing();
-                this.calendar = null;
-                this.selectedDates = null;
-                this.totalPrice = 0;
-                
-                console.log('✅ Clases cargadas correctamente');
+                console.log('📅 Inicializando calendario funcional...');
+                this.selectedDates = {
+                    departure: null,
+                    return: null
+                };
+                this.isSelectingReturn = false;
                 this.init();
             }
 
             init() {
-                console.log('🔧 Inicializando componentes...');
-                
-                // Verificar que el contenedor existe
-                const container = document.getElementById('flightCalendar');
-                if (!container) {
-                    console.error('❌ Contenedor flightCalendar no encontrado');
-                    return;
-                }
-                
-                this.initializeCalendar();
-                this.setupFormValidation();
-                this.setupICAOInputs();
-                
-                console.log('✅ SexyFlyApp inicializado completamente');
+                this.generateCalendar();
+                this.setupEventListeners();
+                this.initializeVersionSystem();
+                console.log('✅ Calendario funcional inicializado');
             }
 
-            initializeCalendar() {
-                console.log('📅 Inicializando calendario...');
-                
-                try {
-                    this.calendar = new SexyFlyCalendar('flightCalendar', {
-                        onDateSelect: (dates) => this.handleDateSelection(dates),
-                        onPriceUpdate: (prices) => this.handlePriceUpdate(prices)
-                    });
+            generateCalendar() {
+                const grid = document.getElementById('calendarGrid');
+                const today = new Date();
+                let html = '';
 
-                    // Integrar pricing con calendar
-                    this.calendar.calculatePrice = (date) => {
-                        const priceInfo = this.pricing.calculatePrice(date);
-                        return {
-                            price: priceInfo.price,
-                            class: priceInfo.cssClass
-                        };
-                    };
+                // Días de la semana
+                const weekdays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+                weekdays.forEach(day => {
+                    html += `<div class="weekday-header">${day}</div>`;
+                });
+
+                // Generar 28 días a partir de hoy
+                for (let i = 0; i < 28; i++) {
+                    const date = new Date(today);
+                    date.setDate(today.getDate() + i);
                     
-                    console.log('✅ Calendario inicializado correctamente');
-                } catch (error) {
-                    console.error('❌ Error inicializando calendario:', error);
+                    const dayNumber = date.getDate();
+                    const price = this.calculatePrice(i);
+                    const priceClass = this.getPriceClass(i);
+                    
+                    html += `
+                        <div class="calendar-day ${priceClass}" 
+                             data-date="${date.toISOString().split('T')[0]}"
+                             data-index="${i}">
+                            <div class="day-number">${dayNumber}</div>
+                            <div class="day-price">${price}€</div>
+                        </div>
+                    `;
                 }
+                
+                grid.innerHTML = html;
+                console.log('✅ Calendario generado con 28 días');
             }
 
-            handleDateSelection(dates) {
-                this.selectedDates = dates;
-                
-                // Mostrar sección de detalles de vuelo
-                const flightDetailsSection = document.getElementById('flightDetailsSection');
-                flightDetailsSection.style.display = 'block';
-                
-                // Mostrar sección de pernocta si es necesario
-                this.updateOvernightVisibility(dates);
-                
-                // Actualizar precios
-                this.updateTotalPrice(dates);
-                
-                console.log('Fechas seleccionadas:', dates);
+            calculatePrice(daysFromNow) {
+                if (daysFromNow >= 7) return 500;
+                if (daysFromNow >= 2) return 750;
+                return 1000;
             }
 
-            handlePriceUpdate(prices) {
-                this.totalPrice = prices.total;
-                
-                // Mostrar sección de total
-                const totalSection = document.getElementById('totalFlights');
-                totalSection.style.display = 'block';
-                
-                // Actualizar textos
-                document.getElementById('totalFlightsPrice').textContent = `Total: ${prices.total}€`;
-                document.getElementById('totalBreakdown').innerHTML = `
-                    🛫 Ida: ${prices.departure}€ • 🛬 Vuelta: ${prices.return}€
-                `;
+            getPriceClass(daysFromNow) {
+                if (daysFromNow >= 7) return 'available';
+                if (daysFromNow >= 2) return 'medium';
+                return 'urgent';
             }
 
-            updateOvernightVisibility(dates) {
-                const overnightSection = document.getElementById('overnightSection');
-                const departureDate = dates.departure.toISOString().split('T')[0];
-                const returnDate = dates.return.toISOString().split('T')[0];
+            setupEventListeners() {
+                const grid = document.getElementById('calendarGrid');
                 
-                if (departureDate !== returnDate) {
-                    overnightSection.style.display = 'block';
-                } else {
-                    overnightSection.style.display = 'none';
-                    document.getElementById('overnight').checked = false;
-                }
-            }
-
-            updateTotalPrice(dates) {
-                const departurePrice = this.pricing.calculatePrice(dates.departure);
-                const returnPrice = this.pricing.calculatePrice(dates.return);
-                
-                const total = departurePrice.price + returnPrice.price;
-                this.totalPrice = total;
-                
-                // Actualizar display
-                this.handlePriceUpdate({
-                    departure: departurePrice.price,
-                    return: returnPrice.price,
-                    total: total
+                grid.addEventListener('click', (e) => {
+                    const dayElement = e.target.closest('.calendar-day');
+                    if (!dayElement) return;
+                    
+                    const dateStr = dayElement.dataset.date;
+                    const date = new Date(dateStr);
+                    
+                    console.log('Fecha clickeada:', date);
+                    this.selectDate(date, dayElement);
                 });
+                
+                console.log('✅ Event listeners configurados');
             }
 
-            setupICAOInputs() {
-                const icaoInputs = document.querySelectorAll('.icao-input');
-                
-                icaoInputs.forEach(input => {
-                    input.addEventListener('input', function() {
-                        this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
-                        
-                        // Validación básica
-                        if (this.value.length === 4) {
-                            this.style.borderColor = '#10B981';
-                        } else {
-                            this.style.borderColor = '#E5E7EB';
-                        }
-                    });
-
-                    // Sugerencias básicas
-                    input.addEventListener('focus', function() {
-                        // TODO: Implementar autocompletado inteligente
-                        console.log('ICAO input focused:', this.id);
-                    });
-                });
-            }
-
-            setupFormValidation() {
-                const form = document.getElementById('bookingForm');
-                
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handleFormSubmit();
-                });
-            }
-
-            handleFormSubmit() {
-                // Validar que se han seleccionado fechas
-                if (!this.selectedDates) {
-                    alert('Por favor, selecciona las fechas de ida y vuelta en el calendario.');
-                    return;
-                }
-
-                // Validar códigos ICAO
-                const originICAO = document.getElementById('originICAO').value;
-                const destinationICAO = document.getElementById('destinationICAO').value;
-                
-                if (!originICAO || originICAO.length !== 4) {
-                    alert('Por favor, introduce un código OACI válido para el origen (4 letras).');
-                    document.getElementById('originICAO').focus();
-                    return;
-                }
-                
-                if (!destinationICAO || destinationICAO.length !== 4) {
-                    alert('Por favor, introduce un código OACI válido para el destino (4 letras).');
-                    document.getElementById('destinationICAO').focus();
-                    return;
-                }
-
-                if (originICAO === destinationICAO) {
-                    alert('El aeropuerto de origen y destino no pueden ser el mismo.');
-                    return;
-                }
-
-                // Validar horas
-                const departureTime = document.getElementById('departureTime').value;
-                const returnTime = document.getElementById('returnTime').value;
-                
-                if (!departureTime || !returnTime) {
-                    alert('Por favor, especifica las horas de salida y regreso.');
-                    return;
-                }
-
-                // Validar términos y condiciones
-                const acceptTerms = document.getElementById('acceptTerms');
-                if (!acceptTerms.checked) {
-                    alert('Debe aceptar los términos y condiciones para continuar');
-                    acceptTerms.focus();
-                    return;
-                }
-
-                // Procesar reserva
-                this.processBooking();
-            }
-
-            processBooking() {
-                const loadingDiv = document.getElementById('loadingDiv');
-                const submitBtn = document.getElementById('submitBtn');
-                
-                // Mostrar loading
-                loadingDiv.style.display = 'block';
-                submitBtn.disabled = true;
-
-                // Recopilar datos
-                const bookingData = this.collectBookingData();
-                
-                // Simular procesamiento
-                setTimeout(() => {
-                    this.completeBooking(bookingData);
-                }, 2000);
-            }
-
-            collectBookingData() {
-                const formData = new FormData(document.getElementById('bookingForm'));
-                
-                return {
-                    dates: {
-                        departure: this.selectedDates.departure,
-                        return: this.selectedDates.return
-                    },
-                    times: {
-                        departure: formData.get('departureTime'),
-                        return: formData.get('returnTime')
-                    },
-                    airports: {
-                        origin: formData.get('originICAO'),
-                        destination: formData.get('destinationICAO')
-                    },
-                    client: {
-                        name: formData.get('clientName'),
-                        email: formData.get('clientEmail'),
-                        phone: formData.get('clientPhone')
-                    },
-                    options: {
-                        overnight: formData.get('overnight') === 'on',
-                        additionalInfo: formData.get('additionalInfo')
-                    },
-                    pricing: {
-                        total: this.totalPrice,
-                        departure: this.pricing.calculatePrice(this.selectedDates.departure).price,
-                        return: this.pricing.calculatePrice(this.selectedDates.return).price
+            selectDate(date, element) {
+                if (!this.selectedDates.departure) {
+                    // Primera selección - ida
+                    this.selectedDates.departure = date;
+                    element.classList.add('selected');
+                    document.getElementById('calendarStatus').textContent = 'Ahora selecciona fecha de vuelta';
+                    this.isSelectingReturn = true;
+                    
+                    document.getElementById('departureDisplay').textContent = date.toLocaleDateString('es-ES');
+                    document.getElementById('selectedDatesSection').style.display = 'block';
+                    
+                    console.log('✅ Fecha de ida seleccionada:', date);
+                    
+                } else if (this.isSelectingReturn) {
+                    // Segunda selección - vuelta
+                    if (date <= this.selectedDates.departure) {
+                        alert('La fecha de vuelta debe ser posterior a la fecha de ida');
+                        return;
                     }
-                };
+                    
+                    this.selectedDates.return = date;
+                    element.classList.add('selected');
+                    document.getElementById('calendarStatus').textContent = '✅ Fechas seleccionadas correctamente';
+                    this.isSelectingReturn = false;
+                    
+                    document.getElementById('returnDisplay').textContent = date.toLocaleDateString('es-ES');
+                    document.getElementById('flightDetailsSection').style.display = 'block';
+                    
+                    this.updateTotalPrice();
+                    console.log('✅ Fecha de vuelta seleccionada:', date);
+                    
+                } else {
+                    // Reset - empezar de nuevo
+                    this.clearSelection();
+                    this.selectDate(date, element);
+                }
             }
 
-            completeBooking(bookingData) {
-                const loadingDiv = document.getElementById('loadingDiv');
-                const submitBtn = document.getElementById('submitBtn');
+            updateTotalPrice() {
+                const depPrice = this.calculatePriceForDate(this.selectedDates.departure);
+                const retPrice = this.calculatePriceForDate(this.selectedDates.return);
+                const total = depPrice + retPrice;
                 
-                // Generar resumen
-                const summary = this.generateBookingSummary(bookingData);
+                document.getElementById('totalFlightsPrice').textContent = `Total: ${total}€`;
+                document.getElementById('totalBreakdown').textContent = `Ida: ${depPrice}€ + Vuelta: ${retPrice}€`;
+                document.getElementById('totalFlights').style.display = 'block';
                 
-                alert(`✅ Reserva procesada correctamente!\n\n${summary}\n\n📧 Email enviado a ivan@tintore.es\n\nSerás redirigido al sistema de pago.`);
-                
-                // Ocultar loading
-                loadingDiv.style.display = 'none';
-                submitBtn.disabled = false;
-                
-                console.log('Booking completed:', bookingData);
+                console.log('✅ Precio actualizado:', total);
             }
 
-            generateBookingSummary(data) {
-                const depDate = data.dates.departure.toLocaleDateString('es-ES');
-                const retDate = data.dates.return.toLocaleDateString('es-ES');
+            calculatePriceForDate(date) {
+                const today = new Date();
+                const diffTime = date - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 
-                return [
-                    `🛫 Salida: ${depDate} a las ${data.times.departure}`,
-                    `🛬 Regreso: ${retDate} a las ${data.times.return}`,
-                    `✈️ Ruta: ${data.airports.origin} → ${data.airports.destination}`,
-                    `💰 Total: ${data.pricing.total}€`,
-                    `👤 Cliente: ${data.client.name}`
-                ].join('\n');
+                if (diffDays >= 7) return 500;
+                if (diffDays >= 2) return 750;
+                return 1000;
             }
 
-            // API pública
-            getSelectedDates() {
-                return this.selectedDates;
-            }
-
-            getTotalPrice() {
-                return this.totalPrice;
-            }
-
-            resetForm() {
-                this.calendar.clearSelection();
-                this.selectedDates = null;
-                this.totalPrice = 0;
+            clearSelection() {
+                document.querySelectorAll('.calendar-day.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                
+                this.selectedDates = { departure: null, return: null };
+                this.isSelectingReturn = false;
+                
+                document.getElementById('selectedDatesSection').style.display = 'none';
                 document.getElementById('flightDetailsSection').style.display = 'none';
                 document.getElementById('totalFlights').style.display = 'none';
-                document.getElementById('bookingForm').reset();
+                document.getElementById('calendarStatus').textContent = 'Selecciona fecha de ida';
+            }
+
+            initializeVersionSystem() {
+                // Sistema de versiones simple
+                document.getElementById('version-text').textContent = '2.1.0';
+                
+                const versionList = document.getElementById('version-list');
+                versionList.innerHTML = `
+                    <div class="version-item">
+                        <div class="version-item-header">
+                            <span class="version-number">v2.1.0</span>
+                            <span class="version-date">22 Sep</span>
+                        </div>
+                        <div class="version-type minor">minor</div>
+                        <div class="version-description">Sistema de calendario funcional integrado</div>
+                    </div>
+                `;
+                
+                console.log('✅ Sistema de versiones inicializado');
             }
         }
 
-        // Inicializar la aplicación cuando el DOM esté listo
-        function initializeApp() {
-            // Inicializar sistema de versiones si no existe
-            if (!window.versionManager) {
-                window.versionManager = new VersionManager();
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            window.functionalCalendar = new FunctionalCalendar();
+        });
+
+        // Si el DOM ya está cargado, inicializar inmediatamente
+        if (document.readyState !== 'loading') {
+            window.functionalCalendar = new FunctionalCalendar();
+        }
+
+        // Validación ICAO
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[id$="ICAO"]').forEach(input => {
+                input.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
+                    if (this.value.length === 4) {
+                        this.style.borderColor = '#10B981';
+                    } else {
+                        this.style.borderColor = '#ddd';
+                    }
+                });
+            });
+        });
+
+        // Validación de formulario
+        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (!window.functionalCalendar.selectedDates.departure || 
+                !window.functionalCalendar.selectedDates.return) {
+                alert('Por favor, selecciona las fechas de ida y vuelta');
+                return;
             }
             
-            // Inicializar SexyFly App
-            window.sexyFlyApp = new SexyFlyApp();
-            console.log('🚁 SexyFly 2.0 inicializado correctamente');
-        }
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            console.log('Datos de reserva:', {
+                ...data,
+                dates: window.functionalCalendar.selectedDates
+            });
+            
+            alert('¡Reserva enviada correctamente! Te contactaremos pronto.');
+        });
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeApp);
-        } else {
-            initializeApp();
-        }
-
-        // Mantener compatibilidad con funciones existentes
+        // Mantener compatibilidad
         function scrollToTerms() {
             document.getElementById('terms').scrollIntoView({ 
                 behavior: 'smooth',
                 block: 'start'
             });
         }
-
-        // Hacer funciones globales
         window.scrollToTerms = scrollToTerms;
     </script>
 </body>
