@@ -1,5 +1,5 @@
 {
-  "currentVersion": "2.0.0",
+  "currentVersion": "2.0.1",
   "projectName": "SexyFly - Sistema de Reservas",
   "repository": "https://github.com/ivantintore/sexyfly-reservas",
   "liveUrl": "https://ivantintore.github.io/sexyfly-reservas/",
@@ -19,6 +19,24 @@
   },
   
   "versions": [
+    {
+      "version": "2.0.1",
+      "date": "2025-09-22T17:30:00.000Z",
+      "changeType": "patch",
+      "description": "🐛 Corrección de bugs críticos del calendario: Fix selección de fechas desfasadas, eliminación de limitación de 2 días, y mejora del parsing de fechas.",
+      "dependencies": [],
+      "breaking": false,
+      "features": [],
+      "fixes": [
+        "Fix selección de fechas desfasadas (día 8 → día 9)",
+        "Fix limitación de solo 2 días seleccionables",
+        "Mejora parsing de fechas para evitar timezone issues",
+        "Fix layout del calendario para mostrar semanas completas",
+        "Mejor feedback visual en selección de fechas"
+      ],
+      "author": "Ivan Tintore",
+      "tested": true
+    },
     {
       "version": "2.0.0",
       "date": "2025-09-22T17:00:00.000Z",
@@ -118,8 +136,8 @@
   ],
   
   "metadata": {
-    "lastUpdated": "2025-09-22T17:00:00.000Z",
-    "totalVersions": 5,
+    "lastUpdated": "2025-09-22T17:30:00.000Z",
+    "totalVersions": 6,
     "environment": "production",
     "mainBranch": "main"
   }
