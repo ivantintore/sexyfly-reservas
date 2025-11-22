@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Automático - 2 Clicks en Calendario</title>
+    <link rel="stylesheet" href="calendar.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1 style="text-align: center; color: white; padding: 20px;">
+        🧪 Test Automático - Selección de 2 Fechas
+    </h1>
+
+    <!-- Incluir el formulario completo -->
+    <div class="container">
+        <div class="booking-card">
+            <form id="bookingForm" novalidate>
+                <div class="calendar-section">
+                    <div id="flightCalendar"></div>
+                </div>
+                
+                <div id="resultado" style="background: #000; color: #0f0; padding: 20px; font-family: monospace; margin-top: 20px;">
+                    <h3>📊 Resultado del Test</h3>
+                    <div id="log"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cargar scripts -->
+    <script src="config.js"></script>
+    <script src="pricing.js"></script>
+    <script src="calendar.js"></script>
+    
+    <script>
+        // NO cargar app.js completo, solo crear el calendario
+        
+        const logDiv = document.getElementById('log');
+        
+        function log(msg) {
+            const p = document.createElement('div');
+            p.textContent = msg;
+            logDiv.appendChild(p);
+            console.log(msg);
+        }
+        
+        // Esperar un momento y ejecutar test
+        setTimeout(async () => {
+            log('🚀 Iniciando test automático...\n');
+            
+            // Crear pricing
+            const pricing = new SexyFlyPricing();
+            log('✅ Pricing creado');
+            
+            // Crear calendario
+            const calendar = new SexyFlyCalendar('flightCalendar', {
+                onDateSelect: (dates) => {
+                    log('\n🎉 CALLBACK onDateSelect EJECUTADO!');
+                    log(`   IDA: ${dates.departure.toLocaleDateString('es-ES')}`);
+                    log(`   VUELTA: ${dates.return.toLocaleDateString('es-ES')}`);
+                },
+                onPriceUpdate: (prices) => {
+                    log(`\n💰 Precio calculado: ${prices.total}€`);
+                },
+                calculatePrice: (date) => {
+                    const info = pricing.calculatePrice(date);
+                    return { price: info.price, class: info.cssClass };
+                }
+            });
+            
+            log('✅ Calendario creado\n');
+            
+            // Esperar un momento para render
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Buscar días disponibles
+            const dias = document.querySelectorAll('.calendar-day:not(.disabled)');
+            log(`✅ Encontrados ${dias.length} días disponibles\n`);
+            
+            if (dias.length < 2) {
+                log('❌ ERROR: No hay suficientes días');
+                return;
+            }
+            
+            // CLICK 1: IDA
+            log('👆 CLICK 1 en fecha IDA...');
+            const dia1 = dias[5];
+            log(`   Fecha: ${dia1.dataset.date}`);
+            dia1.click();
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            log(`   Estado después:`, 'info');
+            log(`   - departure: ${calendar.selectedDates.departure}`);
+            log(`   - return: ${calendar.selectedDates.return}`);
+            log(`   - isSelectingReturn: ${calendar.isSelectingReturn}`);
+            
+            // CLICK 2: VUELTA
+            log('\n👆 CLICK 2 en fecha VUELTA...');
+            const dia2 = dias[12];
+            log(`   Fecha: ${dia2.dataset.date}`);
+            dia2.click();
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            log(`\n📊 RESULTADO FINAL:`);
+            log(`   - departure: ${calendar.selectedDates.departure}`);
+            log(`   - return: ${calendar.selectedDates.return}`);
+            log(`   - isSelectingReturn: ${calendar.isSelectingReturn}`);
+            
+            if (calendar.selectedDates.departure && calendar.selectedDates.return) {
+                log('\n✅✅✅ ÉXITO: AMBAS FECHAS SELECCIONADAS ✅✅✅');
+            } else {
+                log('\n❌❌❌ FALLO: NO SE SELECCIONARON AMBAS FECHAS ❌❌❌');
+            }
+            
+        }, 1000);
+    </script>
+</body>
+</html>
+

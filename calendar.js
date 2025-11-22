@@ -186,6 +186,8 @@ class SexyFlyCalendar {
     this.renderCalendarGrid();
     this.updateNavigationButtons();
     this.updateSelectionSummary();
+    // Re-adjuntar listeners después de render (por si se perdieron)
+    this.reattachGridListeners();
   }
 
   /**
@@ -329,27 +331,49 @@ class SexyFlyCalendar {
    * @private
    */
   setupEventListeners() {
-    const grid = document.getElementById('calendarGrid');
     const prevBtn = document.getElementById('prevMonth');
     const nextBtn = document.getElementById('nextMonth');
     
-    // Navegación
+    // Navegación (estos botones NO se re-renderizan)
     prevBtn.addEventListener('click', () => this.previousWeeks());
     nextBtn.addEventListener('click', () => this.nextWeeks());
     
+    // Listeners del grid se configuran en reattachGridListeners()
+    // Se llama después de cada render porque el grid se re-genera
+    this.reattachGridListeners();
+  }
+
+  /**
+   * Re-adjuntar listeners del grid después de render
+   * @private
+   */
+  reattachGridListeners() {
+    const grid = document.getElementById('calendarGrid');
+    if (!grid) return;
+    
+    // Remover listeners anteriores clonando el elemento
+    const newGrid = grid.cloneNode(true);
+    grid.parentNode.replaceChild(newGrid, grid);
+    
+    // Ahora adjuntar listeners al nuevo grid
+    const freshGrid = document.getElementById('calendarGrid');
+    
     // Selección de fechas (click)
-    grid.addEventListener('click', (e) => {
+    freshGrid.addEventListener('click', (e) => {
       const dayElement = e.target.closest('.calendar-day');
       if (!dayElement || dayElement.classList.contains('disabled')) return;
       
       const dateStr = dayElement.dataset.date;
+      console.log('Click detectado en:', dateStr, 'Elemento:', dayElement);
+      
       const selectedDate = this.parseDate(dateStr);
+      console.log('Fecha parseada:', selectedDate);
       
       this.selectDate(selectedDate);
     });
 
     // Selección de fechas (teclado - accesibilidad)
-    grid.addEventListener('keydown', (e) => {
+    freshGrid.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         const dayElement = e.target.closest('.calendar-day');
@@ -363,7 +387,7 @@ class SexyFlyCalendar {
     });
     
     // Hover para preview de rango
-    grid.addEventListener('mouseover', (e) => {
+    freshGrid.addEventListener('mouseover', (e) => {
       const dayElement = e.target.closest('.calendar-day');
       if (!dayElement || dayElement.classList.contains('disabled')) return;
       
@@ -374,7 +398,7 @@ class SexyFlyCalendar {
       }
     });
     
-    grid.addEventListener('mouseleave', () => {
+    freshGrid.addEventListener('mouseleave', () => {
       if (this.isSelectingReturn) {
         this.hoveredDate = null;
         this.render();
