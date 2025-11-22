@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SexyFly - Tests E2E (End-to-End)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, #2d1b4e 0%, #1a0f2e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #6a1b9a;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #ce93d8;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(206, 147, 216, 0.5);
+        }
+
+        .header p {
+            color: #b39ddb;
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            background: #1a0f2e;
+            border: 1px solid #6a1b9a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #9c27b0, #7b1fa2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(156, 39, 176, 0.5);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            background: #1a0f2e;
+            border: 1px solid #6a1b9a;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .panel h3 {
+            color: #ce93d8;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #6a1b9a;
+            padding-bottom: 10px;
+        }
+
+        .console {
+            background: #0a0a0a;
+            border: 1px solid #6a1b9a;
+            border-radius: 5px;
+            padding: 15px;
+            min-height: 300px;
+            max-height: 600px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .console-line {
+            margin-bottom: 3px;
+        }
+
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
+        .info { color: #ce93d8; }
+        .warning { color: #ff9800; }
+
+        iframe {
+            width: 100%;
+            height: 800px;
+            border: 2px solid #6a1b9a;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: rgba(106, 27, 154, 0.2);
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #b39ddb;
+        }
+
+        @media (max-width: 1200px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Tests E2E (End-to-End)</h1>
+            <p>Pruebas de Flujo Completo de Usuario</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="runE2ETests()">▶️ Ejecutar Tests E2E</button>
+            <button class="btn" onclick="fillFormAutomatically()">📝 Rellenar Formulario</button>
+            <button class="btn" onclick="selectDatesAutomatically()">📅 Seleccionar Fechas</button>
+            <button class="btn" onclick="submitFormAutomatically()">🚀 Enviar Formulario</button>
+            <button class="btn" onclick="clearE2EConsole()" style="background: linear-gradient(45deg, #f44336, #c62828);">🗑️ Limpiar</button>
+        </div>
+
+        <div class="grid">
+            <!-- Panel izquierdo: Consola de tests -->
+            <div class="panel">
+                <h3>📊 Consola de Tests E2E</h3>
+                <div id="stats" class="stats" style="display: none;">
+                    <div class="stat-card">
+                        <div class="stat-number success" id="stat-passed">0</div>
+                        <div class="stat-label">Passed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number error" id="stat-failed">0</div>
+                        <div class="stat-label">Failed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number warning" id="stat-warnings">0</div>
+                        <div class="stat-label">Warnings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number info" id="stat-duration">0s</div>
+                        <div class="stat-label">Duration</div>
+                    </div>
+                </div>
+                <div class="console" id="e2e-console">
+                    <div class="console-line info">Esperando tests...</div>
+                </div>
+            </div>
+
+            <!-- Panel derecho: Vista de la aplicación -->
+            <div class="panel">
+                <h3>🌐 Aplicación en Vivo</h3>
+                <iframe id="app-iframe" src="index.html"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const e2eConsole = document.getElementById('e2e-console');
+        let testResults = { passed: 0, failed: 0, warnings: 0 };
+
+        function log(message, type = 'info') {
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            line.textContent = message;
+            e2eConsole.appendChild(line);
+            e2eConsole.scrollTop = e2eConsole.scrollHeight;
+        }
+
+        function clearE2EConsole() {
+            e2eConsole.innerHTML = '';
+            testResults = { passed: 0, failed: 0, warnings: 0 };
+            document.getElementById('stats').style.display = 'none';
+        }
+
+        function updateStats() {
+            document.getElementById('stat-passed').textContent = testResults.passed;
+            document.getElementById('stat-failed').textContent = testResults.failed;
+            document.getElementById('stat-warnings').textContent = testResults.warnings;
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        function getIframeWindow() {
+            return document.getElementById('app-iframe').contentWindow;
+        }
+
+        function getIframeDocument() {
+            return document.getElementById('app-iframe').contentDocument;
+        }
+
+        async function wait(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function selectDatesAutomatically() {
+            log('📅 Seleccionando fechas automáticamente...', 'info');
+            const iframeWin = getIframeWindow();
+            const iframeDoc = getIframeDocument();
+
+            try {
+                // Esperar a que la app esté cargada
+                await wait(1000);
+
+                if (!iframeWin.sexyFlyApp) {
+                    log('❌ ERROR: SexyFlyApp no está inicializado', 'error');
+                    return false;
+                }
+
+                // Simular selección de fechas
+                const today = new Date();
+                const departure = new Date(today);
+                departure.setDate(departure.getDate() + 15); // 15 días adelante
+
+                const returnDate = new Date(departure);
+                returnDate.setDate(returnDate.getDate() + 7); // 7 días después
+
+                log(`   Ida: ${departure.toLocaleDateString('es-ES')}`, 'success');
+                log(`   Vuelta: ${returnDate.toLocaleDateString('es-ES')}`, 'success');
+
+                // Usar la API del calendario
+                if (iframeWin.sexyFlyApp.calendar) {
+                    iframeWin.sexyFlyApp.calendar.setDates(departure, returnDate);
+                    
+                    // Trigger manualmente el callback
+                    iframeWin.sexyFlyApp.handleDateSelection({
+                        departure: departure,
+                        return: returnDate
+                    });
+
+                    log('✅ Fechas seleccionadas correctamente', 'success');
+                    return true;
+                }
+
+                log('❌ ERROR: Calendario no disponible', 'error');
+                return false;
+
+            } catch (error) {
+                log(`❌ ERROR seleccionando fechas: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function fillFormAutomatically() {
+            log('📝 Rellenando formulario automáticamente...', 'info');
+            const iframeDoc = getIframeDocument();
+
+            try {
+                // Rellenar campos
+                const fields = {
+                    'departureTime': '10:00',
+                    'returnTime': '18:00',
+                    'originICAO': 'LELL',
+                    'destinationICAO': 'LEBL',
+                    'clientName': 'Test Usuario',
+                    'clientEmail': 'test@example.com',
+                    'clientPhone': '+34 600 123 456',
+                    'additionalInfo': 'Test de formulario automático',
+                    'acceptTerms': true
+                };
+
+                for (const [id, value] of Object.entries(fields)) {
+                    const element = iframeDoc.getElementById(id);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = value;
+                        } else {
+                            element.value = value;
+                            // Disparar evento input para validaciones
+                            element.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                        log(`   ✓ ${id}: ${value}`, 'success');
+                    } else {
+                        log(`   ⚠️ Campo ${id} no encontrado`, 'warning');
+                        testResults.warnings++;
+                    }
+                }
+
+                log('✅ Formulario rellenado correctamente', 'success');
+                updateStats();
+                return true;
+
+            } catch (error) {
+                log(`❌ ERROR rellenando formulario: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function submitFormAutomatically() {
+            log('🚀 Enviando formulario...', 'info');
+            const iframeWin = getIframeWindow();
+            const iframeDoc = getIframeDocument();
+
+            try {
+                const submitBtn = iframeDoc.getElementById('submitBtn');
+                
+                if (!submitBtn) {
+                    log('❌ ERROR: Botón de submit no encontrado', 'error');
+                    return false;
+                }
+
+                log('   📍 Botón encontrado', 'info');
+                log(`   Type: ${submitBtn.type}`, 'info');
+                log(`   Disabled: ${submitBtn.disabled}`, 'info');
+
+                // Verificar que sexyFlyApp existe
+                if (!iframeWin.sexyFlyApp) {
+                    log('❌ ERROR CRÍTICO: SexyFlyApp no inicializado', 'error');
+                    testResults.failed++;
+                    updateStats();
+                    return false;
+                }
+
+                log('   ✓ SexyFlyApp existe', 'success');
+
+                // Verificar datos necesarios
+                const selectedDates = iframeWin.sexyFlyApp.getSelectedDates();
+                log(`   Fechas seleccionadas: ${selectedDates ? 'Sí' : 'No'}`, selectedDates ? 'success' : 'warning');
+
+                // Intentar hacer click
+                log('   Haciendo click en botón...', 'info');
+                submitBtn.click();
+
+                await wait(500);
+
+                log('✅ Click ejecutado (verifica resultados en el iframe)', 'success');
+                return true;
+
+            } catch (error) {
+                log(`❌ ERROR enviando formulario: ${error.message}`, 'error');
+                testResults.failed++;
+                updateStats();
+                return false;
+            }
+        }
+
+        async function runE2ETests() {
+            clearE2EConsole();
+            log('🎯 INICIANDO TESTS END-TO-END', 'info');
+            log('='.repeat(70));
+            
+            const startTime = Date.now();
+
+            // TEST 1: Verificar carga de aplicación
+            log('\n1️⃣ TEST: Carga de Aplicación', 'info');
+            await wait(2000); // Esperar carga
+            const iframeWin = getIframeWindow();
+            
+            if (iframeWin.sexyFlyApp) {
+                log('   ✅ PASS: Aplicación cargada correctamente', 'success');
+                testResults.passed++;
+            } else {
+                log('   ❌ FAIL: Aplicación no se inicializó', 'error');
+                testResults.failed++;
+            }
+
+            // TEST 2: Verificar elementos del DOM
+            log('\n2️⃣ TEST: Elementos del DOM', 'info');
+            const iframeDoc = getIframeDocument();
+            const requiredElements = ['bookingForm', 'submitBtn', 'flightCalendar', 
+                                     'originICAO', 'destinationICAO', 'clientName', 
+                                     'clientEmail', 'acceptTerms'];
+            let domTestPassed = true;
+            
+            for (const id of requiredElements) {
+                const element = iframeDoc.getElementById(id);
+                if (element) {
+                    log(`   ✓ ${id} encontrado`, 'success');
+                } else {
+                    log(`   ✗ ${id} NO encontrado`, 'error');
+                    domTestPassed = false;
+                }
+            }
+
+            if (domTestPassed) {
+                log('   ✅ PASS: Todos los elementos encontrados', 'success');
+                testResults.passed++;
+            } else {
+                log('   ❌ FAIL: Faltan elementos', 'error');
+                testResults.failed++;
+            }
+
+            // TEST 3: Seleccionar fechas
+            log('\n3️⃣ TEST: Selección de Fechas', 'info');
+            const datesSelected = await selectDatesAutomatically();
+            
+            if (datesSelected) {
+                testResults.passed++;
+            } else {
+                testResults.failed++;
+            }
+
+            // TEST 4: Rellenar formulario
+            log('\n4️⃣ TEST: Rellenado de Formulario', 'info');
+            const formFilled = await fillFormAutomatically();
+            
+            if (formFilled) {
+                testResults.passed++;
+            } else {
+                testResults.failed++;
+            }
+
+            // TEST 5: Submit del formulario
+            log('\n5️⃣ TEST: Submit del Formulario', 'info');
+            const formSubmitted = await submitFormAutomatically();
+            
+            if (formSubmitted) {
+                testResults.passed++;
+            } else {
+                testResults.failed++;
+            }
+
+            // TEST 6: Verificar que el precio se calculó
+            log('\n6️⃣ TEST: Cálculo de Precio', 'info');
+            const totalPrice = iframeWin.sexyFlyApp ? iframeWin.sexyFlyApp.getTotalPrice() : 0;
+            
+            if (totalPrice > 0) {
+                log(`   ✅ PASS: Precio calculado: ${totalPrice}€`, 'success');
+                testResults.passed++;
+            } else {
+                log(`   ❌ FAIL: Precio no calculado (${totalPrice}€)`, 'error');
+                testResults.failed++;
+            }
+
+            // Resumen
+            const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+            document.getElementById('stat-duration').textContent = duration + 's';
+
+            log('\n' + '='.repeat(70));
+            log('📊 RESUMEN DE TESTS E2E', 'info');
+            log('='.repeat(70));
+            log(`Total Tests: ${testResults.passed + testResults.failed}`, 'info');
+            log(`✅ Passed: ${testResults.passed}`, 'success');
+            log(`❌ Failed: ${testResults.failed}`, 'error');
+            log(`⚠️  Warnings: ${testResults.warnings}`, 'warning');
+            log(`⏱️  Duration: ${duration}s`, 'info');
+            log('='.repeat(70));
+
+            if (testResults.failed === 0) {
+                log('\n🎉 TODOS LOS TESTS E2E PASARON!', 'success');
+            } else {
+                log('\n⚠️  HAY TESTS FALLIDOS - Revisar arriba', 'error');
+            }
+
+            updateStats();
+        }
+
+        // Auto-ejecutar al cargar
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('⚡ Tests E2E listos. Presiona "Ejecutar Tests E2E" para comenzar', 'info');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+

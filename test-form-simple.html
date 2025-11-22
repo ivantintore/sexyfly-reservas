@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Rápido - Form Submit</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #0f0;
+        }
+        .result {
+            background: #000;
+            padding: 20px;
+            margin: 10px 0;
+            border: 1px solid #0f0;
+        }
+        .error { color: #f00; }
+        .success { color: #0f0; }
+        .warning { color: #ff0; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Rápido - Verificación de Form Submit</h1>
+    
+    <button onclick="runQuickTest()" style="padding: 15px 30px; font-size: 18px; margin: 20px 0;">
+        ▶️ EJECUTAR TEST RÁPIDO
+    </button>
+
+    <div id="results"></div>
+
+    <!-- Cargar la app real -->
+    <script src="config.js"></script>
+    <script src="pricing.js"></script>
+    <script src="calendar.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const div = document.getElementById('results');
+            const p = document.createElement('div');
+            p.className = `result ${type}`;
+            p.textContent = message;
+            div.appendChild(p);
+        }
+
+        function runQuickTest() {
+            document.getElementById('results').innerHTML = '';
+            
+            addResult('🔍 INICIANDO TEST RÁPIDO...', 'warning');
+            addResult('');
+
+            // 1. Verificar SEXYFLY_CONFIG
+            addResult('1️⃣ Verificando SEXYFLY_CONFIG...');
+            if (typeof SEXYFLY_CONFIG !== 'undefined') {
+                addResult('   ✅ SEXYFLY_CONFIG está definido', 'success');
+                addResult(`   Version: ${SEXYFLY_CONFIG.version}`, 'success');
+            } else {
+                addResult('   ❌ SEXYFLY_CONFIG NO está definido', 'error');
+            }
+
+            // 2. Verificar SexyFlyApp
+            addResult('');
+            addResult('2️⃣ Verificando SexyFlyApp...');
+            if (typeof SexyFlyApp !== 'undefined') {
+                addResult('   ✅ Clase SexyFlyApp está definida', 'success');
+            } else {
+                addResult('   ❌ Clase SexyFlyApp NO está definida', 'error');
+                return;
+            }
+
+            // 3. Verificar instancia
+            addResult('');
+            addResult('3️⃣ Verificando instancia window.sexyFlyApp...');
+            if (window.sexyFlyApp) {
+                addResult('   ✅ window.sexyFlyApp existe', 'success');
+                addResult(`   Tipo: ${typeof window.sexyFlyApp}`, 'success');
+                
+                // Verificar propiedades
+                addResult('');
+                addResult('   Verificando propiedades de sexyFlyApp:');
+                addResult(`   - pricing: ${window.sexyFlyApp.pricing ? '✅ OK' : '❌ FALTA'}`, 
+                          window.sexyFlyApp.pricing ? 'success' : 'error');
+                addResult(`   - calendar: ${window.sexyFlyApp.calendar ? '✅ OK' : '❌ FALTA'}`, 
+                          window.sexyFlyApp.calendar ? 'success' : 'error');
+                addResult(`   - dom: ${window.sexyFlyApp.dom ? '✅ OK' : '❌ FALTA'}`, 
+                          window.sexyFlyApp.dom ? 'success' : 'error');
+                
+                if (window.sexyFlyApp.dom) {
+                    addResult(`   - dom.form: ${window.sexyFlyApp.dom.form ? '✅ OK' : '❌ FALTA'}`, 
+                              window.sexyFlyApp.dom.form ? 'success' : 'error');
+                    addResult(`   - dom.submitBtn: ${window.sexyFlyApp.dom.submitBtn ? '✅ OK' : '❌ FALTA'}`, 
+                              window.sexyFlyApp.dom.submitBtn ? 'success' : 'error');
+                }
+            } else {
+                addResult('   ❌ window.sexyFlyApp NO existe', 'error');
+                addResult('   ⚠️ PROBLEMA CRÍTICO: La app no se inicializó', 'error');
+                addResult('');
+                addResult('   Posibles causas:', 'warning');
+                addResult('   1. Error en app.js durante la inicialización', 'warning');
+                addResult('   2. Problema con DOMContentLoaded', 'warning');
+                addResult('   3. Error en alguna dependencia', 'warning');
+                addResult('');
+                addResult('   SOLUCIÓN: Revisa la consola del navegador (F12) para ver errores', 'warning');
+            }
+
+            // 4. Verificar errores en consola
+            addResult('');
+            addResult('4️⃣ SIGUIENTE PASO:');
+            addResult('   Abre la consola del navegador (F12)', 'warning');
+            addResult('   Busca errores en rojo', 'warning');
+            addResult('   Si hay errores, esos son los que debemos arreglar', 'warning');
+        }
+
+        // Auto-ejecutar al cargar
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                addResult('Página cargada. Presiona el botón para ejecutar test.', 'warning');
+            }, 500);
+        });
+    </script>
+</body>
+</html>
+

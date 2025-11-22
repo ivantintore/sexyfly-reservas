@@ -196,7 +196,7 @@ const SEXYFLY_CONFIG = {
 
   // ===== CONFIGURACIÓN DE DESARROLLO =====
   dev: {
-    debug: false,                       // Activar logs detallados
+    debug: true,                        // Activar logs detallados
     mockPayment: true,                  // Simular pagos en desarrollo
     autoFillForm: false,                // Rellenar formulario automáticamente (testing)
   },
