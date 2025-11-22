@@ -387,43 +387,55 @@ class SexyFlyCalendar {
    * @private
    */
   selectDate(date) {
-    if (SEXYFLY_CONFIG.dev.debug) {
-      console.log('=== SELECCIÓN DE FECHA ===');
-      console.log('Fecha clickeada:', date);
-      console.log('Estado antes:', JSON.stringify(this.selectedDates));
-      console.log('¿Seleccionando vuelta?:', this.isSelectingReturn);
-    }
+    console.log('╔═══════════════════════════════════════════════════');
+    console.log('║ 📅 CLICK EN FECHA DETECTADO');
+    console.log('╠═══════════════════════════════════════════════════');
+    console.log('║ Fecha clickeada:', date);
+    console.log('║ Departure actual:', this.selectedDates.departure);
+    console.log('║ Return actual:', this.selectedDates.return);
+    console.log('║ ¿Seleccionando vuelta?:', this.isSelectingReturn);
+    console.log('╚═══════════════════════════════════════════════════');
     
     // Crear una nueva fecha para evitar problemas de referencia
     const selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     
     if (!this.selectedDates.departure) {
       // CASO 1: Primera selección - fecha de ida
+      console.log('➡️ CASO 1: Estableciendo fecha de IDA');
       this.selectedDates.departure = selectedDate;
       this.selectedDates.return = null;
       this.isSelectingReturn = true;
       this.updateCalendarTitle(SEXYFLY_CONFIG.i18n.es.selectReturn);
+      console.log('✅ Fecha de IDA establecida:', selectedDate);
+      console.log('✅ isSelectingReturn:', this.isSelectingReturn);
       
     } else if (this.isSelectingReturn) {
       // CASO 2: Segunda selección - fecha de vuelta
+      console.log('➡️ CASO 2: Estableciendo fecha de VUELTA');
+      
       if (selectedDate.getTime() === this.selectedDates.departure.getTime()) {
-        if (SEXYFLY_CONFIG.dev.debug) {
-          console.log('⚠️ Misma fecha clickeada, ignorando');
-        }
+        console.log('⚠️ Misma fecha clickeada, ignorando');
         return;
       }
       
       if (selectedDate < this.selectedDates.departure) {
         // Intercambiar fechas si selecciona una anterior
+        console.log('🔄 Intercambiando fechas (seleccionaste fecha anterior)');
         this.selectedDates.return = this.selectedDates.departure;
         this.selectedDates.departure = selectedDate;
       } else {
         // Fecha posterior normal
+        console.log('✅ Fecha de VUELTA posterior a IDA');
         this.selectedDates.return = selectedDate;
       }
       
       this.isSelectingReturn = false;
       this.updateCalendarTitle(SEXYFLY_CONFIG.i18n.es.datesSelected);
+      
+      console.log('✅ AMBAS FECHAS SELECCIONADAS:');
+      console.log('   - IDA:', this.selectedDates.departure);
+      console.log('   - VUELTA:', this.selectedDates.return);
+      console.log('🔔 Llamando callback onDateSelect...');
       
       // Llamar callback
       setTimeout(() => {
@@ -431,19 +443,24 @@ class SexyFlyCalendar {
           departure: this.selectedDates.departure,
           return: this.selectedDates.return
         });
+        console.log('✅ Callback ejecutado');
       }, 100);
       
     } else {
       // CASO 3: Reset - empezar de nuevo
+      console.log('➡️ CASO 3: RESET - Empezando de nuevo');
       this.selectedDates = { 
         departure: selectedDate, 
         return: null 
       };
       this.isSelectingReturn = true;
       this.updateCalendarTitle(SEXYFLY_CONFIG.i18n.es.selectReturn);
+      console.log('✅ Nueva selección iniciada');
     }
     
+    console.log('🔄 Renderizando calendario...');
     this.render();
+    console.log('✅ Render completado\n');
   }
 
   /**
