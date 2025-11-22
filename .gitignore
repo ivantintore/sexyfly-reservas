@@ -48,6 +48,7 @@ build/
 *.log
 logs/
 *.log.*
+backend_logs.txt
 
 # ===== ARCHIVOS TEMPORALES =====
 *.tmp
