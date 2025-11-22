@@ -327,58 +327,45 @@ class SexyFlyCalendar {
   }
 
   /**
-   * Configurar event listeners
+   * Configurar event listeners usando Event Delegation
+   * Event Delegation evita perder listeners después de render()
    * @private
    */
   setupEventListeners() {
     const prevBtn = document.getElementById('prevMonth');
     const nextBtn = document.getElementById('nextMonth');
     
-    // Navegación (estos botones NO se re-renderizan)
+    // Navegación
     prevBtn.addEventListener('click', () => this.previousWeeks());
     nextBtn.addEventListener('click', () => this.nextWeeks());
     
-    // Listeners del grid se configuran en reattachGridListeners()
-    // Se llama después de cada render porque el grid se re-genera
-    this.reattachGridListeners();
-  }
-
-  /**
-   * Re-adjuntar listeners del grid después de render
-   * @private
-   */
-  reattachGridListeners() {
-    const grid = document.getElementById('calendarGrid');
-    if (!grid) return;
+    // EVENT DELEGATION: Adjuntar listener al contenedor padre (NO al grid)
+    // El contenedor NO se re-renderiza, solo el grid interno
+    // Esto evita perder listeners después de cada render()
+    const container = this.container;
     
-    // Remover listeners anteriores clonando el elemento
-    const newGrid = grid.cloneNode(true);
-    grid.parentNode.replaceChild(newGrid, grid);
-    
-    // Ahora adjuntar listeners al nuevo grid
-    const freshGrid = document.getElementById('calendarGrid');
-    
-    // Selección de fechas (click)
-    freshGrid.addEventListener('click', (e) => {
+    // Selección de fechas (click) - EVENT DELEGATION
+    container.addEventListener('click', (e) => {
+      // Buscar si el click fue en un calendar-day
       const dayElement = e.target.closest('.calendar-day');
       if (!dayElement || dayElement.classList.contains('disabled')) return;
       
       const dateStr = dayElement.dataset.date;
-      console.log('Click detectado en:', dateStr, 'Elemento:', dayElement);
+      console.log('👆 Click detectado en:', dateStr, 'Elemento:', dayElement);
       
       const selectedDate = this.parseDate(dateStr);
-      console.log('Fecha parseada:', selectedDate);
+      console.log('📅 Fecha parseada:', selectedDate);
       
       this.selectDate(selectedDate);
     });
 
     // Selección de fechas (teclado - accesibilidad)
-    freshGrid.addEventListener('keydown', (e) => {
+    container.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
         const dayElement = e.target.closest('.calendar-day');
         if (!dayElement || dayElement.classList.contains('disabled')) return;
         
+        e.preventDefault();
         const dateStr = dayElement.dataset.date;
         const selectedDate = this.parseDate(dateStr);
         
@@ -386,8 +373,8 @@ class SexyFlyCalendar {
       }
     });
     
-    // Hover para preview de rango
-    freshGrid.addEventListener('mouseover', (e) => {
+    // Hover para preview de rango - EVENT DELEGATION
+    container.addEventListener('mouseover', (e) => {
       const dayElement = e.target.closest('.calendar-day');
       if (!dayElement || dayElement.classList.contains('disabled')) return;
       
@@ -398,12 +385,28 @@ class SexyFlyCalendar {
       }
     });
     
-    freshGrid.addEventListener('mouseleave', () => {
-      if (this.isSelectingReturn) {
-        this.hoveredDate = null;
-        this.render();
+    container.addEventListener('mouseleave', (e) => {
+      // Solo limpiar si realmente salimos del contenedor
+      if (!this.container.contains(e.relatedTarget)) {
+        if (this.isSelectingReturn) {
+          this.hoveredDate = null;
+          this.render();
+        }
       }
     });
+  }
+
+  /**
+   * Re-adjuntar listeners del grid después de render
+   * @deprecated - Ya no necesario con Event Delegation
+   * @private
+   */
+  reattachGridListeners() {
+    // Con Event Delegation los listeners están en el contenedor padre
+    // que NO se re-renderiza, así que no hay que re-adjuntarlos
+    if (SEXYFLY_CONFIG.dev.debug) {
+      console.log('✅ Listeners persisten (Event Delegation)');
+    }
   }
 
   /**
