@@ -73,39 +73,37 @@
                     
                     <div class="form-row">
                         <div>
-                            <label for="departureTime">🛫 Hora de Salida</label>
-                            <input type="time" id="departureTime" name="departureTime" required>
+                            <label for="departureTime">🛫 Hora de Salida <span style="color: red;">*</span></label>
+                            <input type="time" id="departureTime" name="departureTime">
                         </div>
                         <div>
-                            <label for="returnTime">🛬 Hora de Regreso</label>
-                            <input type="time" id="returnTime" name="returnTime" required>
+                            <label for="returnTime">🛬 Hora de Regreso <span style="color: red;">*</span></label>
+                            <input type="time" id="returnTime" name="returnTime">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div>
-                            <label for="originICAO">🛫 Aeropuerto de Origen (OACI)</label>
+                            <label for="originICAO">🛫 Aeropuerto de Origen (OACI) <span style="color: red;">*</span></label>
                             <input 
                                 type="text" 
                                 id="originICAO" 
                                 name="originICAO" 
                                 placeholder="Ej: LELL (Lleida)" 
                                 maxlength="4" 
-                                required 
                                 class="icao-input"
                                 pattern="[A-Z]{4}"
                                 aria-describedby="originICAOHelp">
                             <div class="icao-helper" id="originICAOHelp">Código OACI de 4 letras</div>
                         </div>
                         <div>
-                            <label for="destinationICAO">🛬 Aeropuerto de Destino (OACI)</label>
+                            <label for="destinationICAO">🛬 Aeropuerto de Destino (OACI) <span style="color: red;">*</span></label>
                             <input 
                                 type="text" 
                                 id="destinationICAO" 
                                 name="destinationICAO" 
                                 placeholder="Ej: LEBL (Barcelona)" 
                                 maxlength="4" 
-                                required 
                                 class="icao-input"
                                 pattern="[A-Z]{4}"
                                 aria-describedby="destinationICAOHelp">
