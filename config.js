@@ -67,6 +67,8 @@ const SEXYFLY_CONFIG = {
   },
 
   // ===== DÍAS FESTIVOS ESPAÑOLES =====
+  // Festivos nacionales (aplicables en toda España)
+  // Formato: 'MM-DD' para compatibilidad con cualquier año
   holidays: [
     '01-01', // Año Nuevo
     '01-06', // Reyes Magos
@@ -74,9 +76,26 @@ const SEXYFLY_CONFIG = {
     '08-15', // Asunción de la Virgen
     '10-12', // Fiesta Nacional de España
     '11-01', // Todos los Santos
-    '12-06', // Día de la Constitución
+    '12-06', // Día de la Constitución Española
     '12-08', // Inmaculada Concepción
     '12-25', // Navidad
+  ],
+
+  // Festivos detallados (con información adicional)
+  // Útil para mostrar tooltips o filtrar por región
+  holidaysDetailed: [
+    { date: '01-01', name: 'Año Nuevo', type: 'nacional', region: 'todas' },
+    { date: '01-06', name: 'Reyes Magos', type: 'nacional', region: 'todas' },
+    { date: '05-01', name: 'Día del Trabajo', type: 'nacional', region: 'todas' },
+    { date: '08-15', name: 'Asunción de la Virgen', type: 'nacional', region: 'todas' },
+    { date: '10-12', name: 'Fiesta Nacional de España', type: 'nacional', region: 'todas' },
+    { date: '11-01', name: 'Todos los Santos', type: 'nacional', region: 'todas' },
+    { date: '12-06', name: 'Día de la Constitución Española', type: 'nacional', region: 'todas' },
+    { date: '12-08', name: 'Inmaculada Concepción', type: 'nacional', region: 'todas' },
+    { date: '12-25', name: 'Navidad', type: 'nacional', region: 'todas' },
+    // Añadir festivos autonómicos aquí si es necesario
+    // { date: '04-23', name: 'Sant Jordi', type: 'autonomico', region: 'catalunya' },
+    // { date: '03-01', name: 'Día de las Islas Baleares', type: 'autonomico', region: 'baleares' },
   ],
 
   // ===== VALIDACIÓN DE FORMULARIOS =====
