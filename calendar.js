@@ -186,8 +186,9 @@ class SexyFlyCalendar {
     this.renderCalendarGrid();
     this.updateNavigationButtons();
     this.updateSelectionSummary();
-    // Re-adjuntar listeners después de render (por si se perdieron)
-    this.reattachGridListeners();
+    // NO llamar reattachGridListeners() aquí - causaba loop infinito
+    // Con Event Delegation, los listeners están en el contenedor padre
+    // que NUNCA se re-renderiza, así que persisten automáticamente
   }
 
   /**
