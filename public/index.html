@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de reservas profesional para servicios de piloto comercial - SexyFly">
+    <meta name="author" content="Ivan Tintore">
+    
+    <title>Reserva de Piloto Comercial - SexyFly</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" type="image/svg+xml">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../src/css/calendar.css?v=3.0.0">
+    <link rel="stylesheet" href="../src/css/styles.css?v=3.0.0">
+</head>
+<body>
+    <!-- Badge de Versión -->
+    <div id="version-badge" class="version-badge" role="button" tabindex="0" aria-label="Ver historial de versiones">
+        <span id="version-text">Cargando...</span>
+        <div id="version-dropdown" class="version-dropdown" role="tooltip">
+            <div class="version-dropdown-header">
+                <h4>Historial de Versiones</h4>
+                <p>SexyFly - Sistema de Reservas</p>
+            </div>
+            <div id="version-list" class="version-list">
+                <div class="version-loading">Cargando versiones...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>✈️ Reserva de Piloto Comercial</h1>
+            <p>Servicio profesional de piloto comercial - SexyFly.es</p>
+        </div>
+
+        <div class="booking-card">
+            <div class="pricing-info">
+                <h2>💰 Tarifas de Reserva</h2>
+                <div class="pricing-grid">
+                    <div class="price-item">
+                        <h3>Reserva Anticipada</h3>
+                        <div class="price" id="priceAnticipada">500€</div>
+                        <p>+7 días de antelación / día</p>
+                    </div>
+                    <div class="price-item">
+                        <h3>Reserva Urgente</h3>
+                        <div class="price" id="priceUrgente">1,000€</div>
+                        <p>24-48 horas / día</p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="bookingForm" novalidate data-sexyfly-form="true">
+                <div class="calendar-section">
+                    <div id="flightCalendar"></div>
+                </div>
+
+                <div class="flight-details-section" id="flightDetailsSection" style="display: none;">
+                    <h3 style="color: #1E40AF; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        ✈️ Detalles del Vuelo
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div>
+                            <label for="departureTime">🛫 Hora de Salida <span style="color: red;">*</span></label>
+                            <input type="time" id="departureTime" name="departureTime">
+                        </div>
+                        <div>
+                            <label for="returnTime">🛬 Hora de Regreso <span style="color: red;">*</span></label>
+                            <input type="time" id="returnTime" name="returnTime">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div>
+                            <label for="originICAO">🛫 Aeropuerto de Origen (OACI) <span style="color: red;">*</span></label>
+                            <input type="text" id="originICAO" name="originICAO" placeholder="Ej: LELL" maxlength="4" class="icao-input" pattern="[A-Z]{4}">
+                            <div class="icao-helper">Código OACI de 4 letras</div>
+                        </div>
+                        <div>
+                            <label for="destinationICAO">🛬 Aeropuerto de Destino (OACI) <span style="color: red;">*</span></label>
+                            <input type="text" id="destinationICAO" name="destinationICAO" placeholder="Ej: LEBL" maxlength="4" class="icao-input" pattern="[A-Z]{4}">
+                            <div class="icao-helper">Código OACI de 4 letras</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="overnightSection" style="display: none;">
+                    <label for="overnight">🏨 ¿Requiere pernocta en destino?</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="overnight" name="overnight">
+                        <label for="overnight">Sí, requiero alojamiento (gastos incluidos)</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientName">👤 Nombre del Cliente</label>
+                    <input type="text" id="clientName" name="clientName" placeholder="Nombre completo" required minlength="3" maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <div class="form-row">
+                        <div>
+                            <label for="clientEmail">📧 Email de Contacto</label>
+                            <input type="email" id="clientEmail" name="clientEmail" placeholder="email@ejemplo.com" required>
+                        </div>
+                        <div>
+                            <label for="clientPhone">📱 Teléfono</label>
+                            <input type="tel" id="clientPhone" name="clientPhone" placeholder="+34 600 000 000" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalInfo">📝 Información Adicional</label>
+                    <textarea id="additionalInfo" name="additionalInfo" rows="4" placeholder="Detalles adicionales" maxlength="500"></textarea>
+                </div>
+
+                <div class="total-flights" id="totalFlights" style="display: none;">
+                    <h3 id="totalFlightsPrice">Selecciona fechas para ver el precio</h3>
+                    <div class="breakdown" id="totalBreakdown">El precio se calculará automáticamente</div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group" style="background: #f8f9fa; padding: 20px; border-radius: 10px; border: 2px solid #e9ecef;">
+                        <input type="checkbox" id="acceptTerms" name="acceptTerms" required style="transform: scale(1.3); margin-right: 15px;">
+                        <label for="acceptTerms" style="color: #374151; font-weight: 600; cursor: pointer;">
+                            ✅ Acepto los términos y condiciones de reserva y las políticas de cancelación
+                        </label>
+                    </div>
+                </div>
+
+                <div class="loading" id="loadingDiv">
+                    <div class="spinner"></div>
+                    <p>Procesando reserva...</p>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    🚁 Reservar Piloto - Pagar Ahora
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts - Rutas actualizadas -->
+    <script src="../src/js/config.js?v=3.0.0"></script>
+    <script src="../src/js/pricing.js?v=3.0.0"></script>
+    <script src="../src/js/calendar.js?v=3.0.0"></script>
+    <script src="../src/js/app.js?v=3.0.0"></script>
+</body>
+</html>
