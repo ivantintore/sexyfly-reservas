@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test: Selección de 2 Fechas en Calendario</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #000;
+            color: #0f0;
+        }
+        .log {
+            background: #111;
+            padding: 20px;
+            margin: 10px 0;
+            border: 1px solid #0f0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 10px 5px;
+            cursor: pointer;
+        }
+        .error { color: #f00; }
+        .success { color: #0f0; }
+        .warning { color: #ff0; }
+        .info { color: #0ff; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test: Selección de 2 Fechas en Calendario</h1>
+    
+    <div>
+        <button onclick="testSeleccionarDosFechas()">▶️ TEST: Seleccionar 2 Fechas</button>
+        <button onclick="testManual()">🖱️ TEST MANUAL (mira consola)</button>
+        <button onclick="clearLog()">🗑️ Limpiar</button>
+    </div>
+
+    <div id="log" class="log"></div>
+
+    <!-- Cargar app real -->
+    <script src="config.js"></script>
+    <script src="pricing.js"></script>
+    <script src="calendar.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        const logDiv = document.getElementById('log');
+
+        function log(msg, type = 'info') {
+            const p = document.createElement('div');
+            p.className = type;
+            p.textContent = msg;
+            logDiv.appendChild(p);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(msg);
+        }
+
+        function clearLog() {
+            logDiv.innerHTML = '';
+        }
+
+        async function wait(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function testSeleccionarDosFechas() {
+            clearLog();
+            log('🎯 INICIANDO TEST: Selección de 2 Fechas', 'info');
+            log('━'.repeat(70));
+            
+            try {
+                // 1. Verificar que sexyFlyApp existe
+                log('\n1️⃣ Verificando sexyFlyApp...', 'info');
+                if (!window.sexyFlyApp) {
+                    log('❌ ERROR: sexyFlyApp no existe', 'error');
+                    return;
+                }
+                log('✅ sexyFlyApp existe', 'success');
+
+                // 2. Verificar calendario
+                log('\n2️⃣ Verificando calendario...', 'info');
+                const calendar = window.sexyFlyApp.calendar;
+                if (!calendar) {
+                    log('❌ ERROR: calendario no existe', 'error');
+                    return;
+                }
+                log('✅ Calendario existe', 'success');
+
+                // 3. Verificar grid de calendario
+                log('\n3️⃣ Buscando días del calendario...', 'info');
+                const calendarGrid = document.getElementById('calendarGrid');
+                if (!calendarGrid) {
+                    log('❌ ERROR: calendarGrid no encontrado', 'error');
+                    return;
+                }
+
+                const dias = calendarGrid.querySelectorAll('.calendar-day:not(.disabled)');
+                log(`✅ Encontrados ${dias.length} días disponibles`, 'success');
+
+                if (dias.length < 2) {
+                    log('❌ ERROR: No hay suficientes días disponibles', 'error');
+                    return;
+                }
+
+                // 4. Seleccionar FECHA 1 (IDA)
+                log('\n4️⃣ Seleccionando FECHA 1 (IDA)...', 'warning');
+                const fecha1 = dias[5]; // Día 6 disponible
+                const dateStr1 = fecha1.dataset.date;
+                log(`   Fecha 1: ${dateStr1}`, 'info');
+                
+                fecha1.click();
+                await wait(500);
+
+                // Verificar estado después del primer click
+                const fechasDesp1 = calendar.getSelectedDates();
+                log(`   Después del click 1:`, 'info');
+                log(`   - departure: ${fechasDesp1.departure}`, fechasDesp1.departure ? 'success' : 'error');
+                log(`   - return: ${fechasDesp1.return}`, fechasDesp1.return ? 'warning' : 'info');
+                log(`   - isSelectingReturn: ${calendar.isSelectingReturn}`, 'info');
+
+                // 5. Seleccionar FECHA 2 (VUELTA)
+                log('\n5️⃣ Seleccionando FECHA 2 (VUELTA)...', 'warning');
+                const fecha2 = dias[12]; // Día 13 disponible
+                const dateStr2 = fecha2.dataset.date;
+                log(`   Fecha 2: ${dateStr2}`, 'info');
+                
+                fecha2.click();
+                await wait(500);
+
+                // Verificar estado después del segundo click
+                const fechasDesp2 = calendar.getSelectedDates();
+                log(`\n   Después del click 2:`, 'info');
+                log(`   - departure: ${fechasDesp2.departure}`, fechasDesp2.departure ? 'success' : 'error');
+                log(`   - return: ${fechasDesp2.return}`, fechasDesp2.return ? 'success' : 'error');
+                log(`   - isSelectingReturn: ${calendar.isSelectingReturn}`, 'info');
+
+                // 6. Resultado final
+                log('\n' + '━'.repeat(70));
+                log('📊 RESULTADO DEL TEST:', 'warning');
+                
+                if (fechasDesp2.departure && fechasDesp2.return) {
+                    log('✅ ÉXITO: Ambas fechas seleccionadas correctamente', 'success');
+                    log(`   IDA: ${fechasDesp2.departure.toLocaleDateString('es-ES')}`, 'success');
+                    log(`   VUELTA: ${fechasDesp2.return.toLocaleDateString('es-ES')}`, 'success');
+                } else {
+                    log('❌ FALLO: No se pudieron seleccionar ambas fechas', 'error');
+                    if (!fechasDesp2.departure) log('   - Falta fecha de IDA', 'error');
+                    if (!fechasDesp2.return) log('   - Falta fecha de VUELTA', 'error');
+                }
+
+            } catch (error) {
+                log(`\n❌ ERROR EN EL TEST: ${error.message}`, 'error');
+                log(`   Stack: ${error.stack}`, 'error');
+            }
+        }
+
+        function testManual() {
+            clearLog();
+            log('🖱️ TEST MANUAL ACTIVADO', 'warning');
+            log('━'.repeat(70));
+            log('INSTRUCCIONES:', 'info');
+            log('1. Abre la consola del navegador (F12)', 'info');
+            log('2. Haz click en una fecha del calendario (IDA)', 'info');
+            log('3. Haz click en otra fecha del calendario (VUELTA)', 'info');
+            log('4. Mira los logs en la consola', 'info');
+            log('5. Deberías ver:', 'info');
+            log('   ╔═══ CLICK EN FECHA DETECTADO', 'success');
+            log('   ║ CASO 1: Estableciendo fecha de IDA', 'success');
+            log('   ╚═══ ...', 'success');
+            log('   Luego:', 'info');
+            log('   ╔═══ CLICK EN FECHA DETECTADO', 'success');
+            log('   ║ CASO 2: Estableciendo fecha de VUELTA', 'success');
+            log('   ║ AMBAS FECHAS SELECCIONADAS', 'success');
+            log('   ╚═══ ...', 'success');
+            log('', 'info');
+            log('Si NO ves "CASO 2", ahí está el problema.', 'warning');
+        }
+
+        // Auto-ejecutar al cargar
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('✅ Página cargada. Presiona "TEST: Seleccionar 2 Fechas"', 'success');
+                
+                // Verificación rápida
+                if (window.sexyFlyApp && window.sexyFlyApp.calendar) {
+                    log('✅ SexyFlyApp y calendario listos', 'success');
+                    
+                    const dias = document.querySelectorAll('.calendar-day:not(.disabled)');
+                    log(`✅ ${dias.length} días disponibles en calendario`, 'success');
+                } else {
+                    log('❌ ERROR: SexyFlyApp o calendario no disponibles', 'error');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+
