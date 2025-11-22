@@ -7,15 +7,20 @@
     <meta name="keywords" content="piloto comercial, reservas, aviación, SexyFly">
     <meta name="author" content="Ivan Tintore">
     
+    <!-- CACHE BUSTING -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <title>Reserva de Piloto Comercial - SexyFly</title>
     
     <!-- Favicon - Icono de avión -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" type="image/svg+xml">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
     
-    <!-- Estilos -->
-    <link rel="stylesheet" href="calendar.css">
-    <link rel="stylesheet" href="styles.css">
+    <!-- Estilos con cache busting -->
+    <link rel="stylesheet" href="calendar.css?v=3.0.0">
+    <link rel="stylesheet" href="styles.css?v=3.0.0">
 </head>
 <body>
     <!-- Badge de Versión -->
@@ -227,15 +232,15 @@
         </div>
     </div>
 
-    <!-- Scripts - ORDEN IMPORTANTE -->
+    <!-- Scripts - ORDEN IMPORTANTE - CON CACHE BUSTING -->
     <!-- 1. Configuración (primero siempre) -->
-    <script src="config.js"></script>
+    <script src="config.js?v=3.0.0"></script>
     
     <!-- 2. Módulos de sistema -->
-    <script src="pricing.js"></script>
-    <script src="calendar.js"></script>
+    <script src="pricing.js?v=3.0.0"></script>
+    <script src="calendar.js?v=3.0.0"></script>
     
     <!-- 3. Aplicación principal -->
-    <script src="app.js"></script>
+    <script src="app.js?v=3.0.0"></script>
 </body>
 </html>
