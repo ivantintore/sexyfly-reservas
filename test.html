@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SexyFly - Unit Tests v3.0.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #0f3460;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #00d9ff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+
+        .header p {
+            color: #888;
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            background: #1a1a2e;
+            border: 1px solid #0f3460;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00d9ff, #0088cc);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .console {
+            background: #0a0a0a;
+            border: 1px solid #0f3460;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 500px;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .console-line {
+            margin-bottom: 5px;
+        }
+
+        .success {
+            color: #00ff00;
+        }
+
+        .error {
+            color: #ff4444;
+        }
+
+        .info {
+            color: #00d9ff;
+        }
+
+        .warning {
+            color: #ffaa00;
+        }
+
+        .separator {
+            color: #0f3460;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: #1a1a2e;
+            border: 1px solid #0f3460;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .passed .stat-number {
+            color: #00ff00;
+        }
+
+        .failed .stat-number {
+            color: #ff4444;
+        }
+
+        .total .stat-number {
+            color: #00d9ff;
+        }
+
+        .duration .stat-number {
+            color: #ffaa00;
+            font-size: 2rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 3px solid #0f3460;
+            border-top: 3px solid #00d9ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .badge.success {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .badge.error {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 SexyFly Unit Tests</h1>
+            <p>Sistema de Testing Automatizado v3.0.0</p>
+        </div>
+
+        <div class="controls">
+            <div>
+                <button class="btn" onclick="runTests()">▶️ Ejecutar Tests</button>
+                <button class="btn" onclick="clearConsole()" style="background: linear-gradient(45deg, #ff4444, #cc0000);">🗑️ Limpiar Consola</button>
+            </div>
+            <div id="autorun-info" style="color: #888; font-size: 0.9rem;">
+                ⏱️ Auto-ejecución al cargar
+            </div>
+        </div>
+
+        <div id="stats" class="stats" style="display: none;">
+            <div class="stat-card total">
+                <div class="stat-number" id="stat-total">0</div>
+                <div class="stat-label">Total Tests</div>
+            </div>
+            <div class="stat-card passed">
+                <div class="stat-number" id="stat-passed">0</div>
+                <div class="stat-label">Passed</div>
+            </div>
+            <div class="stat-card failed">
+                <div class="stat-number" id="stat-failed">0</div>
+                <div class="stat-label">Failed</div>
+            </div>
+            <div class="stat-card duration">
+                <div class="stat-number" id="stat-duration">0s</div>
+                <div class="stat-label">Duration</div>
+            </div>
+        </div>
+
+        <div class="console" id="console">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p class="info">Cargando tests...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cargar dependencias en orden -->
+    <script src="config.js"></script>
+    <script src="pricing.js"></script>
+    <script src="calendar.js"></script>
+    <script src="test.js"></script>
+
+    <script>
+        // Variables globales
+        let testResults = {
+            total: 0,
+            passed: 0,
+            failed: 0,
+            duration: 0
+        };
+
+        // Interceptar console.log
+        const originalLog = console.log;
+        const consoleElement = document.getElementById('console');
+
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            
+            const message = args.join(' ');
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            
+            // Colorear según el contenido
+            if (message.includes('✅')) {
+                line.innerHTML = `<span class="success">${escapeHtml(message)}</span>`;
+            } else if (message.includes('❌')) {
+                line.innerHTML = `<span class="error">${escapeHtml(message)}</span>`;
+            } else if (message.includes('🧪') || message.includes('📦')) {
+                line.innerHTML = `<span class="info"><strong>${escapeHtml(message)}</strong></span>`;
+            } else if (message.includes('===')) {
+                line.innerHTML = `<span class="separator">${escapeHtml(message)}</span>`;
+            } else if (message.includes('⚠️')) {
+                line.innerHTML = `<span class="warning">${escapeHtml(message)}</span>`;
+            } else {
+                line.textContent = message;
+            }
+            
+            consoleElement.appendChild(line);
+            consoleElement.scrollTop = consoleElement.scrollHeight;
+        };
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function clearConsole() {
+            consoleElement.innerHTML = '';
+            document.getElementById('stats').style.display = 'none';
+        }
+
+        async function runTests() {
+            clearConsole();
+            document.getElementById('stats').style.display = 'none';
+            
+            console.log('🚀 Iniciando tests...\n');
+            
+            // Ejecutar tests
+            const startTime = Date.now();
+            await window.testRunner.run();
+            const endTime = Date.now();
+            
+            // Actualizar estadísticas
+            testResults.total = window.testRunner.tests.length;
+            testResults.passed = window.testRunner.passed;
+            testResults.failed = window.testRunner.failed;
+            testResults.duration = ((endTime - startTime) / 1000).toFixed(2);
+            
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').textContent = testResults.total;
+            document.getElementById('stat-passed').textContent = testResults.passed;
+            document.getElementById('stat-failed').textContent = testResults.failed;
+            document.getElementById('stat-duration').textContent = testResults.duration + 's';
+            
+            document.getElementById('stats').style.display = 'grid';
+
+            // Badge de estado
+            const badge = testResults.failed === 0 
+                ? '<span class="badge success">ALL PASSED ✓</span>'
+                : '<span class="badge error">FAILED ✗</span>';
+            
+            document.querySelector('.header p').innerHTML = 
+                `Sistema de Testing Automatizado v3.0.0 ${badge}`;
+        }
+
+        // Auto-ejecutar tests al cargar
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                console.log('⚡ Auto-ejecución activada\n');
+                runTests();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
+
