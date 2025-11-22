@@ -74,17 +74,18 @@
             // Esperar un momento para render
             await new Promise(resolve => setTimeout(resolve, 500));
             
-            // Buscar días disponibles
-            const dias = document.querySelectorAll('.calendar-day:not(.disabled)');
-            log(`✅ Encontrados ${dias.length} días disponibles\n`);
+            // CLICK 1: IDA
+            log('👆 CLICK 1 en fecha IDA...');
+            
+            // Buscar días disponibles AHORA (no antes)
+            let dias = document.querySelectorAll('.calendar-day:not(.disabled)');
+            log(`✅ Encontrados ${dias.length} días disponibles`);
             
             if (dias.length < 2) {
                 log('❌ ERROR: No hay suficientes días');
                 return;
             }
             
-            // CLICK 1: IDA
-            log('👆 CLICK 1 en fecha IDA...');
             const dia1 = dias[5];
             log(`   Fecha: ${dia1.dataset.date}`);
             dia1.click();
@@ -98,6 +99,11 @@
             
             // CLICK 2: VUELTA
             log('\n👆 CLICK 2 en fecha VUELTA...');
+            
+            // ⚠️ IMPORTANTE: Buscar días de NUEVO porque el DOM se re-renderizó
+            dias = document.querySelectorAll('.calendar-day:not(.disabled)');
+            log(`✅ Re-buscando días: ${dias.length} disponibles`);
+            
             const dia2 = dias[12];
             log(`   Fecha: ${dia2.dataset.date}`);
             dia2.click();
