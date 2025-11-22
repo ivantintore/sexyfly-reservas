@@ -69,27 +69,40 @@ class SexyFlyApp {
    */
   init() {
     try {
-      // Inicializar referencias al DOM
+      if (SEXYFLY_CONFIG.dev.debug) console.log('🔧 Paso 1: Inicializando DOM...');
       this.initDOM();
       
-      // Actualizar precios en UI desde config
+      if (SEXYFLY_CONFIG.dev.debug) console.log('🔧 Paso 2: Actualizando precios en UI...');
       this.updatePricingInfo();
       
-      // Inicializar módulos
+      if (SEXYFLY_CONFIG.dev.debug) console.log('🔧 Paso 3: Inicializando sistema de precios...');
       this.initializePricing();
+      
+      if (SEXYFLY_CONFIG.dev.debug) console.log('🔧 Paso 4: Inicializando calendario...');
       this.initializeCalendar();
+      
+      if (SEXYFLY_CONFIG.dev.debug) console.log('🔧 Paso 5: Inicializando gestor de versiones...');
       this.initializeVersionManager();
       
-      // Configurar eventos
+      if (SEXYFLY_CONFIG.dev.debug) console.log('🔧 Paso 6: Configurando validación de formulario...');
       this.setupFormValidation();
+      
+      if (SEXYFLY_CONFIG.dev.debug) console.log('🔧 Paso 7: Configurando inputs ICAO...');
       this.setupICAOInputs();
       
       if (SEXYFLY_CONFIG.dev.debug) {
         console.log('✅ SexyFlyApp inicializado completamente');
       }
     } catch (error) {
-      console.error('❌ Error en inicialización:', error);
-      this.showError('Error al inicializar la aplicación');
+      console.error('❌ ERROR CRÍTICO en inicialización:', error);
+      console.error('   Stack trace:', error.stack);
+      console.error('   Mensaje:', error.message);
+      
+      // Mostrar en la UI también
+      alert(`❌ ERROR AL INICIALIZAR:\n\n${error.message}\n\nRevisa la consola (F12) para más detalles.`);
+      
+      // Re-lanzar el error para que se vea en consola
+      throw error;
     }
   }
 
