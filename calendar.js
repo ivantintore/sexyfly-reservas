@@ -183,12 +183,21 @@ class SexyFlyCalendar {
    * @private
    */
   render() {
-    this.renderCalendarGrid();
-    this.updateNavigationButtons();
-    this.updateSelectionSummary();
-    // NO llamar reattachGridListeners() aquí - causaba loop infinito
-    // Con Event Delegation, los listeners están en el contenedor padre
-    // que NUNCA se re-renderiza, así que persisten automáticamente
+    // Prevenir loops infinitos
+    if (this._rendering) {
+      console.warn('⚠️ Render ya en progreso, ignorando...');
+      return;
+    }
+    
+    this._rendering = true;
+    
+    try {
+      this.renderCalendarGrid();
+      this.updateNavigationButtons();
+      this.updateSelectionSummary();
+    } finally {
+      this._rendering = false;
+    }
   }
 
   /**
@@ -374,40 +383,8 @@ class SexyFlyCalendar {
       }
     });
     
-    // Hover para preview de rango - EVENT DELEGATION
-    container.addEventListener('mouseover', (e) => {
-      const dayElement = e.target.closest('.calendar-day');
-      if (!dayElement || dayElement.classList.contains('disabled')) return;
-      
-      if (this.isSelectingReturn && this.selectedDates.departure) {
-        const dateStr = dayElement.dataset.date;
-        this.hoveredDate = this.parseDate(dateStr);
-        this.render();
-      }
-    });
-    
-    container.addEventListener('mouseleave', (e) => {
-      // Solo limpiar si realmente salimos del contenedor
-      if (!this.container.contains(e.relatedTarget)) {
-        if (this.isSelectingReturn) {
-          this.hoveredDate = null;
-          this.render();
-        }
-      }
-    });
-  }
-
-  /**
-   * Re-adjuntar listeners del grid después de render
-   * @deprecated - Ya no necesario con Event Delegation
-   * @private
-   */
-  reattachGridListeners() {
-    // Con Event Delegation los listeners están en el contenedor padre
-    // que NO se re-renderiza, así que no hay que re-adjuntarlos
-    if (SEXYFLY_CONFIG.dev.debug) {
-      console.log('✅ Listeners persisten (Event Delegation)');
-    }
+    // NOTA: Hover preview deshabilitado temporalmente para evitar loops
+    // Se puede re-habilitar después de optimizar el render
   }
 
   /**
