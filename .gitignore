@@ -1,0 +1,85 @@
+# SexyFly - Gitignore
+# Version: 3.0.0
+
+# ===== ENTORNOS VIRTUALES =====
+venv/
+env/
+ENV/
+.venv/
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ===== NODE (si se añade en el futuro) =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ===== EDITORES E IDEs =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ===== ARCHIVOS DE SISTEMA =====
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# ===== BUILDS Y DIST =====
+dist/
+build/
+*.min.js
+*.min.css
+
+# ===== LOGS =====
+*.log
+logs/
+*.log.*
+
+# ===== ARCHIVOS TEMPORALES =====
+*.tmp
+*.temp
+*.bak
+*.backup
+*-backup.*
+*-old.*
+
+# ===== ARCHIVOS DE TESTING (mantener archivos base) =====
+# Los archivos .md y .js de testing se mantienen
+coverage/
+.nyc_output/
+
+# ===== ARCHIVOS DE CONFIGURACIÓN LOCAL =====
+.env
+.env.local
+.env.*.local
+config.local.js
+
+# ===== ARCHIVOS SENSIBLES =====
+# Nunca commitear claves API, credenciales, etc.
+secrets/
+*.key
+*.pem
+*.cert
+
+# ===== CARPETAS DE PROYECTO =====
+# Mantener la carpeta de documentación de pagos
+# Payments docs/ - Se mantiene en el repo
+
+# ===== OTROS =====
+.cache/
+.parcel-cache/
+.sass-cache/

@@ -3,706 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de reservas profesional para servicios de piloto comercial - SexyFly">
+    <meta name="keywords" content="piloto comercial, reservas, aviación, SexyFly">
+    <meta name="author" content="Ivan Tintore">
+    
     <title>Reserva de Piloto Comercial - SexyFly</title>
     
     <!-- Favicon - Icono de avión -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>" type="image/svg+xml">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
     
-    <!-- SexyFly 2.0 - Estilos integrados -->
+    <!-- Estilos -->
     <link rel="stylesheet" href="calendar.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #2C3E50;
-            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 50%, #1E40AF 100%);
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-            padding: 40px 0;
-        }
-
-        .header h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-
-        .booking-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            padding: 40px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-        }
-
-        .pricing-info {
-            background: linear-gradient(45deg, #1F2937, #374151);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 40px;
-            text-align: center;
-            border: 1px solid #4B5563;
-        }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .price-item {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-        }
-
-        .price-item h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .price-item .price {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #F59E0B;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        input[type="text"], 
-        input[type="date"], 
-        input[type="time"], 
-        input[type="email"],
-        input[type="tel"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, 
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: #3B82F6;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
-            transform: scale(1.2);
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #1E40AF, #3B82F6);
-            color: white;
-            border: none;
-            padding: 18px 40px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(30, 64, 175, 0.3);
-            width: 100%;
-            margin-top: 20px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(30, 64, 175, 0.4);
-            background: linear-gradient(45deg, #1D4ED8, #2563EB);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .terms-section {
-            background: #F9FAFB;
-            padding: 30px;
-            border-radius: 15px;
-            margin-top: 40px;
-            border-left: 5px solid #1E40AF;
-            border: 1px solid #E5E7EB;
-        }
-
-        .terms-section h3 {
-            color: #1E40AF;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .terms-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .terms-list li {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .terms-list li::before {
-            content: "✈️";
-            font-size: 1.2rem;
-        }
-
-        .cancellation-policy {
-            background: linear-gradient(45deg, #DC2626, #EF4444);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-top: 20px;
-        }
-
-        .policy-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .policy-item:last-child {
-            border-bottom: none;
-        }
-
-        .alert {
-            background: #fff3cd;
-            color: #856404;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border: 1px solid #ffeaa7;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .pricing-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .booking-card {
-                padding: 20px;
-            }
-        }
-
-        .icao-helper {
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 5px;
-            font-style: italic;
-        }
-
-        .flights-section {
-            margin-bottom: 40px;
-        }
-
-        .flight-item {
-            background: #FFFFFF;
-            border: 2px solid #E5E7EB;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            position: relative;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .flight-item:hover {
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
-            transform: translateY(-2px);
-            border-color: #3B82F6;
-        }
-
-        .flight-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e9ecef;
-        }
-
-        .flight-header h4 {
-            color: #1E40AF;
-            font-size: 1.3rem;
-            margin: 0;
-            font-weight: 600;
-        }
-
-        .flight-price {
-            background: linear-gradient(45deg, #1F2937, #374151);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .btn-add-flight {
-            background: linear-gradient(45deg, #059669, #10B981);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .btn-add-flight:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(5, 150, 105, 0.3);
-        }
-
-        .btn-remove-flight {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(45deg, #DC2626, #B91C1C);
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .btn-remove-flight:hover {
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
-        }
-
-        .total-flights {
-            background: linear-gradient(45deg, #1E40AF, #3B82F6);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            margin: 20px 0;
-            border: 1px solid #2563EB;
-        }
-
-        .total-flights h3 {
-            margin: 0 0 10px 0;
-            font-size: 1.5rem;
-        }
-
-        .total-flights .breakdown {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-top: 10px;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            color: #1E40AF;
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #1E40AF;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* ===== SISTEMA DE VERSIONES ===== */
-        .version-badge {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(45deg, #1E40AF, #3B82F6);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
-            transition: all 0.3s ease;
-            user-select: none;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .version-badge:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.4);
-            background: linear-gradient(45deg, #1D4ED8, #2563EB);
-        }
-
-        .version-badge::before {
-            content: "v";
-            font-size: 0.75rem;
-            opacity: 0.8;
-            margin-right: 2px;
-        }
-
-        .version-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 8px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            min-width: 320px;
-            max-width: 400px;
-            border: 1px solid #e5e7eb;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-            z-index: 1001;
-        }
-
-        .version-dropdown.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .version-dropdown-header {
-            background: linear-gradient(45deg, #1F2937, #374151);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 12px 12px 0 0;
-            border-bottom: 1px solid #4B5563;
-        }
-
-        .version-dropdown-header h4 {
-            margin: 0 0 5px 0;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .version-dropdown-header p {
-            margin: 0;
-            font-size: 0.85rem;
-            opacity: 0.8;
-        }
-
-        .version-list {
-            max-height: 300px;
-            overflow-y: auto;
-            padding: 8px 0;
-        }
-
-        .version-item {
-            padding: 12px 20px;
-            border-bottom: 1px solid #f3f4f6;
-            transition: background-color 0.2s ease;
-        }
-
-        .version-item:last-child {
-            border-bottom: none;
-        }
-
-        .version-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .version-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-
-        .version-number {
-            font-weight: 600;
-            color: #1E40AF;
-            font-size: 0.9rem;
-        }
-
-        .version-date {
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-
-        .version-type {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        .version-type.initial {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .version-type.minor {
-            background: #d1fae5;
-            color: #059669;
-        }
-
-        .version-type.patch {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .version-type.major {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .version-description {
-            font-size: 0.85rem;
-            color: #374151;
-            line-height: 1.4;
-        }
-
-        .version-features {
-            margin-top: 8px;
-        }
-
-        .version-features ul {
-            margin: 5px 0 0 0;
-            padding-left: 15px;
-            font-size: 0.8rem;
-            color: #6b7280;
-        }
-
-        .version-features li {
-            margin-bottom: 2px;
-        }
-
-        .version-loading {
-            padding: 20px;
-            text-align: center;
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-
-        .version-error {
-            padding: 15px 20px;
-            background: #fef2f2;
-            color: #dc2626;
-            font-size: 0.85rem;
-            border-radius: 0 0 12px 12px;
-        }
-
-        /* ===== CALENDARIO FUNCIONAL ===== */
-        .simple-calendar {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .calendar-header {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #1E40AF;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .calendar-day {
-            padding: 15px 10px;
-            text-align: center;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-            min-height: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .calendar-day:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .calendar-day.available {
-            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-            border-color: #10b981;
-        }
-
-        .calendar-day.medium {
-            background: linear-gradient(135deg, #fffbeb, #fef3c7);
-            border-color: #f59e0b;
-        }
-
-        .calendar-day.urgent {
-            background: linear-gradient(135deg, #fef2f2, #fecaca);
-            border-color: #ef4444;
-        }
-
-        .calendar-day.selected {
-            background: linear-gradient(135deg, #1E40AF, #3B82F6) !important;
-            color: white;
-            border-color: #1E40AF;
-            transform: scale(1.05);
-        }
-
-        .calendar-day.disabled {
-            background: #f3f4f6;
-            color: #9ca3af;
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-
-        .day-number {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .day-price {
-            font-size: 0.8rem;
-            margin-top: 5px;
-            padding: 2px 6px;
-            background: rgba(0,0,0,0.1);
-            border-radius: 5px;
-        }
-
-        .selected-dates {
-            background: #f0f9ff;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: center;
-            border: 2px solid #3b82f6;
-        }
-
-        .weekday-header {
-            font-weight: 600;
-            color: #1E40AF;
-            padding: 10px;
-            text-align: center;
-            background: #f1f5f9;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .version-badge {
-                top: 10px;
-                right: 10px;
-                font-size: 0.8rem;
-                padding: 6px 10px;
-            }
-            
-            .version-dropdown {
-                min-width: 280px;
-                max-width: calc(100vw - 30px);
-            }
-            
-            .calendar-grid {
-                gap: 5px;
-            }
-            
-            .calendar-day {
-                padding: 10px 5px;
-                min-height: 50px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Badge de Versión -->
@@ -720,50 +33,39 @@
     </div>
 
     <div class="container">
+        <!-- Header -->
         <div class="header">
             <h1>✈️ Reserva de Piloto Comercial</h1>
             <p>Servicio profesional de piloto comercial - SexyFly.es</p>
         </div>
 
+        <!-- Tarjeta de Reserva Principal -->
         <div class="booking-card">
+            <!-- Información de Precios -->
             <div class="pricing-info">
                 <h2>💰 Tarifas de Reserva</h2>
                 <div class="pricing-grid">
                     <div class="price-item">
                         <h3>Reserva Anticipada</h3>
-                        <div class="price">500€</div>
+                        <div class="price" id="priceAnticipada">500€</div>
                         <p>+7 días de antelación / día</p>
                     </div>
                     <div class="price-item">
                         <h3>Reserva Urgente</h3>
-                        <div class="price">1,000€</div>
+                        <div class="price" id="priceUrgente">1,000€</div>
                         <p>24-48 horas / día</p>
                     </div>
                 </div>
             </div>
 
-            <form id="bookingForm">
-                <!-- Sistema de Calendario Funcional -->
+            <!-- Formulario de Reserva -->
+            <form id="bookingForm" novalidate>
+                <!-- Sistema de Calendario -->
                 <div class="calendar-section">
-                    <div class="simple-calendar">
-                        <div class="calendar-header">
-                            <h2>📅 Selecciona tus fechas</h2>
-                            <p id="calendarStatus">Selecciona fecha de ida</p>
-                        </div>
-                        
-                        <div class="calendar-grid" id="calendarGrid">
-                            <!-- Se genera con JavaScript -->
-                        </div>
-                        
-                        <div class="selected-dates" id="selectedDatesSection" style="display: none;">
-                            <h3>Fechas Seleccionadas</h3>
-                            <p><strong>🛫 Ida:</strong> <span id="departureDisplay">-</span></p>
-                            <p><strong>🛬 Vuelta:</strong> <span id="returnDisplay">-</span></p>
-                        </div>
-                    </div>
+                    <div id="flightCalendar"></div>
                 </div>
 
-                <!-- Sección de detalles de vuelo -->
+                <!-- Sección de detalles de vuelo (oculta inicialmente) -->
                 <div class="flight-details-section" id="flightDetailsSection" style="display: none;">
                     <h3 style="color: #1E40AF; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
                         ✈️ Detalles del Vuelo
@@ -783,17 +85,36 @@
                     <div class="form-row">
                         <div>
                             <label for="originICAO">🛫 Aeropuerto de Origen (OACI)</label>
-                            <input type="text" id="originICAO" name="originICAO" placeholder="Ej: LELL (Lleida)" maxlength="4" required class="icao-input">
-                            <div class="icao-helper">Código OACI de 4 letras</div>
+                            <input 
+                                type="text" 
+                                id="originICAO" 
+                                name="originICAO" 
+                                placeholder="Ej: LELL (Lleida)" 
+                                maxlength="4" 
+                                required 
+                                class="icao-input"
+                                pattern="[A-Z]{4}"
+                                aria-describedby="originICAOHelp">
+                            <div class="icao-helper" id="originICAOHelp">Código OACI de 4 letras</div>
                         </div>
                         <div>
                             <label for="destinationICAO">🛬 Aeropuerto de Destino (OACI)</label>
-                            <input type="text" id="destinationICAO" name="destinationICAO" placeholder="Ej: LEBL (Barcelona)" maxlength="4" required class="icao-input">
-                            <div class="icao-helper">Código OACI de 4 letras</div>
+                            <input 
+                                type="text" 
+                                id="destinationICAO" 
+                                name="destinationICAO" 
+                                placeholder="Ej: LEBL (Barcelona)" 
+                                maxlength="4" 
+                                required 
+                                class="icao-input"
+                                pattern="[A-Z]{4}"
+                                aria-describedby="destinationICAOHelp">
+                            <div class="icao-helper" id="destinationICAOHelp">Código OACI de 4 letras</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Sección de pernocta (oculta inicialmente) -->
                 <div class="form-group" id="overnightSection" style="display: none;">
                     <label for="overnight">🏨 ¿Requiere pernocta en destino?</label>
                     <div class="checkbox-group">
@@ -802,34 +123,60 @@
                     </div>
                 </div>
 
+                <!-- Datos del Cliente -->
                 <div class="form-group">
                     <label for="clientName">👤 Nombre del Cliente</label>
-                    <input type="text" id="clientName" name="clientName" placeholder="Nombre completo" required>
+                    <input 
+                        type="text" 
+                        id="clientName" 
+                        name="clientName" 
+                        placeholder="Nombre completo" 
+                        required
+                        minlength="3"
+                        maxlength="100">
                 </div>
 
                 <div class="form-group">
                     <div class="form-row">
                         <div>
                             <label for="clientEmail">📧 Email de Contacto</label>
-                            <input type="email" id="clientEmail" name="clientEmail" placeholder="email@ejemplo.com" required>
+                            <input 
+                                type="email" 
+                                id="clientEmail" 
+                                name="clientEmail" 
+                                placeholder="email@ejemplo.com" 
+                                required>
                         </div>
                         <div>
                             <label for="clientPhone">📱 Teléfono</label>
-                            <input type="tel" id="clientPhone" name="clientPhone" placeholder="+34 600 000 000" required>
+                            <input 
+                                type="tel" 
+                                id="clientPhone" 
+                                name="clientPhone" 
+                                placeholder="+34 600 000 000" 
+                                required
+                                pattern="(\+34|0034|34)?[ -]?[6-9]\d{2}[ -]?\d{3}[ -]?\d{3}">
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="additionalInfo">📝 Información Adicional</label>
-                    <textarea id="additionalInfo" name="additionalInfo" rows="4" placeholder="Detalles adicionales del vuelo, pasajeros, equipaje, etc."></textarea>
+                    <textarea 
+                        id="additionalInfo" 
+                        name="additionalInfo" 
+                        rows="4" 
+                        placeholder="Detalles adicionales del vuelo, pasajeros, equipaje, etc."
+                        maxlength="500"></textarea>
                 </div>
 
+                <!-- Resumen de Precios -->
                 <div class="total-flights" id="totalFlights" style="display: none;">
                     <h3 id="totalFlightsPrice">Selecciona fechas para ver el precio</h3>
                     <div class="breakdown" id="totalBreakdown">El precio se calculará automáticamente</div>
                 </div>
 
+                <!-- Términos y Condiciones -->
                 <div class="form-group">
                     <div class="checkbox-group" style="background: #f8f9fa; padding: 20px; border-radius: 10px; border: 2px solid #e9ecef;">
                         <input type="checkbox" id="acceptTerms" name="acceptTerms" required style="transform: scale(1.3); margin-right: 15px;">
@@ -839,17 +186,20 @@
                     </div>
                 </div>
 
+                <!-- Loading Indicator -->
                 <div class="loading" id="loadingDiv">
                     <div class="spinner"></div>
                     <p>Procesando reserva...</p>
                 </div>
 
+                <!-- Botón de Submit -->
                 <button type="submit" class="btn-primary" id="submitBtn">
                     🚁 Reservar Piloto - Pagar Ahora
                 </button>
             </form>
         </div>
 
+        <!-- Términos y Condiciones -->
         <div class="terms-section" id="terms">
             <h3>📋 Términos y Condiciones</h3>
             <ul class="terms-list">
@@ -879,822 +229,15 @@
         </div>
     </div>
 
-    <script>
-        // Elementos del DOM
-        const form = document.getElementById('bookingForm');
-        const addFlightBtn = document.getElementById('addFlightBtn');
-        const flightsContainer = document.getElementById('flightsContainer');
-        const totalFlightsPrice = document.getElementById('totalFlightsPrice');
-        const totalBreakdown = document.getElementById('totalBreakdown');
-        const submitBtn = document.getElementById('submitBtn');
-        const loadingDiv = document.getElementById('loadingDiv');
-
-        let flightCount = 2; // Empezamos con ida y vuelta (2 vuelos)
-        const maxFlights = 10;
-
-        // Configurar fecha mínima (hoy)
-        const today = new Date().toISOString().split('T')[0];
-        
-        // Función para calcular el precio de un vuelo
-        function calculateFlightPrice(dateInput) {
-            if (!dateInput) return { price: 500, description: 'Reserva anticipada' };
-            
-            const selectedDate = new Date(dateInput);
-            const now = new Date();
-            const diffTime = selectedDate - now;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            let price = 0;
-            let description = '';
-
-            if (diffDays >= 7) {
-                price = 500;
-                description = 'Reserva anticipada (+7 días)';
-            } else if (diffDays >= 2) {
-                const factor = (7 - diffDays) / 5;
-                price = 500 + (500 * factor);
-                price = Math.round(price / 50) * 50;
-                description = `Reserva con ${diffDays} días de antelación`;
-            } else {
-                price = 1000;
-                description = 'Reserva urgente (menos de 48h)';
-            }
-
-            return { price, description, days: diffDays };
-        }
-
-        // Función para actualizar el precio total
-        function updateTotalPrice() {
-            let uniqueDates = new Set();
-            let flightDetails = [];
-            
-            const flightItems = document.querySelectorAll('.flight-item');
-            flightItems.forEach((item, index) => {
-                const dateInput = item.querySelector('.flight-date');
-                const priceElement = item.querySelector('.flight-price');
-                
-                if (dateInput && dateInput.value) {
-                    const flightDate = dateInput.value;
-                    uniqueDates.add(flightDate);
-                    
-                    // Mostrar la fecha en lugar del precio individual
-                    priceElement.textContent = flightDate;
-                    flightDetails.push(`Vuelo ${index + 1}: ${flightDate}`);
-                } else {
-                    priceElement.textContent = 'Fecha pendiente';
-                    flightDetails.push(`Vuelo ${index + 1}: Fecha pendiente`);
-                }
-            });
-
-            // Calcular precio por días únicos
-            const totalDays = uniqueDates.size;
-            let totalPrice = 0;
-            const dayPrices = [];
-
-            uniqueDates.forEach(date => {
-                const { price } = calculateFlightPrice(date);
-                totalPrice += price;
-                dayPrices.push(`${date}: ${price}€`);
-            });
-
-            totalFlightsPrice.textContent = `Total: ${totalPrice}€`;
-            totalBreakdown.textContent = `${totalDays} día${totalDays > 1 ? 's' : ''} de servicio • ${dayPrices.join(' + ')}`;
-            
-            // Mostrar/ocultar sección de pernocta
-            updateOvernightVisibility();
-        }
-
-        // Función para mostrar u ocultar la sección de pernocta
-        function updateOvernightVisibility() {
-            const dateIda = document.getElementById('date-0').value;
-            const dateVuelta = document.getElementById('date-1').value;
-            const overnightSection = document.getElementById('overnightSection');
-            
-            if (dateIda && dateVuelta && dateIda !== dateVuelta) {
-                overnightSection.style.display = 'block';
-            } else {
-                overnightSection.style.display = 'none';
-                // Desmarcar el checkbox si se oculta
-                document.getElementById('overnight').checked = false;
-            }
-        }
-
-        // Función para añadir un nuevo vuelo
-        function addFlight() {
-            if (flightCount >= maxFlights) {
-                alert(`Máximo ${maxFlights} vuelos permitidos`);
-                return;
-            }
-
-            const flightNumber = flightCount;
-            const flightTitle = `✈️ Vuelo ${flightNumber + 1}`;
-
-            const flightHTML = `
-                <div class="flight-item" data-flight="${flightNumber}">
-                    <button type="button" class="btn-remove-flight" onclick="removeFlight(this)">×</button>
-                    <div class="flight-header">
-                        <h4>${flightTitle}</h4>
-                        <span class="flight-price" id="price-${flightNumber}">Fecha pendiente</span>
-                    </div>
-                    <div class="form-row">
-                        <div>
-                            <label for="origin-${flightNumber}">Origen (OACI)</label>
-                            <input type="text" id="origin-${flightNumber}" name="flights[${flightNumber}][origin]" placeholder="Ej: LESL" maxlength="4" required class="icao-input">
-                            <div class="icao-helper">Código OACI de 4 letras</div>
-                        </div>
-                        <div>
-                            <label for="destination-${flightNumber}">Destino (OACI)</label>
-                            <input type="text" id="destination-${flightNumber}" name="flights[${flightNumber}][destination]" placeholder="Ej: LELL" maxlength="4" required class="icao-input">
-                            <div class="icao-helper">Código OACI de 4 letras</div>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div>
-                            <label for="date-${flightNumber}">📅 Fecha</label>
-                            <input type="date" id="date-${flightNumber}" name="flights[${flightNumber}][date]" required class="flight-date" min="${today}">
-                        </div>
-                        <div>
-                            <label for="time-${flightNumber}">🕐 Hora</label>
-                            <input type="time" id="time-${flightNumber}" name="flights[${flightNumber}][time]" required>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            flightsContainer.insertAdjacentHTML('beforeend', flightHTML);
-            flightCount++;
-
-            // Añadir event listeners a los nuevos campos
-            setupFlightEventListeners(flightNumber);
-            updateTotalPrice();
-            updateAddButtonText();
-        }
-
-        // Función para eliminar un vuelo (ahora se puede eliminar el de vuelta también)
-        function removeFlight(button) {
-            const flightItem = button.closest('.flight-item');
-            const flightNumber = parseInt(flightItem.getAttribute('data-flight'));
-            
-            // No permitir eliminar solo el vuelo de ida (0)
-            if (flightNumber === 0) {
-                alert('No se puede eliminar el vuelo de ida');
-                return;
-            }
-            
-            flightItem.remove();
-            flightCount--;
-            updateTotalPrice();
-            updateAddButtonText();
-        }
-
-        // Función para actualizar el texto del botón de añadir
-        function updateAddButtonText() {
-            addFlightBtn.textContent = `+ Añadir Vuelo Extra (${flightCount + 1}/${maxFlights})`;
-            
-            if (flightCount >= maxFlights) {
-                addFlightBtn.style.display = 'none';
-            } else {
-                addFlightBtn.style.display = 'inline-block';
-            }
-        }
-
-        // Función para configurar event listeners de un vuelo
-        function setupFlightEventListeners(flightNumber) {
-            const dateInput = document.getElementById(`date-${flightNumber}`);
-            const originInput = document.getElementById(`origin-${flightNumber}`);
-            const destinationInput = document.getElementById(`destination-${flightNumber}`);
-
-            // Event listener para cambio de fecha
-            dateInput.addEventListener('change', updateTotalPrice);
-
-            // Event listeners para validación OACI
-            [originInput, destinationInput].forEach(input => {
-                input.addEventListener('input', function() {
-                    this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
-                });
-            });
-        }
-
-        // Event listener para añadir vuelo
-        addFlightBtn.addEventListener('click', addFlight);
-
-        // Configurar los primeros dos vuelos (ida y vuelta)
-        document.getElementById('date-0').min = today;
-        document.getElementById('date-1').min = today;
-        setupFlightEventListeners(0);
-        setupFlightEventListeners(1);
-
-        // Función para hacer scroll a términos y condiciones
-        function scrollToTerms() {
-            document.getElementById('terms').scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-
-        // Hacer las funciones globales
-        window.scrollToTerms = scrollToTerms;
-        window.removeFlight = removeFlight;
-
-        // Envío del formulario
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validar que acepta términos y condiciones
-            const acceptTerms = document.getElementById('acceptTerms');
-            if (!acceptTerms.checked) {
-                alert('Debe aceptar los términos y condiciones para continuar');
-                acceptTerms.focus();
-                return;
-            }
-
-            // Validar que hay fechas seleccionadas
-            const flightItems = document.querySelectorAll('.flight-item');
-            const uniqueDates = new Set();
-            const flights = [];
-            let validFlights = true;
-            
-            flightItems.forEach((item, index) => {
-                const originInput = item.querySelector(`input[name="flights[${index}][origin]"]`);
-                const destinationInput = item.querySelector(`input[name="flights[${index}][destination]"]`);
-                const dateInput = item.querySelector(`input[name="flights[${index}][date]"]`);
-                const timeInput = item.querySelector(`input[name="flights[${index}][time]"]`);
-                
-                const origin = originInput ? originInput.value : '';
-                const destination = destinationInput ? destinationInput.value : '';
-                const date = dateInput ? dateInput.value : '';
-                const time = timeInput ? timeInput.value : '';
-                
-                // Validar solo si el vuelo tiene datos (no está vacío)
-                if (origin || destination || date || time) {
-                    // Si tiene algún dato, validar que esté completo
-                    if (!date) {
-                        validFlights = false;
-                        alert(`Vuelo ${index + 1}: Por favor, selecciona una fecha`);
-                        return;
-                    }
-                    
-                    if (!origin || origin.length !== 4 || !destination || destination.length !== 4) {
-                        validFlights = false;
-                        alert(`Vuelo ${index + 1}: Por favor, introduce códigos OACI válidos de 4 letras`);
-                        return;
-                    }
-
-                    if (origin === destination) {
-                        validFlights = false;
-                        alert(`Vuelo ${index + 1}: El origen y destino no pueden ser el mismo aeropuerto`);
-                        return;
-                    }
-
-                    if (!time) {
-                        validFlights = false;
-                        alert(`Vuelo ${index + 1}: Por favor, selecciona una hora`);
-                        return;
-                    }
-
-                    uniqueDates.add(date);
-                    flights.push({ origin, destination, date, time });
-                }
-            });
-
-            // Validar que hay al menos el vuelo de ida
-            if (flights.length === 0) {
-                validFlights = false;
-                alert('Debe completar al menos el vuelo de ida');
-                return;
-            }
-
-            if (!validFlights) return;
-
-            // Calcular precio total por días únicos
-            let totalPrice = 0;
-            const dayPrices = [];
-            
-            uniqueDates.forEach(date => {
-                const { price } = calculateFlightPrice(date);
-                totalPrice += price;
-                dayPrices.push(`${date}: ${price}€`);
-            });
-
-            // Mostrar loading
-            loadingDiv.style.display = 'block';
-            submitBtn.disabled = true;
-
-            // Recopilar datos del formulario
-            const formData = new FormData(form);
-            const bookingData = {
-                flights: flights,
-                overnight: formData.get('overnight') === 'on',
-                clientName: formData.get('clientName'),
-                clientEmail: formData.get('clientEmail'),
-                clientPhone: formData.get('clientPhone'),
-                additionalInfo: formData.get('additionalInfo'),
-                totalPrice: totalPrice,
-                uniqueDays: uniqueDates.size
-            };
-
-            // Función para enviar email con resumen
-            function sendBookingEmail(bookingData) {
-                const emailData = {
-                    to: 'ivan@tintore.es',
-                    subject: `Nueva Reserva de Piloto - ${bookingData.clientName}`,
-                    html: `
-                        <h2>🚁 Nueva Reserva de Piloto Comercial</h2>
-                        <p><strong>Fecha de reserva:</strong> ${new Date().toLocaleString('es-ES')}</p>
-                        
-                        <h3>👤 Datos del Cliente</h3>
-                        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
-                            <tr style="background-color: #f8f9fa;">
-                                <td><strong>Nombre</strong></td>
-                                <td>${bookingData.clientName}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Email</strong></td>
-                                <td>${bookingData.clientEmail}</td>
-                            </tr>
-                            <tr style="background-color: #f8f9fa;">
-                                <td><strong>Teléfono</strong></td>
-                                <td>${bookingData.clientPhone}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Pernocta</strong></td>
-                                <td>${bookingData.overnight ? '✅ Sí (gastos incluidos)' : '❌ No'}</td>
-                            </tr>
-                        </table>
-
-                        <h3>✈️ Vuelos Programados</h3>
-                        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
-                            <tr style="background-color: #1E40AF; color: white;">
-                                <th>Vuelo</th>
-                                <th>Origen</th>
-                                <th>Destino</th>
-                                <th>Fecha</th>
-                                <th>Hora</th>
-                            </tr>
-                            ${bookingData.flights.map((flight, index) => `
-                                <tr style="background-color: ${index % 2 === 0 ? '#f8f9fa' : 'white'};">
-                                    <td><strong>${index === 0 ? 'IDA' : index === 1 ? 'VUELTA' : `EXTRA ${index - 1}`}</strong></td>
-                                    <td>${flight.origin}</td>
-                                    <td>${flight.destination}</td>
-                                    <td>${flight.date}</td>
-                                    <td>${flight.time}</td>
-                                </tr>
-                            `).join('')}
-                        </table>
-
-                        <h3>💰 Resumen de Precios</h3>
-                        <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
-                            ${dayPrices.map(dayPrice => `
-                                <tr>
-                                    <td>${dayPrice}</td>
-                                </tr>
-                            `).join('')}
-                            <tr style="background-color: #1E40AF; color: white;">
-                                <td><strong>TOTAL: ${bookingData.totalPrice}€</strong></td>
-                            </tr>
-                        </table>
-
-                        ${bookingData.additionalInfo ? `
-                            <h3>📝 Información Adicional</h3>
-                            <p style="background-color: #f8f9fa; padding: 15px; border-radius: 5px;">${bookingData.additionalInfo}</p>
-                        ` : ''}
-
-                        <hr>
-                        <p style="color: #666; font-size: 0.9em;">
-                            <strong>SexyFly.es</strong> - Sistema de Reservas de Piloto Comercial<br>
-                            Esta reserva requiere confirmación y pago para ser válida.
-                        </p>
-                    `
-                };
-
-                // Simular envío de email (aquí integrarías con tu servicio de email)
-                console.log('Email enviado:', emailData);
-                return true;
-            }
-
-            // Simular envío
-            setTimeout(() => {
-                const flightSummary = flights.map((f, i) => `Vuelo ${i + 1}: ${f.origin} → ${f.destination} (${f.date})`).join('\n');
-                const daysSummary = dayPrices.join('\n');
-                
-                // Enviar email con resumen
-                const emailSent = sendBookingEmail(bookingData);
-                
-                alert(`Reserva procesada correctamente!\n\n${flightSummary}\n\n${daysSummary}\n\nTotal: ${totalPrice}€\n\n✅ Email enviado a ivan@tintore.es\n\nSerás redirigido al sistema de pago.`);
-                
-                // Aquí rediriges a tu pasarela de pagos existente
-                // window.location.href = 'tu-url-de-pago';
-                
-                loadingDiv.style.display = 'none';
-                submitBtn.disabled = false;
-            }, 2000);
-        });
-
-        // Inicializar
-        updateTotalPrice();
-        updateAddButtonText();
-
-        // ===== SISTEMA DE VERSIONES =====
-        class VersionManager {
-            constructor() {
-                this.badge = document.getElementById('version-badge');
-                this.versionText = document.getElementById('version-text');
-                this.dropdown = document.getElementById('version-dropdown');
-                this.versionList = document.getElementById('version-list');
-                this.isDropdownVisible = false;
-                this.versionsData = null;
-                
-                this.init();
-            }
-
-            async init() {
-                try {
-                    await this.loadVersions();
-                    this.setupEventListeners();
-                    this.updateBadge();
-                } catch (error) {
-                    console.warn('Error inicializando sistema de versiones:', error);
-                    this.showFallback();
-                }
-            }
-
-            async loadVersions() {
-                try {
-                    const response = await fetch('./versions.json');
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    this.versionsData = await response.json();
-                } catch (error) {
-                    console.warn('Error cargando versions.json:', error);
-                    throw error;
-                }
-            }
-
-            showFallback() {
-                this.versionText.textContent = '1.2.0';
-                this.versionList.innerHTML = `
-                    <div class="version-error">
-                        ⚠️ Error cargando historial de versiones. 
-                        <br><small>Versión actual: v1.2.0</small>
-                    </div>
-                `;
-            }
-
-            updateBadge() {
-                if (this.versionsData) {
-                    this.versionText.textContent = this.versionsData.currentVersion;
-                    this.renderVersionList();
-                }
-            }
-
-            renderVersionList() {
-                if (!this.versionsData || !this.versionsData.versions) {
-                    this.showFallback();
-                    return;
-                }
-
-                // Mostrar solo las últimas 3 versiones
-                const recentVersions = this.versionsData.versions.slice(0, 3);
-                
-                const versionsHTML = recentVersions.map(version => {
-                    const date = new Date(version.date).toLocaleDateString('es-ES', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                    });
-
-                    const featuresHTML = version.features && version.features.length > 0 
-                        ? `<div class="version-features">
-                             <ul>${version.features.map(feature => `<li>${feature}</li>`).join('')}</ul>
-                           </div>`
-                        : '';
-
-                    return `
-                        <div class="version-item">
-                            <div class="version-item-header">
-                                <span class="version-number">v${version.version}</span>
-                                <span class="version-date">${date}</span>
-                            </div>
-                            <div class="version-type ${version.changeType}">${version.changeType}</div>
-                            <div class="version-description">${version.description}</div>
-                            ${featuresHTML}
-                        </div>
-                    `;
-                }).join('');
-
-                this.versionList.innerHTML = versionsHTML;
-            }
-
-            setupEventListeners() {
-                // Toggle dropdown al hacer click
-                this.badge.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.toggleDropdown();
-                });
-
-                // Soporte para teclado (accesibilidad)
-                this.badge.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        this.toggleDropdown();
-                    }
-                });
-
-                // Cerrar dropdown al hacer click fuera
-                document.addEventListener('click', (e) => {
-                    if (!this.badge.contains(e.target)) {
-                        this.hideDropdown();
-                    }
-                });
-
-                // Cerrar dropdown con Escape
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && this.isDropdownVisible) {
-                        this.hideDropdown();
-                        this.badge.focus(); // Devolver foco al badge
-                    }
-                });
-
-                // Prevenir que el dropdown se cierre al hacer click dentro
-                this.dropdown.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                });
-            }
-
-            toggleDropdown() {
-                if (this.isDropdownVisible) {
-                    this.hideDropdown();
-                } else {
-                    this.showDropdown();
-                }
-            }
-
-            showDropdown() {
-                this.dropdown.classList.add('show');
-                this.isDropdownVisible = true;
-                this.badge.setAttribute('aria-expanded', 'true');
-            }
-
-            hideDropdown() {
-                this.dropdown.classList.remove('show');
-                this.isDropdownVisible = false;
-                this.badge.setAttribute('aria-expanded', 'false');
-            }
-
-            // Método público para actualizar versiones dinámicamente
-            async refresh() {
-                try {
-                    await this.loadVersions();
-                    this.updateBadge();
-                } catch (error) {
-                    console.warn('Error refrescando versiones:', error);
-                }
-            }
-        }
-
-        // Inicializar el sistema de versiones inmediatamente
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                window.versionManager = new VersionManager();
-            });
-        } else {
-            // DOM ya está cargado
-            window.versionManager = new VersionManager();
-        }
-    </script>
-
-    <!-- SexyFly 2.0 - Sistema Integrado Funcional -->
-    <script>
-        // ===== SISTEMA DE CALENDARIO FUNCIONAL =====
-        class FunctionalCalendar {
-            constructor() {
-                console.log('📅 Inicializando calendario funcional...');
-                this.selectedDates = {
-                    departure: null,
-                    return: null
-                };
-                this.isSelectingReturn = false;
-                this.init();
-            }
-
-            init() {
-                this.generateCalendar();
-                this.setupEventListeners();
-                this.initializeVersionSystem();
-                console.log('✅ Calendario funcional inicializado');
-            }
-
-            generateCalendar() {
-                const grid = document.getElementById('calendarGrid');
-                const today = new Date();
-                let html = '';
-
-                // Días de la semana
-                const weekdays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-                weekdays.forEach(day => {
-                    html += `<div class="weekday-header">${day}</div>`;
-                });
-
-                // Generar 28 días a partir de hoy
-                for (let i = 0; i < 28; i++) {
-                    const date = new Date(today);
-                    date.setDate(today.getDate() + i);
-                    
-                    const dayNumber = date.getDate();
-                    const price = this.calculatePrice(i);
-                    const priceClass = this.getPriceClass(i);
-                    
-                    html += `
-                        <div class="calendar-day ${priceClass}" 
-                             data-date="${date.toISOString().split('T')[0]}"
-                             data-index="${i}">
-                            <div class="day-number">${dayNumber}</div>
-                            <div class="day-price">${price}€</div>
-                        </div>
-                    `;
-                }
-                
-                grid.innerHTML = html;
-                console.log('✅ Calendario generado con 28 días');
-            }
-
-            calculatePrice(daysFromNow) {
-                if (daysFromNow >= 7) return 500;
-                if (daysFromNow >= 2) return 750;
-                return 1000;
-            }
-
-            getPriceClass(daysFromNow) {
-                if (daysFromNow >= 7) return 'available';
-                if (daysFromNow >= 2) return 'medium';
-                return 'urgent';
-            }
-
-            setupEventListeners() {
-                const grid = document.getElementById('calendarGrid');
-                
-                grid.addEventListener('click', (e) => {
-                    const dayElement = e.target.closest('.calendar-day');
-                    if (!dayElement) return;
-                    
-                    const dateStr = dayElement.dataset.date;
-                    const date = new Date(dateStr);
-                    
-                    console.log('Fecha clickeada:', date);
-                    this.selectDate(date, dayElement);
-                });
-                
-                console.log('✅ Event listeners configurados');
-            }
-
-            selectDate(date, element) {
-                if (!this.selectedDates.departure) {
-                    // Primera selección - ida
-                    this.selectedDates.departure = date;
-                    element.classList.add('selected');
-                    document.getElementById('calendarStatus').textContent = 'Ahora selecciona fecha de vuelta';
-                    this.isSelectingReturn = true;
-                    
-                    document.getElementById('departureDisplay').textContent = date.toLocaleDateString('es-ES');
-                    document.getElementById('selectedDatesSection').style.display = 'block';
-                    
-                    console.log('✅ Fecha de ida seleccionada:', date);
-                    
-                } else if (this.isSelectingReturn) {
-                    // Segunda selección - vuelta
-                    if (date <= this.selectedDates.departure) {
-                        alert('La fecha de vuelta debe ser posterior a la fecha de ida');
-                        return;
-                    }
-                    
-                    this.selectedDates.return = date;
-                    element.classList.add('selected');
-                    document.getElementById('calendarStatus').textContent = '✅ Fechas seleccionadas correctamente';
-                    this.isSelectingReturn = false;
-                    
-                    document.getElementById('returnDisplay').textContent = date.toLocaleDateString('es-ES');
-                    document.getElementById('flightDetailsSection').style.display = 'block';
-                    
-                    this.updateTotalPrice();
-                    console.log('✅ Fecha de vuelta seleccionada:', date);
-                    
-                } else {
-                    // Reset - empezar de nuevo
-                    this.clearSelection();
-                    this.selectDate(date, element);
-                }
-            }
-
-            updateTotalPrice() {
-                const depPrice = this.calculatePriceForDate(this.selectedDates.departure);
-                const retPrice = this.calculatePriceForDate(this.selectedDates.return);
-                const total = depPrice + retPrice;
-                
-                document.getElementById('totalFlightsPrice').textContent = `Total: ${total}€`;
-                document.getElementById('totalBreakdown').textContent = `Ida: ${depPrice}€ + Vuelta: ${retPrice}€`;
-                document.getElementById('totalFlights').style.display = 'block';
-                
-                console.log('✅ Precio actualizado:', total);
-            }
-
-            calculatePriceForDate(date) {
-                const today = new Date();
-                const diffTime = date - today;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                if (diffDays >= 7) return 500;
-                if (diffDays >= 2) return 750;
-                return 1000;
-            }
-
-            clearSelection() {
-                document.querySelectorAll('.calendar-day.selected').forEach(el => {
-                    el.classList.remove('selected');
-                });
-                
-                this.selectedDates = { departure: null, return: null };
-                this.isSelectingReturn = false;
-                
-                document.getElementById('selectedDatesSection').style.display = 'none';
-                document.getElementById('flightDetailsSection').style.display = 'none';
-                document.getElementById('totalFlights').style.display = 'none';
-                document.getElementById('calendarStatus').textContent = 'Selecciona fecha de ida';
-            }
-
-            initializeVersionSystem() {
-                // Sistema de versiones simple
-                document.getElementById('version-text').textContent = '2.1.0';
-                
-                const versionList = document.getElementById('version-list');
-                versionList.innerHTML = `
-                    <div class="version-item">
-                        <div class="version-item-header">
-                            <span class="version-number">v2.1.0</span>
-                            <span class="version-date">22 Sep</span>
-                        </div>
-                        <div class="version-type minor">minor</div>
-                        <div class="version-description">Sistema de calendario funcional integrado</div>
-                    </div>
-                `;
-                
-                console.log('✅ Sistema de versiones inicializado');
-            }
-        }
-
-        // Inicializar cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', () => {
-            window.functionalCalendar = new FunctionalCalendar();
-        });
-
-        // Si el DOM ya está cargado, inicializar inmediatamente
-        if (document.readyState !== 'loading') {
-            window.functionalCalendar = new FunctionalCalendar();
-        }
-
-        // Validación ICAO
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('[id$="ICAO"]').forEach(input => {
-                input.addEventListener('input', function() {
-                    this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
-                    if (this.value.length === 4) {
-                        this.style.borderColor = '#10B981';
-                    } else {
-                        this.style.borderColor = '#ddd';
-                    }
-                });
-            });
-        });
-
-        // Validación de formulario
-        document.getElementById('bookingForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            if (!window.functionalCalendar.selectedDates.departure || 
-                !window.functionalCalendar.selectedDates.return) {
-                alert('Por favor, selecciona las fechas de ida y vuelta');
-                return;
-            }
-            
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData);
-            
-            console.log('Datos de reserva:', {
-                ...data,
-                dates: window.functionalCalendar.selectedDates
-            });
-            
-            alert('¡Reserva enviada correctamente! Te contactaremos pronto.');
-        });
-
-        // Mantener compatibilidad
-        function scrollToTerms() {
-            document.getElementById('terms').scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-        window.scrollToTerms = scrollToTerms;
-    </script>
+    <!-- Scripts - ORDEN IMPORTANTE -->
+    <!-- 1. Configuración (primero siempre) -->
+    <script src="config.js"></script>
+    
+    <!-- 2. Módulos de sistema -->
+    <script src="pricing.js"></script>
+    <script src="calendar.js"></script>
+    
+    <!-- 3. Aplicación principal -->
+    <script src="app.js"></script>
 </body>
 </html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug - SexyFly</title>
+</head>
+<body>
+    <h1>Debug Console</h1>
+    <p>Abre la consola del navegador (F12) y recarga la página principal.</p>
+    <p>Luego vuelve aquí y verifica los mensajes.</p>
+    
+    <script>
+        // Script de debug que puedes pegar en la consola
+        console.log('=== DEBUG SCRIPT ===');
+        console.log('window.sexyFlyApp:', window.sexyFlyApp);
+        console.log('Form:', document.getElementById('bookingForm'));
+        console.log('Submit button:', document.getElementById('submitBtn'));
+        
+        if (window.sexyFlyApp) {
+            console.log('✅ SexyFlyApp existe');
+            console.log('Selected dates:', window.sexyFlyApp.selectedDates);
+            console.log('Has submit handler:', !!window.sexyFlyApp._submitHandler);
+        } else {
+            console.error('❌ SexyFlyApp NO existe');
+        }
+        
+        const form = document.getElementById('bookingForm');
+        if (form) {
+            console.log('✅ Form existe');
+            // Listar todos los listeners
+            console.log('Form listeners:', form.onclick);
+        } else {
+            console.error('❌ Form NO existe');
+        }
+    </script>
+</body>
+</html>
+

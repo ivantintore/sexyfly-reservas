@@ -1,0 +1,10 @@
+# SexyFly Reservas - Dependencias
+# Este proyecto usa solo la biblioteca estándar de Python
+# No requiere dependencias externas para el servidor de desarrollo
+
+# Si en el futuro necesitas dependencias, añádelas aquí
+# Ejemplo:
+# flask==2.3.0
+# requests==2.31.0
+
+
