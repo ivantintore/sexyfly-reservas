@@ -55,7 +55,7 @@ class TestRunner {
     this.printSummary();
   }
 
-  printSummary() {
+  async printSummary() {
     const duration = (this.endTime - this.startTime) / 1000;
     const total = this.tests.length;
 
@@ -70,10 +70,35 @@ class TestRunner {
 
     if (this.failed === 0) {
       console.log('🎉 TODOS LOS TESTS PASARON! 🎉\n');
-      return 0; // Exit code 0 = success
     } else {
       console.log('⚠️  HAY TESTS FALLIDOS\n');
-      return 1; // Exit code 1 = failure
+    }
+
+    // Enviar notificación por email
+    await this.enviarNotificacionEmail({
+      total,
+      passed: this.passed,
+      failed: this.failed,
+      duration: duration.toFixed(2)
+    });
+
+    return this.failed === 0 ? 0 : 1;
+  }
+
+  async enviarNotificacionEmail(results) {
+    // Solo enviar si está habilitado en config
+    if (typeof SEXYFLY_CONFIG !== 'undefined' && 
+        SEXYFLY_CONFIG.integrations.email.testNotifications &&
+        typeof enviarNotificacionTests === 'function') {
+      
+      console.log('📧 Enviando notificación por email...');
+      
+      try {
+        await enviarNotificacionTests(results);
+        console.log('✅ Email enviado correctamente\n');
+      } catch (error) {
+        console.warn('⚠️  No se pudo enviar email:', error.message);
+      }
     }
   }
 }

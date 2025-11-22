@@ -170,8 +170,10 @@ const SEXYFLY_CONFIG = {
       merchantId: '340829647',
     },
     email: {
-      provider: 'custom',               // Implementar según necesidad
-      notificationEmail: 'ivan@tintore.es',
+      provider: 'formsubmit',           // formsubmit.co (gratis, sin registro)
+      notificationEmail: 'ivan@maitsa.com',  // Email donde recibirás notificaciones
+      testNotifications: true,          // Enviar email después de ejecutar tests
+      bookingNotifications: true,       // Enviar email con cada reserva
     },
     analytics: {
       enabled: false,

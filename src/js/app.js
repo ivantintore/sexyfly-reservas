@@ -533,7 +533,7 @@ class SexyFlyApp {
    * Completar reserva
    * @private
    */
-  completeBooking(bookingData) {
+  async completeBooking(bookingData) {
     if (SEXYFLY_CONFIG.dev.debug) {
       console.log('✅ Reserva completada:', bookingData);
     }
@@ -541,8 +541,19 @@ class SexyFlyApp {
     // Generar resumen
     const summary = this.generateBookingSummary(bookingData);
     
+    // Enviar notificación por email
+    if (typeof enviarNotificacionReserva === 'function') {
+      console.log('📧 Enviando notificación de reserva...');
+      try {
+        await enviarNotificacionReserva(bookingData);
+        console.log('✅ Notificación enviada a ' + SEXYFLY_CONFIG.integrations.email.notificationEmail);
+      } catch (error) {
+        console.warn('⚠️ No se pudo enviar email:', error);
+      }
+    }
+    
     // Mostrar confirmación
-    alert(`${SEXYFLY_CONFIG.i18n.es.success.bookingProcessed}\n\n${summary}\n\n${SEXYFLY_CONFIG.i18n.es.success.emailSent}\n\n${SEXYFLY_CONFIG.i18n.es.success.redirecting}`);
+    alert(`${SEXYFLY_CONFIG.i18n.es.success.bookingProcessed}\n\n${summary}\n\n📧 Email enviado a ${SEXYFLY_CONFIG.integrations.email.notificationEmail}\n\n${SEXYFLY_CONFIG.i18n.es.success.redirecting}`);
     
     // Ocultar loading
     this.showLoading(false);
