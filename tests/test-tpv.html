@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test TPV MAITSA/Redsys - SexyFly</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #1a1a2e;
+            color: #0f0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #00d9ff;
+            text-align: center;
+        }
+        .section {
+            background: #0a0a0a;
+            border: 1px solid #0f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .btn {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background: #0d0;
+        }
+        .info {
+            background: #1f2937;
+            padding: 15px;
+            border-left: 4px solid #00d9ff;
+            margin: 15px 0;
+        }
+        .card-info {
+            background: #374151;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .log {
+            background: #000;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #333;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        .warning { color: #ff0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test TPV MAITSA/Redsys</h1>
+        
+        <div class="section">
+            <h2>📊 Información del TPV</h2>
+            <div class="info">
+                <strong>Merchant Code:</strong> 340829647<br>
+                <strong>Terminal:</strong> 1<br>
+                <strong>Moneda:</strong> 978 (EUR)<br>
+                <strong>Modo:</strong> TEST<br>
+                <strong>URL:</strong> https://sis-t.redsys.es:25443/sis/realizarPago
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🧪 Tarjetas de Prueba</h2>
+            
+            <div class="card-info">
+                <strong>✅ Pago AUTORIZADO:</strong><br>
+                Número: 4548810000000003<br>
+                CVV: 123<br>
+                Caducidad: 12/25<br>
+                CIP: 123456
+            </div>
+
+            <div class="card-info">
+                <strong>❌ Pago DENEGADO:</strong><br>
+                Número: 1111111111111117<br>
+                Caducidad: 12/25<br>
+                CVV: (No requerido)
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Tests Disponibles</h2>
+            
+            <button class="btn" onclick="testBackendHealth()">
+                1️⃣ Verificar Backend
+            </button>
+
+            <button class="btn" onclick="testGenerarParametros()">
+                2️⃣ Test Generar Parámetros
+            </button>
+
+            <button class="btn" onclick="testPagoCompleto()">
+                3️⃣ Test Pago Completo (Redirige a Redsys)
+            </button>
+
+            <div class="log" id="log"></div>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ Importante</h2>
+            <p>Para que funcione el TPV necesitas:</p>
+            <ul>
+                <li>✅ Backend corriendo: <code>python backend/app.py</code></li>
+                <li>⚠️ URLs públicas para callbacks (usa ngrok en desarrollo)</li>
+                <li>🧪 Usa las tarjetas de prueba indicadas arriba</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const logDiv = document.getElementById('log');
+
+        function log(msg, type = 'success') {
+            const line = document.createElement('div');
+            line.className = type;
+            line.textContent = msg;
+            logDiv.appendChild(line);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(msg);
+        }
+
+        function clearLog() {
+            logDiv.innerHTML = '';
+        }
+
+        async function testBackendHealth() {
+            clearLog();
+            log('🔍 Verificando backend TPV...', 'warning');
+
+            try {
+                const response = await fetch('http://localhost:5000/api/health');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                log('✅ Backend TPV operativo', 'success');
+                log(`   Estado: ${data.status}`, 'success');
+                log(`   Modo: ${data.tpv_mode}`, 'success');
+                log(`   Merchant: ${data.merchant_code}`, 'success');
+                log(`   Versión: ${data.version}`, 'success');
+
+            } catch (error) {
+                log('❌ Backend no disponible', 'error');
+                log(`   Error: ${error.message}`, 'error');
+                log('', 'error');
+                log('⚠️ Solución: Ejecuta en terminal:', 'warning');
+                log('   python backend/app.py', 'warning');
+            }
+        }
+
+        async function testGenerarParametros() {
+            clearLog();
+            log('🧪 Test: Generar parámetros TPV...', 'warning');
+
+            const datosTest = {
+                pricing: { total: 1080.50 },
+                client: { name: 'Test Usuario TPV' },
+                airports: { origin: 'LELL', destination: 'LEBL' }
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/api/tpv/iniciar-pago', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datosTest)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    log('✅ Parámetros generados correctamente', 'success');
+                    log(`   Número pedido: ${data.numero_pedido}`, 'success');
+                    log(`   Firma SHA256: ✅ Generada`, 'success');
+                    log(`   Merchant Parameters: ${data.parametros_tpv.Ds_MerchantParameters.substring(0, 50)}...`, 'success');
+                } else {
+                    throw new Error(data.error);
+                }
+
+            } catch (error) {
+                log('❌ Error generando parámetros', 'error');
+                log(`   ${error.message}`, 'error');
+            }
+        }
+
+        async function testPagoCompleto() {
+            clearLog();
+            log('🚀 Test: Pago completo (redirigirá a Redsys)...', 'warning');
+            log('', 'warning');
+            log('⚠️  IMPORTANTE:', 'warning');
+            log('   Usa tarjeta: 4548810000000003', 'warning');
+            log('   CVV: 123', 'warning');
+            log('   Caducidad: 12/25', 'warning');
+            log('   CIP: 123456', 'warning');
+            log('', 'warning');
+            log('🔄 Redirigiendo en 3 segundos...', 'warning');
+
+            const datosTest = {
+                pricing: { total: 100.00 },
+                client: { name: 'Test Pago Completo' },
+                airports: { origin: 'LELL', destination: 'LEBL' },
+                dates: {
+                    departure: new Date(),
+                    return: new Date()
+                }
+            };
+
+            setTimeout(async () => {
+                try {
+                    const response = await fetch('http://localhost:5000/api/tpv/iniciar-pago', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(datosTest)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        log('✅ Redirigiendo a Redsys...', 'success');
+                        
+                        // Crear y enviar formulario
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = data.parametros_tpv.url_tpv;
+
+                        const campos = {
+                            'Ds_SignatureVersion': data.parametros_tpv.Ds_SignatureVersion,
+                            'Ds_MerchantParameters': data.parametros_tpv.Ds_MerchantParameters,
+                            'Ds_Signature': data.parametros_tpv.Ds_Signature
+                        };
+
+                        for (const [name, value] of Object.entries(campos)) {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = name;
+                            input.value = value;
+                            form.appendChild(input);
+                        }
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+
+                } catch (error) {
+                    log('❌ Error:', 'error');
+                    log(`   ${error.message}`, 'error');
+                }
+            }, 3000);
+        }
+
+        // Auto-ejecutar test de backend al cargar
+        window.addEventListener('load', () => {
+            setTimeout(testBackendHealth, 500);
+        });
+    </script>
+</body>
+</html>
+

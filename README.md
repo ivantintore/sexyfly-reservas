@@ -55,7 +55,18 @@ Sistema profesional de reservas para servicios de piloto comercial con calendari
 
 **URL de Producción**: https://ivantintore.github.io/sexyfly-reservas/
 
-**URL de Desarrollo**: http://localhost:8000
+**URL de Desarrollo**: http://localhost:8000/public/index.html
+
+## 💳 Sistema de Pagos
+
+**TPV Virtual MAITSA/Redsys** integrado en v3.1.0
+
+- **Provider**: MAITSA (Caixabank/Redsys)
+- **Merchant Code**: 340829647
+- **Modo actual**: TEST
+- **Tarjetas de prueba**: Ver `docs/TPV-MAITSA-INTEGRATION.md`
+
+Para más detalles ver: [Documentación TPV](docs/TPV-MAITSA-INTEGRATION.md)
 
 ---
 

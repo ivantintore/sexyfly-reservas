@@ -1,10 +1,14 @@
-# SexyFly Reservas - Dependencias
-# Este proyecto usa solo la biblioteca estándar de Python
-# No requiere dependencias externas para el servidor de desarrollo
+# SexyFly Reservas - Dependencias Backend
+# Versión: 3.1.0
 
-# Si en el futuro necesitas dependencias, añádelas aquí
-# Ejemplo:
-# flask==2.3.0
-# requests==2.31.0
+# Framework web
+Flask==3.0.0
+Flask-CORS==4.0.0
 
+# Criptografía para firmas TPV
+pycryptodome==3.19.0
 
+# Utilidades
+python-dotenv==1.0.0
+
+# Si en el futuro necesitas más dependencias, añádelas aquí

@@ -165,9 +165,27 @@ const SEXYFLY_CONFIG = {
   integrations: {
     tpv: {
       enabled: true,
-      provider: 'MAITSA',
+      provider: 'REDSYS_MAITSA',
       testMode: true,                   // Cambiar a false en producción
-      merchantId: '340829647',
+      merchantCode: '340829647',        // FUC (Número de comercio)
+      terminal: '1',                    // Número de terminal
+      currency: '978',                  // 978 = EUR
+      apiUrl: '/api/tpv/iniciar-pago',  // Endpoint backend
+      urlOK: window.location.origin + '/public/pago-ok.html',
+      urlKO: window.location.origin + '/public/pago-ko.html',
+      // Tarjetas de prueba (solo en test mode)
+      testCards: {
+        ok: {
+          number: '4548810000000003',
+          cvv: '123',
+          expiry: '12/25',
+          cip: '123456'
+        },
+        ko: {
+          number: '1111111111111117',
+          expiry: '12/25'
+        }
+      }
     },
     email: {
       provider: 'formsubmit',           // formsubmit.co (gratis, sin registro)

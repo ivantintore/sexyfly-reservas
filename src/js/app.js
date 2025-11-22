@@ -552,14 +552,28 @@ class SexyFlyApp {
       }
     }
     
-    // Mostrar confirmación
-    alert(`${SEXYFLY_CONFIG.i18n.es.success.bookingProcessed}\n\n${summary}\n\n📧 Email enviado a ${SEXYFLY_CONFIG.integrations.email.notificationEmail}\n\n${SEXYFLY_CONFIG.i18n.es.success.redirecting}`);
-    
-    // Ocultar loading
-    this.showLoading(false);
-    
-    // Aquí iría la redirección a la pasarela de pago
-    // window.location.href = '/payment?booking=' + bookingId;
+    // Verificar si TPV está habilitado
+    if (SEXYFLY_CONFIG.integrations.tpv.enabled && typeof iniciarPagoTPV === 'function') {
+      // Iniciar proceso de pago con TPV
+      console.log('💳 Redirigiendo a pasarela de pago TPV...');
+      
+      const pagoIniciado = await iniciarPagoTPV(bookingData);
+      
+      if (pagoIniciado) {
+        // El usuario será redirigido a Redsys automáticamente
+        console.log('✅ Redirigiendo a TPV Redsys...');
+      } else {
+        // Mostrar error
+        this.showLoading(false);
+        this.showError('No se pudo iniciar el pago. Por favor, inténtalo de nuevo.');
+      }
+    } else {
+      // TPV desactivado - mostrar confirmación simulada
+      alert(`${SEXYFLY_CONFIG.i18n.es.success.bookingProcessed}\n\n${summary}\n\n📧 Email enviado a ${SEXYFLY_CONFIG.integrations.email.notificationEmail}\n\n${SEXYFLY_CONFIG.i18n.es.success.redirecting}`);
+      
+      // Ocultar loading
+      this.showLoading(false);
+    }
   }
 
   /**
