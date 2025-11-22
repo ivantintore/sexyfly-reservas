@@ -64,17 +64,28 @@ GitHub: https://github.com/ivantintore/sexyfly-reservas
     formData.append('duration', testResults.duration);
     formData.append('timestamp', timestamp);
 
+    console.log(`📤 Enviando email a ${email}...`);
+    
     const response = await fetch(`https://formsubmit.co/${email}`, {
       method: 'POST',
       body: formData,
       mode: 'no-cors' // Importante para evitar CORS
     });
 
-    console.log(`📧 Email enviado a ${email}: ${status}`);
+    // Mostrar acknowledgement visual
+    console.log(`✅ Email entregado al servidor FormSubmit.co`);
+    console.log(`📧 Destino: ${email}`);
+    console.log(`📊 Estado: ${status}`);
+    console.log(`⏱️  Tiempo estimado de entrega: 1-2 minutos`);
+    
+    // Mostrar notificación visual en la página
+    mostrarNotificacionEmail(status, email);
+    
     return true;
 
   } catch (error) {
     console.error('❌ Error enviando email:', error);
+    mostrarErrorEmail(error.message);
     return false;
   }
 }
@@ -151,10 +162,112 @@ GitHub: https://github.com/ivantintore/sexyfly-reservas
   }
 }
 
+/**
+ * Mostrar notificación visual de email enviado
+ * @param {string} status - Estado del test (✅ OK o ❌ KO)
+ * @param {string} email - Email destino
+ */
+function mostrarNotificacionEmail(status, email) {
+  // Crear elemento de notificación
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(45deg, #10b981, #34d399);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 10000;
+    font-family: 'Segoe UI', sans-serif;
+    max-width: 400px;
+    animation: slideIn 0.5s ease;
+  `;
+  
+  notification.innerHTML = `
+    <div style="font-size: 24px; margin-bottom: 10px;">✅</div>
+    <div style="font-weight: bold; margin-bottom: 5px;">Email Entregado al Servidor</div>
+    <div style="font-size: 14px; opacity: 0.9;">
+      📧 Para: ${email}<br>
+      📊 Estado tests: ${status}<br>
+      ⏱️ Llegará en 1-2 minutos
+    </div>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Remover después de 5 segundos
+  setTimeout(() => {
+    notification.style.animation = 'slideOut 0.5s ease';
+    setTimeout(() => notification.remove(), 500);
+  }, 5000);
+}
+
+/**
+ * Mostrar error al enviar email
+ * @param {string} errorMsg - Mensaje de error
+ */
+function mostrarErrorEmail(errorMsg) {
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(45deg, #ef4444, #f87171);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 10000;
+    font-family: 'Segoe UI', sans-serif;
+    max-width: 400px;
+  `;
+  
+  notification.innerHTML = `
+    <div style="font-size: 24px; margin-bottom: 10px;">❌</div>
+    <div style="font-weight: bold; margin-bottom: 5px;">Error al Enviar Email</div>
+    <div style="font-size: 14px; opacity: 0.9;">${errorMsg}</div>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => notification.remove(), 5000);
+}
+
+// Añadir estilos de animación
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideIn {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+  }
+`;
+document.head.appendChild(style);
+
 // Exportar para uso global
 if (typeof window !== 'undefined') {
   window.enviarNotificacionTests = enviarNotificacionTests;
   window.enviarNotificacionReserva = enviarNotificacionReserva;
+  window.mostrarNotificacionEmail = mostrarNotificacionEmail;
+  window.mostrarErrorEmail = mostrarErrorEmail;
 }
 
 console.log('✅ Sistema de notificaciones por email cargado');

@@ -336,6 +336,11 @@
             testResults.duration = ((endTime - startTime) / 1000).toFixed(2);
             
             updateStats();
+            
+            // Mostrar acknowledgement si hay función de email
+            if (typeof window.enviarNotificacionTests === 'function') {
+                console.log('\n📧 Email de resultados enviándose...');
+            }
         }
 
         function updateStats() {
