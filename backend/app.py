@@ -11,6 +11,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import os
 import json
+import base64
 from datetime import datetime
 from tpv_redsys import TPVRedsys, crear_pago_tpv
 
@@ -249,14 +250,14 @@ if __name__ == '__main__':
     print(f'Terminal: {tpv.terminal}')
     print(f'URL TPV: {tpv.url_tpv}')
     print('=' * 70)
-    print('\n💡 Servidor corriendo en http://localhost:5000')
-    print('   API disponible en http://localhost:5000/api/')
+    print('\n💡 Servidor corriendo en http://localhost:5001')
+    print('   API disponible en http://localhost:5001/api/')
     print('\n🔧 Endpoints:')
     print('   POST /api/tpv/iniciar-pago')
     print('   GET  /api/health')
     print('\n⚠️  Para desarrollo local, usa ngrok para URLs públicas')
-    print('   ngrok http 5000\n')
+    print('   ngrok http 5001\n')
     
     # Ejecutar servidor
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    app.run(debug=True, port=5001, host='0.0.0.0')
 

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test E2E Completo + Pago TPV - SexyFly</title>
+    <link rel="stylesheet" href="../src/css/styles.css">
+    <link rel="stylesheet" href="../src/css/calendar.css">
+    <style>
+        .test-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 450px;
+            height: 100vh;
+            background: rgba(0,0,0,0.95);
+            color: #0f0;
+            font-family: monospace;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 10000;
+            border-left: 3px solid #0f0;
+        }
+        .test-header {
+            background: #1a1a1a;
+            padding: 15px;
+            margin: -20px -20px 20px -20px;
+            border-bottom: 2px solid #0f0;
+        }
+        .test-log {
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        .log-success { color: #0f0; }
+        .log-error { color: #f00; }
+        .log-warning { color: #ff0; }
+        .log-info { color: #0ff; }
+        .test-stats {
+            background: #1a1a1a;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #333;
+        }
+        .btn-test {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px 0;
+            width: 100%;
+        }
+        .btn-test:hover {
+            background: #0d0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Panel de Testing -->
+    <div class="test-panel">
+        <div class="test-header">
+            <h2 style="margin:0; color:#0f0;">🧪 Test E2E Completo</h2>
+            <p style="margin:5px 0 0; font-size:11px; color:#888;">Reserva + Pago TPV</p>
+        </div>
+
+        <div class="test-stats">
+            <div>Estado: <span id="testStatus" style="color:#ff0;">Esperando...</span></div>
+            <div>Progreso: <span id="testProgress">0/12</span></div>
+        </div>
+
+        <button class="btn-test" onclick="ejecutarTestCompleto()">▶️ EJECUTAR TEST E2E</button>
+        <button class="btn-test" style="background:#f00;" onclick="location.reload()">🔄 REINICIAR</button>
+
+        <div class="test-log" id="testLog">
+            <div style="color:#0ff;">Presiona "EJECUTAR TEST E2E" para comenzar</div>
+        </div>
+    </div>
+
+    <!-- Aplicación real -->
+    <div class="container">
+        <div class="header">
+            <h1>✈️ Test E2E + Pago TPV</h1>
+            <p>Prueba Completa Automatizada</p>
+        </div>
+
+        <div class="booking-card">
+            <form id="bookingForm" novalidate>
+                <div class="calendar-section">
+                    <div id="flightCalendar"></div>
+                </div>
+
+                <div class="flight-details-section" id="flightDetailsSection" style="display:none;">
+                    <h3 style="color:#1E40AF;">✈️ Detalles del Vuelo</h3>
+                    <div class="form-row">
+                        <div>
+                            <label>🛫 Hora Salida</label>
+                            <input type="time" id="departureTime">
+                        </div>
+                        <div>
+                            <label>🛬 Hora Regreso</label>
+                            <input type="time" id="returnTime">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div>
+                            <label>🛫 Origen (OACI)</label>
+                            <input type="text" id="originICAO" maxlength="4" class="icao-input">
+                        </div>
+                        <div>
+                            <label>🛬 Destino (OACI)</label>
+                            <input type="text" id="destinationICAO" maxlength="4" class="icao-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>👤 Nombre</label>
+                    <input type="text" id="clientName" required>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-row">
+                        <div>
+                            <label>📧 Email</label>
+                            <input type="email" id="clientEmail" required>
+                        </div>
+                        <div>
+                            <label>📱 Teléfono</label>
+                            <input type="tel" id="clientPhone" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Info Adicional</label>
+                    <textarea id="additionalInfo" rows="4"></textarea>
+                </div>
+
+                <div class="total-flights" id="totalFlights" style="display:none;">
+                    <h3 id="totalFlightsPrice">Total</h3>
+                    <div class="breakdown" id="totalBreakdown">Calculando...</div>
+                </div>
+
+                <div class="form-group" id="overnightSection" style="display:none;">
+                    <input type="checkbox" id="overnight">
+                    <label>Pernocta</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="checkbox" id="acceptTerms" required>
+                    <label for="acceptTerms">✅ Acepto términos</label>
+                </div>
+
+                <div class="loading" id="loadingDiv">
+                    <div class="spinner"></div>
+                    <p>Procesando...</p>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    🚁 Reservar y Pagar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../src/js/config.js?v=3.1.0"></script>
+    <script src="../src/js/pricing.js?v=3.1.0"></script>
+    <script src="../src/js/calendar.js?v=3.1.0"></script>
+    <script src="../src/js/email-notifications.js?v=3.1.0"></script>
+    <script src="../src/js/tpv-integration.js?v=3.1.0"></script>
+    <script src="../src/js/app.js?v=3.1.0"></script>
+
+    <script>
+        const logDiv = document.getElementById('testLog');
+        const statusDiv = document.getElementById('testStatus');
+        const progressDiv = document.getElementById('testProgress');
+        let currentStep = 0;
+        const totalSteps = 12;
+
+        function log(msg, type = 'info') {
+            const line = document.createElement('div');
+            line.className = `log-${type}`;
+            line.textContent = msg;
+            logDiv.appendChild(line);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(msg);
+        }
+
+        function updateStatus(status, type = 'info') {
+            statusDiv.textContent = status;
+            statusDiv.style.color = type === 'success' ? '#0f0' : type === 'error' ? '#f00' : '#ff0';
+        }
+
+        function updateProgress(step) {
+            currentStep = step;
+            progressDiv.textContent = `${step}/${totalSteps}`;
+        }
+
+        async function wait(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function ejecutarTestCompleto() {
+            logDiv.innerHTML = '';
+            log('═'.repeat(60), 'info');
+            log('🧪 TEST E2E COMPLETO: Reserva + Pago TPV', 'info');
+            log('═'.repeat(60), 'info');
+            log('', 'info');
+            
+            updateStatus('Ejecutando...', 'warning');
+
+            try {
+                // PASO 1: Verificar backend TPV
+                updateProgress(1);
+                log('1️⃣ Verificando backend TPV...', 'info');
+                await wait(300);
+                
+                const healthCheck = await fetch('http://localhost:5001/api/health');
+                if (!healthCheck.ok) {
+                    throw new Error('Backend TPV no está corriendo. Ejecuta: python backend/app.py');
+                }
+                const health = await healthCheck.json();
+                log(`   ✅ Backend TPV operativo (Modo: ${health.tpv_mode})`, 'success');
+
+                // PASO 2: Verificar SexyFlyApp
+                updateProgress(2);
+                log('', 'info');
+                log('2️⃣ Verificando SexyFlyApp...', 'info');
+                await wait(300);
+                
+                if (!window.sexyFlyApp) {
+                    throw new Error('SexyFlyApp no disponible');
+                }
+                log('   ✅ SexyFlyApp disponible', 'success');
+
+                // PASO 3: Calcular fechas
+                updateProgress(3);
+                log('', 'info');
+                log('3️⃣ Calculando fechas...', 'info');
+                
+                const today = new Date();
+                const fechaIda = new Date(today);
+                fechaIda.setDate(fechaIda.getDate() + 5);
+                const fechaVuelta = new Date(fechaIda);
+                fechaVuelta.setDate(fechaVuelta.getDate() + 3);
+                
+                log(`   📅 IDA: ${fechaIda.toLocaleDateString('es-ES')}`, 'success');
+                log(`   📅 VUELTA: ${fechaVuelta.toLocaleDateString('es-ES')}`, 'success');
+
+                // PASO 4: Seleccionar fechas
+                updateProgress(4);
+                log('', 'info');
+                log('4️⃣ Seleccionando fechas en calendario...', 'info');
+                await wait(500);
+                
+                window.sexyFlyApp.calendar.setDates(fechaIda, fechaVuelta);
+                window.sexyFlyApp.handleDateSelection({
+                    departure: fechaIda,
+                    return: fechaVuelta
+                });
+                await wait(500);
+                log('   ✅ Fechas seleccionadas', 'success');
+
+                // PASO 5-9: Rellenar formulario
+                updateProgress(5);
+                log('', 'info');
+                log('5️⃣ Rellenando formulario completo...', 'info');
+                await wait(300);
+                
+                document.getElementById('departureTime').value = '10:00';
+                document.getElementById('returnTime').value = '18:00';
+                document.getElementById('originICAO').value = 'LELL';
+                document.getElementById('destinationICAO').value = 'LEBL';
+                document.getElementById('clientName').value = 'Test E2E con TPV';
+                document.getElementById('clientEmail').value = 'test.tpv@example.com';
+                document.getElementById('clientPhone').value = '+34656431447';
+                document.getElementById('additionalInfo').value = 'TEST E2E CON PAGO TPV - TARJETA PRUEBA';
+                document.getElementById('acceptTerms').checked = true;
+                
+                updateProgress(9);
+                log('   ✅ Formulario completo', 'success');
+
+                // PASO 10: Verificar precio
+                updateProgress(10);
+                log('', 'info');
+                log('🔟 Verificando precio...', 'info');
+                await wait(300);
+                
+                const totalPrice = window.sexyFlyApp.getTotalPrice();
+                if (!totalPrice) {
+                    throw new Error('Precio no calculado');
+                }
+                log(`   💰 Precio total: ${totalPrice}€`, 'success');
+
+                // PASO 11: Información de pago
+                updateProgress(11);
+                log('', 'info');
+                log('1️⃣1️⃣ Preparando pago TPV...', 'warning');
+                log('', 'warning');
+                log('📋 INFORMACIÓN DE PAGO:', 'warning');
+                log('   Merchant: 340829647', 'warning');
+                log('   Importe: ' + totalPrice + '€', 'warning');
+                log('   Modo: TEST', 'warning');
+                log('', 'warning');
+                log('🎯 TARJETA DE PRUEBA:', 'success');
+                log('   Número: 4548810000000003', 'success');
+                log('   CVV: 123', 'success');
+                log('   Caducidad: 12/25', 'success');
+                log('   CIP: 123456', 'success');
+                log('', 'warning');
+                log('⚠️ IMPORTANTE:', 'warning');
+                log('   El test redirigirá a Redsys en 5 segundos', 'warning');
+                log('   Deberás ingresar la tarjeta manualmente', 'warning');
+                log('   Usa los datos de arriba ☝️', 'warning');
+
+                // PASO 12: Iniciar pago
+                updateProgress(12);
+                await wait(5000);
+                
+                log('', 'info');
+                log('1️⃣2️⃣ Iniciando pago TPV...', 'info');
+                updateStatus('Redirigiendo a TPV...', 'warning');
+                
+                // Enviar formulario (esto iniciará el proceso de pago)
+                window.sexyFlyApp.handleFormSubmit();
+                
+                log('   🚀 Redirigiendo a pasarela Redsys...', 'success');
+                log('', 'success');
+                log('═'.repeat(60), 'success');
+                log('🎉 TEST E2E INICIADO CORRECTAMENTE', 'success');
+                log('═'.repeat(60), 'success');
+                log('', 'info');
+                log('👉 AHORA:', 'warning');
+                log('   1. Ingresa tarjeta: 4548810000000003', 'warning');
+                log('   2. CVV: 123', 'warning');
+                log('   3. Caducidad: 12/25', 'warning');
+                log('   4. CIP si pide: 123456', 'warning');
+                log('   5. Completa el pago', 'warning');
+                log('   6. Deberías volver a pago-ok.html', 'warning');
+
+            } catch (error) {
+                log('', 'error');
+                log('═'.repeat(60), 'error');
+                log('❌ TEST FALLIDO', 'error');
+                log('═'.repeat(60), 'error');
+                log(`Error: ${error.message}`, 'error');
+                updateStatus('FALLIDO', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
+

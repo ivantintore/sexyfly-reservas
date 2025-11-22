@@ -149,7 +149,7 @@
             log('🔍 Verificando backend TPV...', 'warning');
 
             try {
-                const response = await fetch('http://localhost:5000/api/health');
+                const response = await fetch('http://localhost:5001/api/health');
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
@@ -234,7 +234,7 @@
 
             setTimeout(async () => {
                 try {
-                    const response = await fetch('http://localhost:5000/api/tpv/iniciar-pago', {
+                    const response = await fetch('http://localhost:5001/api/tpv/iniciar-pago', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(datosTest)
