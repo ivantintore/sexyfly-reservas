@@ -322,6 +322,11 @@ class SexyFlyApp {
     this.dom.form.addEventListener('submit', (e) => {
       e.preventDefault();
       e.stopImmediatePropagation();
+      
+      if (SEXYFLY_CONFIG.dev.debug) {
+        console.log('📝 Form submit event detectado');
+      }
+      
       this.handleFormSubmit();
     }, true);
 
@@ -330,11 +335,12 @@ class SexyFlyApp {
       e.preventDefault();
       e.stopImmediatePropagation();
       
-      if (!this.dom.form.checkValidity()) {
-        this.dom.form.reportValidity();
-        return;
+      if (SEXYFLY_CONFIG.dev.debug) {
+        console.log('🔘 Botón submit clickeado');
       }
       
+      // NO usar checkValidity() porque falla con campos ocultos
+      // La validación completa se hace en handleFormSubmit()
       this.handleFormSubmit();
     }, true);
 
