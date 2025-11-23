@@ -170,10 +170,10 @@ const SEXYFLY_CONFIG = {
       merchantCode: '340829647',        // FUC (Número de comercio)
       terminal: '1',                    // Número de terminal
       currency: '978',                  // 978 = EUR
-      // URL del backend (Render.com)
+      // URL del backend (Railway - FUNCIONANDO ✅)
       apiUrl: window.location.hostname === 'localhost' 
         ? 'http://localhost:5001/api/tpv/iniciar-pago'
-        : 'https://sexyfly-backend.onrender.com/api/tpv/iniciar-pago',
+        : 'https://web-production-a113a.up.railway.app/api/tpv/iniciar-pago',
       urlOK: window.location.origin + '/pago-ok.html',
       urlKO: window.location.origin + '/pago-ko.html',
       // Tarjetas de prueba (solo en test mode)
