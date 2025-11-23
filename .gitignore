@@ -69,6 +69,9 @@ coverage/
 .env.*.local
 config.local.js
 
+# Mantener .env.example (es plantilla)
+!.env.example
+
 # ===== ARCHIVOS SENSIBLES =====
 # Nunca commitear claves API, credenciales, etc.
 secrets/

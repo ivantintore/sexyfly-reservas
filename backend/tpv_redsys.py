@@ -19,11 +19,14 @@ class TPVRedsys:
     Clase para gestionar integración con TPV Redsys/MAITSA
     """
     
-    # Datos del comercio (de los PDFs)
-    MERCHANT_CODE_TEST = '340829647'
-    TERMINAL_TEST = '1'
-    CURRENCY = '978'  # EUR
+    # Datos del comercio (de los PDFs y panel Redsys)
+    MERCHANT_CODE = '340829647'  # Mismo en TEST y PRODUCCIÓN
+    TERMINAL = '1'               # Mismo en TEST y PRODUCCIÓN
+    CURRENCY = '978'             # EUR
+    
+    # Claves SHA256 (SENSIBLES - No exponer en frontend)
     CLAVE_SHA256_TEST = 'sq7HjrUOBfKmC576ILgskD5srU870gJ7'
+    CLAVE_SHA256_PRODUCTION = 'Kmxl0wQuJmXiaukCGWTurOwhc+8Z9sAB'  # Del panel Redsys
     
     # URLs Redsys
     URL_TEST = 'https://sis-t.redsys.es:25443/sis/realizarPago'
@@ -41,17 +44,18 @@ class TPVRedsys:
         """
         self.test_mode = test_mode
         
+        # Configurar según modo
+        self.merchant_code = self.MERCHANT_CODE
+        self.terminal = self.TERMINAL
+        
         if test_mode:
-            self.merchant_code = self.MERCHANT_CODE_TEST
-            self.terminal = self.TERMINAL_TEST
             self.clave_secreta = self.CLAVE_SHA256_TEST
             self.url_tpv = self.URL_TEST
+            print('⚠️  MODO TEST - Solo tarjetas de prueba')
         else:
-            # En producción, la clave se obtiene del panel Redsys
-            self.merchant_code = self.MERCHANT_CODE_TEST
-            self.terminal = self.TERMINAL_TEST
-            self.clave_secreta = None  # TODO: Obtener del panel
+            self.clave_secreta = self.CLAVE_SHA256_PRODUCTION
             self.url_tpv = self.URL_PRODUCTION
+            print('🔴 MODO PRODUCCIÓN - Aceptando pagos reales')
     
     def generar_numero_pedido(self):
         """
