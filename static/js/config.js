@@ -25,7 +25,7 @@ const SEXYFLY_CONFIG = {
     // Recargos adicionales
     surcharges: {
       weekend: 200,           // Fin de semana (Sáb/Dom)
-      holiday: 200,           // Días festivos nacionales
+      holiday: 300,           // Días festivos nacionales
       overnight: 0,           // Pernocta (gastos incluidos en precio base)
     },
     
@@ -36,11 +36,11 @@ const SEXYFLY_CONFIG = {
       advance: 30,            // >7 días = anticipada (500€)
     },
     
-    // Multiplicadores de temporada
+    // Multiplicadores de temporada (DESACTIVADOS - Precio base siempre)
     seasonMultipliers: {
-      low: 0.9,               // Nov-Feb (10% descuento)
-      medium: 1.0,            // Mar-May, Sep-Oct (precio normal)
-      high: 1.2,              // Jun-Ago (20% recargo)
+      low: 1.0,               // Nov-Feb (precio base)
+      medium: 1.0,            // Mar-May, Sep-Oct (precio base)
+      high: 1.0,              // Jun-Ago (precio base)
     },
     
     // Descuentos por volumen (días consecutivos)

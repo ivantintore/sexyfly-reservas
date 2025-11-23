@@ -416,3 +416,103 @@
         padding: 10px;
     }
 }
+
+/* ===== TOOLTIPS DE PRECIO ===== */
+.calendar-day {
+    position: relative;
+}
+
+.price-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(30, 41, 59, 0.95);
+    color: white;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    min-width: 200px;
+}
+
+/* Flecha del tooltip */
+.price-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(30, 41, 59, 0.95);
+}
+
+/* Mostrar tooltip al hacer hover */
+.calendar-day:hover .price-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+/* Contenido del tooltip */
+.price-tooltip-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.breakdown-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 4px 0;
+}
+
+.breakdown-line.base-line {
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 6px;
+    margin-bottom: 2px;
+}
+
+.breakdown-line.modifier-line {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.breakdown-line.total-line {
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    padding-top: 8px;
+    margin-top: 4px;
+    color: #60D394;
+}
+
+.breakdown-line .concept {
+    text-align: left;
+}
+
+.breakdown-line .amount {
+    text-align: right;
+    font-weight: 600;
+}
+
+/* Responsive para tooltips */
+@media (max-width: 768px) {
+    .price-tooltip {
+        font-size: 0.75rem;
+        padding: 10px 12px;
+        min-width: 180px;
+    }
+    
+    .breakdown-line {
+        gap: 12px;
+    }
+}

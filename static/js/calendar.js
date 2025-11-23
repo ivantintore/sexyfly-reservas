@@ -257,6 +257,9 @@ class SexyFlyCalendar {
           isHovered ? 'hovered' : ''
         ].filter(Boolean).join(' ');
         
+        // Generar tooltip con desglose de precio
+        const tooltip = !isPast && priceInfo.breakdown ? this.generatePriceTooltip(priceInfo) : '';
+        
         html += `
           <div class="${classes}" 
                data-date="${dateStr}"
@@ -269,6 +272,7 @@ class SexyFlyCalendar {
               `<div class="day-price">${priceInfo.price}${SEXYFLY_CONFIG.pricing.currency}</div>` : ''
             }
             ${isToday ? `<div class="today-indicator">${SEXYFLY_CONFIG.i18n.es.today}</div>` : ''}
+            ${tooltip}
           </div>
         `;
       }
@@ -629,6 +633,39 @@ class SexyFlyCalendar {
     };
     this.isSelectingReturn = !returnDate;
     this.render();
+  }
+
+  /**
+   * Generar tooltip con desglose de precio
+   * @private
+   * @param {Object} priceInfo - Información del precio del día
+   * @returns {string} HTML del tooltip
+   */
+  generatePriceTooltip(priceInfo) {
+    if (!priceInfo.breakdown || priceInfo.breakdown.length === 0) {
+      return '';
+    }
+
+    // Construir HTML del tooltip
+    let tooltipContent = '<div class="price-tooltip-content">';
+    
+    // Mostrar cada línea del desglose
+    priceInfo.breakdown.forEach(item => {
+      const isTotal = item.type === 'total';
+      const isBase = item.type === 'base';
+      const cssClass = isTotal ? 'total-line' : (isBase ? 'base-line' : 'modifier-line');
+      
+      tooltipContent += `
+        <div class="breakdown-line ${cssClass}">
+          <span class="concept">${item.concept}</span>
+          <span class="amount">${item.amount >= 0 ? '+' : ''}${item.amount}€</span>
+        </div>
+      `;
+    });
+    
+    tooltipContent += '</div>';
+    
+    return `<div class="price-tooltip">${tooltipContent}</div>`;
   }
 }
 
