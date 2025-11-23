@@ -122,6 +122,32 @@
     background: white;
 }
 
+/* Separador de mes */
+.month-separator {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 15px 0 10px 0;
+    margin: 10px 0 5px 0;
+    border-top: 2px solid #E5E7EB;
+    position: relative;
+}
+
+.month-separator .month-name {
+    background: white;
+    padding: 8px 25px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1E40AF;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(30, 64, 175, 0.15);
+    border: 2px solid #BFDBFE;
+}
+
 .calendar-day {
     position: relative;
     min-height: 80px;

@@ -227,12 +227,27 @@ class SexyFlyCalendar {
     this.updateMonthRangeTitle(startDate, endDate);
     
     let html = '';
+    let lastMonth = null;
+    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     
     // Renderizar semanas configuradas
     for (let week = 0; week < this.options.weeksVisible; week++) {
       for (let day = 0; day < 7; day++) {
         const currentDay = new Date(startDate);
         currentDay.setDate(startDate.getDate() + (week * 7) + day);
+        
+        // Insertar separador de mes si es el primer día de un nuevo mes y es lunes
+        if (day === 0 && currentDay.getDate() <= 7 && currentDay.getMonth() !== lastMonth) {
+          const monthName = monthNames[currentDay.getMonth()];
+          const year = currentDay.getFullYear();
+          html += `
+            <div class="month-separator">
+              <span class="month-name">${monthName} ${year}</span>
+            </div>
+          `;
+          lastMonth = currentDay.getMonth();
+        }
         
         const isToday = currentDay.getTime() === today.getTime();
         const isPast = currentDay < today;
