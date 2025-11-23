@@ -25,9 +25,9 @@ jobs:
     
     - name: Run tests
       run: |
-        pytest tests/test_app.py -v
+        PYTHONPATH=. pytest tests/test_app.py -v
       env:
-        TPV_CLAVE_SHA256_TEST: ${{ secrets.TPV_CLAVE_SHA256_TEST }}
-        TPV_CLAVE_SHA256_PRODUCTION: ${{ secrets.TPV_CLAVE_SHA256_PRODUCTION }}
+        TPV_CLAVE_SHA256_TEST: sq7HjrUOBfKmC576ILgskD5srU870gJ7
+        TPV_CLAVE_SHA256_PRODUCTION: Kmxl0wQuJmXiaukCGWTurOwhc+8Z9sAB
         TPV_TEST_MODE: true
 

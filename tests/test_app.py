@@ -88,7 +88,8 @@ def test_iniciar_pago_importe_excesivo(client):
     """Test con importe que excede límite"""
     datos = {
         'client': {'name': 'Test', 'email': 'test@test.com'},
-        'pricing': {'total': 60000}  # Excede 50.000€
+        'pricing': {'total': 60000},  # Excede 50.000€
+        'airports': {'origin': 'LELL', 'destination': 'LEBL'}  # Agregado
     }
     
     response = client.post('/api/tpv/iniciar-pago',
