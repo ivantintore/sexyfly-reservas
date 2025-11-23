@@ -30,8 +30,8 @@ class TPVRedsys:
     CURRENCY = '978'             # EUR
     
     # Claves SHA256 (SENSIBLES - Leer desde variables de entorno)
-    CLAVE_SHA256_TEST = os.getenv('TPV_CLAVE_TEST', '')
-    CLAVE_SHA256_PRODUCTION = os.getenv('TPV_CLAVE_PROD', '')
+    CLAVE_SHA256_TEST = os.getenv('TPV_CLAVE_SHA256_TEST', '')
+    CLAVE_SHA256_PRODUCTION = os.getenv('TPV_CLAVE_SHA256_PRODUCTION', '')
     
     # URLs Redsys
     URL_TEST = 'https://sis-t.redsys.es:25443/sis/realizarPago'
