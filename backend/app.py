@@ -9,17 +9,38 @@ Uso:
 
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import os
 import json
 import base64
 from datetime import datetime
+from dotenv import load_dotenv
 from tpv_redsys import TPVRedsys, crear_pago_tpv
 
-app = Flask(__name__, static_folder='../public', static_url_path='')
-CORS(app)  # Permitir CORS para desarrollo
+# Cargar variables de entorno
+load_dotenv()
 
-# Configuración
-TEST_MODE = True  # Cambiar a False en producción
+app = Flask(__name__, static_folder='../public', static_url_path='')
+
+# Configuración CORS restringida a dominios permitidos
+ALLOWED_ORIGINS = [
+    "https://sexyfly.es",
+    "https://www.sexyfly.es",
+    os.getenv('FRONTEND_URL', 'http://localhost:8000')
+]
+CORS(app, origins=ALLOWED_ORIGINS)
+
+# Configuración Rate Limiting
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://"
+)
+
+# Configuración desde variables de entorno
+TEST_MODE = os.getenv('TPV_TEST_MODE', 'true').lower() == 'true'
 tpv = TPVRedsys(test_mode=TEST_MODE)
 
 # Almacenamiento temporal de reservas (en producción usar base de datos)
@@ -33,21 +54,71 @@ def index():
 
 
 @app.route('/api/tpv/iniciar-pago', methods=['POST'])
+@limiter.limit("5 per minute")
 def iniciar_pago():
     """
     Endpoint para iniciar un pago
     Genera los parámetros necesarios para Redsys
+    Rate limit: 5 peticiones por minuto
     """
     try:
+        # Validar que hay datos
+        if not request.json:
+            return jsonify({
+                'success': False,
+                'error': 'No se recibieron datos'
+            }), 400
+        
         # Obtener datos de la reserva
         datos_cliente = request.json
         
+        # Validar campos requeridos
+        required_fields = ['client', 'pricing', 'airports']
+        for field in required_fields:
+            if field not in datos_cliente:
+                return jsonify({
+                    'success': False,
+                    'error': f'Falta campo requerido: {field}'
+                }), 400
+        
+        # Validar estructura de cliente
+        if 'name' not in datos_cliente.get('client', {}):
+            return jsonify({
+                'success': False,
+                'error': 'Falta nombre del cliente'
+            }), 400
+        
+        # Validar estructura de pricing
+        if 'total' not in datos_cliente.get('pricing', {}):
+            return jsonify({
+                'success': False,
+                'error': 'Falta importe total'
+            }), 400
+        
+        # Validar importe
+        try:
+            importe = float(datos_cliente.get('pricing', {}).get('total', 0))
+        except (ValueError, TypeError):
+            return jsonify({
+                'success': False,
+                'error': 'Importe inválido'
+            }), 400
+        
+        if importe <= 0:
+            return jsonify({
+                'success': False,
+                'error': 'El importe debe ser mayor a 0'
+            }), 400
+        
+        if importe > 50000:
+            return jsonify({
+                'success': False,
+                'error': 'El importe excede el límite permitido (50.000€)'
+            }), 400
+        
         print(f'\n📥 Solicitud de pago recibida:')
         print(f'   Cliente: {datos_cliente.get("client", {}).get("name")}')
-        print(f'   Importe: {datos_cliente.get("pricing", {}).get("total")}€')
-        
-        # Preparar datos para TPV
-        importe = float(datos_cliente.get('pricing', {}).get('total', 0))
+        print(f'   Importe: {importe}€')
         titular = datos_cliente.get('client', {}).get('name', 'Cliente')
         
         # Descripción del vuelo
@@ -245,12 +316,13 @@ if __name__ == '__main__':
     print('=' * 70)
     print('🚀 SexyFly Backend API - TPV MAITSA/Redsys')
     print('=' * 70)
-    print(f'Modo: {"TEST" if TEST_MODE else "PRODUCCIÓN"}')
+    print(f'Modo: {"🧪 TEST" if TEST_MODE else "🔴 PRODUCCIÓN"}')
     print(f'Merchant Code: {tpv.merchant_code}')
     print(f'Terminal: {tpv.terminal}')
     print(f'URL TPV: {tpv.url_tpv}')
+    print(f'CORS: {", ".join(ALLOWED_ORIGINS)}')
     print('=' * 70)
-    print('\n💡 Servidor corriendo en http://localhost:5001')
+    print(f'\n💡 Servidor corriendo en http://localhost:{os.getenv("PORT", "5001")}')
     print('   API disponible en http://localhost:5001/api/')
     print('\n🔧 Endpoints:')
     print('   POST /api/tpv/iniciar-pago')
@@ -258,6 +330,8 @@ if __name__ == '__main__':
     print('\n⚠️  Para desarrollo local, usa ngrok para URLs públicas')
     print('   ngrok http 5001\n')
     
-    # Ejecutar servidor
-    app.run(debug=True, port=5001, host='0.0.0.0')
+    # Ejecutar servidor (debug solo en modo TEST)
+    port = int(os.getenv('PORT', '5001'))
+    debug_mode = TEST_MODE  # Debug solo en modo test
+    app.run(debug=debug_mode, port=port, host='0.0.0.0')
 

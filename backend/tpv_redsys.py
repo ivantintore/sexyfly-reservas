@@ -12,6 +12,11 @@ import hmac
 import hashlib
 from datetime import datetime
 import secrets
+import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
 
 
 class TPVRedsys:
@@ -24,9 +29,9 @@ class TPVRedsys:
     TERMINAL = '1'               # Mismo en TEST y PRODUCCIÓN
     CURRENCY = '978'             # EUR
     
-    # Claves SHA256 (SENSIBLES - No exponer en frontend)
-    CLAVE_SHA256_TEST = 'sq7HjrUOBfKmC576ILgskD5srU870gJ7'
-    CLAVE_SHA256_PRODUCTION = 'Kmxl0wQuJmXiaukCGWTurOwhc+8Z9sAB'  # Del panel Redsys
+    # Claves SHA256 (SENSIBLES - Leer desde variables de entorno)
+    CLAVE_SHA256_TEST = os.getenv('TPV_CLAVE_TEST', '')
+    CLAVE_SHA256_PRODUCTION = os.getenv('TPV_CLAVE_PROD', '')
     
     # URLs Redsys
     URL_TEST = 'https://sis-t.redsys.es:25443/sis/realizarPago'

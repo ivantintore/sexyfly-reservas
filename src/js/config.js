@@ -166,13 +166,16 @@ const SEXYFLY_CONFIG = {
     tpv: {
       enabled: true,
       provider: 'REDSYS_MAITSA',
-      testMode: true,                   // Cambiar a false en producción
+      testMode: false,                  // PRODUCCIÓN: false | TEST: true
       merchantCode: '340829647',        // FUC (Número de comercio)
       terminal: '1',                    // Número de terminal
       currency: '978',                  // 978 = EUR
-      apiUrl: 'http://localhost:5001/api/tpv/iniciar-pago',  // Endpoint backend
-      urlOK: window.location.origin + '/public/pago-ok.html',
-      urlKO: window.location.origin + '/public/pago-ko.html',
+      // URL del backend (cambiar cuando se despliegue en Railway)
+      apiUrl: window.location.hostname === 'localhost' 
+        ? 'http://localhost:5001/api/tpv/iniciar-pago'
+        : 'https://sexyfly-backend-production.up.railway.app/api/tpv/iniciar-pago',
+      urlOK: window.location.origin + '/pago-ok.html',
+      urlKO: window.location.origin + '/pago-ko.html',
       // Tarjetas de prueba (solo en test mode)
       testCards: {
         ok: {

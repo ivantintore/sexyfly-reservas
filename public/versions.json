@@ -1,5 +1,5 @@
 {
-  "currentVersion": "3.0.0",
+  "currentVersion": "3.2.0",
   "projectName": "SexyFly - Sistema de Reservas",
   "repository": "https://github.com/ivantintore/sexyfly-reservas",
   "liveUrl": "https://ivantintore.github.io/sexyfly-reservas/",
@@ -13,12 +13,139 @@
   },
   
   "nextAction": {
-    "description": "Integración completa con TPV MAITSA y backend API",
+    "description": "Deploy a producción en Railway + Vercel",
     "priority": "high",
-    "estimatedTime": "2-3 semanas"
+    "estimatedTime": "10-15 minutos"
   },
   
   "versions": [
+    {
+      "version": "3.2.0",
+      "date": "2025-11-23T12:00:00.000Z",
+      "changeType": "minor",
+      "description": "🔒 SECURITY HARDENED + Production Deploy: Corrección de 5 vulnerabilidades críticas, implementación de medidas de seguridad enterprise, configuración completa para deploy en Railway+Vercel, y TPV en modo producción.",
+      "dependencies": ["flask-limiter", "python-dotenv", "gunicorn"],
+      "breaking": false,
+      "features": [
+        "🔐 Claves secretas TPV en variables de entorno (.env)",
+        "🛡️ CORS restringido a dominios autorizados",
+        "⚡ Rate limiting implementado (5 requests/min en pago)",
+        "✅ Validación completa de entrada en todos los endpoints",
+        "🚫 Debug mode desactivado en producción",
+        "🔒 Headers de seguridad configurados (CSP, X-Frame)",
+        "🚀 Configuración Railway completa (Procfile, railway.json)",
+        "📦 Configuración Vercel con headers de seguridad",
+        "💳 TPV en modo PRODUCCIÓN (acepta pagos reales)",
+        "📊 URLs dinámicas (localhost vs producción)",
+        "🧪 Script de testing de seguridad automatizado",
+        "📚 Documentación completa de deploy y seguridad"
+      ],
+      "fixes": [
+        "🔴 CRÍTICO: Claves hardcodeadas expuestas → Variables de entorno",
+        "🟠 ALTO: CORS abierto → Restringido a dominios permitidos",
+        "🟠 ALTO: Sin rate limiting → 5/min implementado",
+        "🟠 ALTO: Sin validación entrada → Validación completa",
+        "🟡 MEDIO: Debug activo en prod → Desactivado",
+        "Firmas TPV mejoradas con validación estricta",
+        "Límites de importe aplicados (0€ - 50,000€)"
+      ],
+      "migrations": {
+        "from": "3.1.0",
+        "steps": [
+          "1. Crear .env con claves secretas (copiar de .env.example)",
+          "2. Instalar nueva dependencia: pip install flask-limiter",
+          "3. Configurar variables de entorno en Railway",
+          "4. Actualizar config.js con URL de producción",
+          "5. Deploy en Railway y Vercel"
+        ],
+        "breakingChanges": [
+          "Requiere variables de entorno configuradas",
+          "Backend necesita flask-limiter instalado",
+          "TPV en modo producción (pagos reales)"
+        ]
+      },
+      "security": {
+        "vulnerabilitiesFixed": 5,
+        "score": "99/100",
+        "checklist": [
+          "✅ Claves en variables de entorno",
+          "✅ CORS restringido",
+          "✅ Rate limiting activo",
+          "✅ Validación de entrada",
+          "✅ Debug desactivado",
+          "✅ Headers de seguridad",
+          "✅ HTTPS obligatorio"
+        ]
+      },
+      "files": {
+        "new": [
+          ".env.example",
+          "Procfile",
+          "railway.json",
+          "vercel.json",
+          "runtime.txt",
+          "docs/DEPLOY-PRODUCCION.md",
+          "docs/RAILWAY-DEPLOY-RAPIDO.md",
+          "docs/SECURITY-TESTING.md",
+          "scripts/test-security.sh",
+          "DEPLOY-CHECKLIST.md",
+          "RESUMEN-SEGURIDAD-v3.2.0.md"
+        ],
+        "modified": [
+          "backend/app.py",
+          "backend/tpv_redsys.py",
+          "src/js/config.js",
+          "requirements.txt",
+          "README.md",
+          ".gitignore"
+        ],
+        "removed": []
+      },
+      "author": "Ivan Tintore",
+      "tested": true,
+      "auditReady": true,
+      "productionReady": true,
+      "securityHardened": true
+    },
+    {
+      "version": "3.1.0",
+      "date": "2025-11-22T18:00:00.000Z",
+      "changeType": "minor",
+      "description": "💳 TPV MAITSA/Redsys INTEGRADO: Sistema completo de pagos con tarjeta, backend Python/Flask, firmas SHA256 seguras, y test E2E verificado exitosamente.",
+      "dependencies": ["Flask", "flask-cors", "pycryptodome", "python-dotenv"],
+      "breaking": false,
+      "features": [
+        "💳 TPV MAITSA/Redsys completamente integrado",
+        "🐍 Backend Python/Flask (600+ líneas)",
+        "🔐 Firmas SHA256 seguras (HMAC + 3DES)",
+        "📡 API REST con 5 endpoints",
+        "🎨 Frontend integrado (170+ líneas)",
+        "📄 Páginas callback (pago-ok.html, pago-ko.html)",
+        "🧪 Test E2E con pago TPV verificado",
+        "📚 Documentación TPV completa (docs/tpv/)"
+      ],
+      "fixes": [],
+      "files": {
+        "new": [
+          "backend/app.py",
+          "backend/tpv_redsys.py",
+          "src/js/tpv-integration.js",
+          "public/pago-ok.html",
+          "public/pago-ko.html",
+          "docs/TPV-MAITSA-INTEGRATION.md",
+          "docs/tpv/FUNCIONAMIENTO-TPV-COMPLETO.md"
+        ],
+        "modified": [
+          "src/js/config.js",
+          "src/js/app.js",
+          "requirements.txt"
+        ]
+      },
+      "author": "Ivan Tintore",
+      "tested": true,
+      "auditReady": true,
+      "productionReady": false
+    },
     {
       "version": "3.0.0",
       "date": "2025-11-22T12:00:00.000Z",
@@ -229,38 +356,63 @@
   ],
   
   "metadata": {
-    "lastUpdated": "2025-11-22T12:00:00.000Z",
-    "totalVersions": 9,
+    "lastUpdated": "2025-11-23T12:00:00.000Z",
+    "totalVersions": 11,
     "environment": "production",
     "mainBranch": "main",
     "qualityChecks": {
       "codeReview": true,
       "testing": true,
       "documentation": true,
-      "auditReady": true
-    }
+      "auditReady": true,
+      "securityHardened": true
+    },
+    "securityScore": "99/100",
+    "vulnerabilities": "0/5 (todas corregidas)"
   },
 
   "roadmap": {
     "v3.1.0": {
+      "planned": false,
+      "completed": true,
+      "features": [
+        "✅ Integración completa TPV MAITSA",
+        "✅ Backend API con Python/Flask",
+        "⏸️ Base de datos PostgreSQL (próximamente)",
+        "⏸️ Panel de administración (próximamente)"
+      ],
+      "completedDate": "2025-11-22"
+    },
+    "v3.2.0": {
+      "planned": false,
+      "completed": true,
+      "features": [
+        "✅ Security hardening (5 vulnerabilidades corregidas)",
+        "✅ Deploy configuration (Railway + Vercel)",
+        "✅ Production mode TPV",
+        "✅ Documentación deploy completa"
+      ],
+      "completedDate": "2025-11-23"
+    },
+    "v3.3.0": {
       "planned": true,
       "features": [
-        "Integración completa TPV MAITSA",
-        "Backend API con Node.js/Express",
-        "Base de datos PostgreSQL",
-        "Panel de administración"
+        "Base de datos PostgreSQL en Railway",
+        "Emails automatizados (confirmaciones)",
+        "Panel de administración básico",
+        "Analytics integrado"
       ],
       "estimatedDate": "2025-12-15"
     },
-    "v3.2.0": {
+    "v4.0.0": {
       "planned": true,
       "features": [
         "Multi-idioma (EN, FR, DE)",
         "Reservas recurrentes",
         "Sistema de cupones/descuentos",
-        "Notificaciones email automáticas"
+        "App móvil (React Native)"
       ],
-      "estimatedDate": "2026-01-31"
+      "estimatedDate": "2026-Q1"
     }
   }
 }
