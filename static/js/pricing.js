@@ -67,14 +67,16 @@ class SexyFlyPricing {
     // Precio final
     const finalPrice = Math.round(basePrice * modifiers.multiplier + modifiers.surcharge);
     
+    const category = this.getPriceCategory(diffDays);
+    
     const result = {
       date: new Date(date),
       price: finalPrice,
       basePrice,
       daysInAdvance: diffDays,
-      category: this.getPriceCategory(diffDays),
+      category: category,
       modifiers,
-      breakdown: this.generatePriceBreakdown(basePrice, modifiers, finalPrice),
+      breakdown: this.generatePriceBreakdown(basePrice, modifiers, finalPrice, category),
       cssClass: this.getCSSClass(diffDays, finalPrice),
       isWeekend: this.isWeekend(date),
       isHoliday: this.isHoliday(date),
@@ -277,10 +279,20 @@ class SexyFlyPricing {
    * Generar desglose detallado del precio
    * @private
    */
-  generatePriceBreakdown(basePrice, modifiers, finalPrice) {
+  generatePriceBreakdown(basePrice, modifiers, finalPrice, category) {
+    // Determinar el concepto del precio base según la categoría
+    let baseConcept = 'Precio base';
+    if (category === 'urgent') {
+      baseConcept = 'Reserva urgente (<48h)';
+    } else if (category === 'standard') {
+      baseConcept = 'Reserva estándar (2-6 días)';
+    } else {
+      baseConcept = 'Reserva anticipada (+7 días)';
+    }
+    
     const breakdown = [
       {
-        concept: 'Precio base',
+        concept: baseConcept,
         amount: basePrice,
         type: 'base'
       }
