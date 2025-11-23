@@ -442,7 +442,33 @@
     min-width: 200px;
 }
 
-/* Flecha del tooltip */
+/* Ajustar tooltip cuando está en el borde derecho */
+.calendar-day:nth-child(7n) .price-tooltip,
+.calendar-day:nth-child(7n-1) .price-tooltip {
+    left: auto;
+    right: 0;
+    transform: translateX(0) translateY(-10px);
+}
+
+.calendar-day:nth-child(7n):hover .price-tooltip,
+.calendar-day:nth-child(7n-1):hover .price-tooltip {
+    transform: translateX(0) translateY(-5px);
+}
+
+/* Ajustar tooltip cuando está en el borde izquierdo */
+.calendar-day:nth-child(7n+1) .price-tooltip,
+.calendar-day:nth-child(7n+2) .price-tooltip {
+    left: 0;
+    right: auto;
+    transform: translateX(0) translateY(-10px);
+}
+
+.calendar-day:nth-child(7n+1):hover .price-tooltip,
+.calendar-day:nth-child(7n+2):hover .price-tooltip {
+    transform: translateX(0) translateY(-5px);
+}
+
+/* Flecha del tooltip (centrada por defecto) */
 .price-tooltip::after {
     content: '';
     position: absolute;
@@ -453,7 +479,23 @@
     border-top-color: rgba(30, 41, 59, 0.95);
 }
 
-/* Mostrar tooltip al hacer hover */
+/* Flecha para tooltips en el borde derecho */
+.calendar-day:nth-child(7n) .price-tooltip::after,
+.calendar-day:nth-child(7n-1) .price-tooltip::after {
+    left: auto;
+    right: 20px;
+    transform: translateX(0);
+}
+
+/* Flecha para tooltips en el borde izquierdo */
+.calendar-day:nth-child(7n+1) .price-tooltip::after,
+.calendar-day:nth-child(7n+2) .price-tooltip::after {
+    left: 20px;
+    right: auto;
+    transform: translateX(0);
+}
+
+/* Mostrar tooltip al hacer hover (centrado) */
 .calendar-day:hover .price-tooltip {
     opacity: 1;
     visibility: visible;
