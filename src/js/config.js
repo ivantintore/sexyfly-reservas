@@ -170,7 +170,7 @@ const SEXYFLY_CONFIG = {
       merchantCode: '340829647',        // FUC (Número de comercio)
       terminal: '1',                    // Número de terminal
       currency: '978',                  // 978 = EUR
-      apiUrl: '/api/tpv/iniciar-pago',  // Endpoint backend
+      apiUrl: 'http://localhost:5001/api/tpv/iniciar-pago',  // Endpoint backend
       urlOK: window.location.origin + '/public/pago-ok.html',
       urlKO: window.location.origin + '/public/pago-ko.html',
       // Tarjetas de prueba (solo en test mode)
