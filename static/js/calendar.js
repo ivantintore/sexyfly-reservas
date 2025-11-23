@@ -235,6 +235,10 @@ class SexyFlyCalendar {
         const priceInfo = this.getPriceInfo(currentDay);
         const dateStr = this.formatDateString(currentDay);
         
+        // Verificar si el día está bloqueado
+        const isBlocked = priceInfo.isBlocked || false;
+        const isDisabled = isPast || isBlocked;
+        
         // Estados de selección
         const isDeparture = this.selectedDates.departure && 
           this.formatDateString(this.selectedDates.departure) === dateStr;
@@ -247,7 +251,8 @@ class SexyFlyCalendar {
         // Clases CSS
         const classes = [
           'calendar-day',
-          isPast ? 'disabled' : 'available',
+          isDisabled ? 'disabled' : 'available',
+          isBlocked ? 'blocked' : '',
           priceInfo.class,
           isToday ? 'today' : '',
           isWeekend ? 'weekend' : '',
@@ -257,19 +262,24 @@ class SexyFlyCalendar {
           isHovered ? 'hovered' : ''
         ].filter(Boolean).join(' ');
         
-        // Generar tooltip con desglose de precio
-        const tooltip = !isPast && priceInfo.breakdown ? this.generatePriceTooltip(priceInfo) : '';
+        // Generar tooltip con desglose de precio o mensaje de bloqueo
+        let tooltip = '';
+        if (isBlocked) {
+          tooltip = '<div class="price-tooltip"><div class="price-tooltip-content"><div class="breakdown-line blocked-message">🚫 Día no disponible</div></div></div>';
+        } else if (!isDisabled && priceInfo.breakdown) {
+          tooltip = this.generatePriceTooltip(priceInfo);
+        }
         
         html += `
           <div class="${classes}" 
                data-date="${dateStr}"
-               ${!isPast ? `data-price="${priceInfo.price}"` : ''}
+               ${!isDisabled ? `data-price="${priceInfo.price}"` : ''}
                role="button"
-               tabindex="${isPast ? '-1' : '0'}"
-               aria-label="${this.formatAccessibleDate(currentDay)}, ${priceInfo.price} euros">
+               tabindex="${isDisabled ? '-1' : '0'}"
+               aria-label="${isBlocked ? 'Día no disponible' : `${this.formatAccessibleDate(currentDay)}, ${priceInfo.price} euros`}">
             <div class="day-number">${currentDay.getDate()}</div>
-            ${!isPast && this.options.showPrices ? 
-              `<div class="day-price">${priceInfo.price}${SEXYFLY_CONFIG.pricing.currency}</div>` : ''
+            ${!isDisabled && this.options.showPrices ? 
+              `<div class="day-price">${isBlocked ? '🚫' : priceInfo.price + SEXYFLY_CONFIG.pricing.currency}</div>` : ''
             }
             ${isToday ? `<div class="today-indicator">${SEXYFLY_CONFIG.i18n.es.today}</div>` : ''}
             ${tooltip}

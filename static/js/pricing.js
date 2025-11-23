@@ -80,6 +80,7 @@ class SexyFlyPricing {
       cssClass: this.getCSSClass(diffDays, finalPrice),
       isWeekend: this.isWeekend(date),
       isHoliday: this.isHoliday(date),
+      isBlocked: this.isBlockedDay(date),
       season: this.getSeason(date)
     };
     
@@ -241,6 +242,19 @@ class SexyFlyPricing {
     const dateString = `${month}-${day}`;
     
     return this.config.holidays.includes(dateString);
+  }
+
+  /**
+   * Verificar si es día bloqueado (no se puede reservar)
+   * @private
+   */
+  isBlockedDay(date) {
+    const blockedDays = SEXYFLY_CONFIG.blockedDays || [];
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${month}-${day}`;
+    
+    return blockedDays.includes(dateString);
   }
 
   /**

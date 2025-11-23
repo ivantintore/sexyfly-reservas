@@ -150,6 +150,42 @@
     opacity: 0.6;
 }
 
+/* Días bloqueados (festivos especiales) */
+.calendar-day.blocked {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    color: #991B1B;
+    cursor: not-allowed;
+    border: 2px solid #EF4444;
+    position: relative;
+}
+
+.calendar-day.blocked::before {
+    content: '🚫';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 0.7rem;
+    opacity: 0.6;
+}
+
+.calendar-day.blocked .day-price {
+    font-weight: bold;
+    color: #DC2626;
+}
+
+.calendar-day.blocked:hover {
+    transform: none;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+/* Mensaje de día bloqueado en tooltip */
+.blocked-message {
+    font-weight: 600;
+    color: #EF4444;
+    text-align: center;
+    padding: 8px 0;
+}
+
 .calendar-day.today {
     border: 2px solid #3B82F6;
     font-weight: 600;
