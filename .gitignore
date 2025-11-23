@@ -1,89 +1,65 @@
-# SexyFly - Gitignore
-# Version: 3.0.0
-
-# ===== ENTORNOS VIRTUALES =====
-venv/
-env/
-ENV/
-.venv/
-*.pyc
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# ===== NODE (si se añade en el futuro) =====
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-package-lock.json
-yarn.lock
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
 
-# ===== EDITORES E IDEs =====
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDEs
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 .DS_Store
-Thumbs.db
 
-# ===== ARCHIVOS DE SISTEMA =====
-.DS_Store
-.AppleDouble
-.LSOverride
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Desktop.ini
-
-# ===== BUILDS Y DIST =====
-dist/
-build/
-*.min.js
-*.min.css
-
-# ===== LOGS =====
+# Logs
 *.log
 logs/
-*.log.*
-backend_logs.txt
 
-# ===== ARCHIVOS TEMPORALES =====
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Railway / Deploy
+.railway/
+
+# Temporary files
 *.tmp
-*.temp
-*.bak
-*.backup
-*-backup.*
-*-old.*
+temp/
+tmp/
 
-# ===== ARCHIVOS DE TESTING (mantener archivos base) =====
-# Los archivos .md y .js de testing se mantienen
-coverage/
-.nyc_output/
+# Node (si usas npm en el futuro)
+node_modules/
 
-# ===== ARCHIVOS DE CONFIGURACIÓN LOCAL =====
-.env
-.env.local
-.env.*.local
-config.local.js
-
-# Mantener .env.example (es plantilla)
-!.env.example
-
-# ===== ARCHIVOS SENSIBLES =====
-# Nunca commitear claves API, credenciales, etc.
-secrets/
-*.key
-*.pem
-*.cert
-
-# ===== CARPETAS DE PROYECTO =====
-# Mantener la carpeta de documentación de pagos
-# Payments docs/ - Se mantiene en el repo
-
-# ===== OTROS =====
-.cache/
-.parcel-cache/
-.sass-cache/
+# Carpetas antiguas (deprecadas)
+backend/
+public/
+src/

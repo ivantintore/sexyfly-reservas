@@ -1,10 +1,11 @@
 """
 SexyFly - Backend API para TPV
-Version: 3.1.0
+Version: 3.2.0
 Descripción: API Flask para gestionar pagos con TPV Redsys/MAITSA
 
 Uso:
-    python backend/app.py
+    python app.py
+    gunicorn app:app (producción)
 """
 
 from flask import Flask, request, jsonify, send_from_directory
@@ -21,7 +22,7 @@ from tpv_redsys import TPVRedsys, crear_pago_tpv
 # Cargar variables de entorno
 load_dotenv()
 
-app = Flask(__name__, static_folder='../public', static_url_path='')
+app = Flask(__name__, static_folder='static', static_url_path='')
 
 # Configuración CORS restringida a dominios permitidos
 ALLOWED_ORIGINS = [
