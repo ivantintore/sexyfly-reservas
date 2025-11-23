@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test TPV Directo (Sin Caché) - SexyFly</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+        }
+        h1 {
+            color: #00d9ff;
+            text-align: center;
+        }
+        .btn {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .log {
+            background: #1a1a1a;
+            padding: 20px;
+            border: 1px solid #0f0;
+            margin-top: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        .warning { color: #ff0; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test TPV Directo (Sin Caché)</h1>
+    
+    <div style="text-align:center;">
+        <button class="btn" onclick="testBackend()">1️⃣ Test Backend</button>
+        <button class="btn" onclick="testPagoCompleto()">2️⃣ Test Pago Completo</button>
+    </div>
+
+    <div class="log" id="log"></div>
+
+    <script>
+        const logDiv = document.getElementById('log');
+
+        function log(msg, type = 'success') {
+            const line = document.createElement('div');
+            line.className = type;
+            line.textContent = msg;
+            logDiv.appendChild(line);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(msg);
+        }
+
+        async function testBackend() {
+            logDiv.innerHTML = '';
+            log('🔍 Probando backend TPV...', 'warning');
+
+            try {
+                const response = await fetch('http://localhost:5001/api/health');
+                const data = await response.json();
+
+                log('✅ Backend operativo', 'success');
+                log(`   Merchant: ${data.merchant_code}`, 'success');
+                log(`   Modo: ${data.tpv_mode}`, 'success');
+                log(`   Puerto: 5001`, 'success');
+
+            } catch (error) {
+                log('❌ Backend no disponible', 'error');
+                log(`   ${error.message}`, 'error');
+            }
+        }
+
+        async function testPagoCompleto() {
+            logDiv.innerHTML = '';
+            log('🚀 Iniciando test de pago completo...', 'warning');
+            log('', 'success');
+
+            try {
+                // Datos de prueba
+                const datosReserva = {
+                    pricing: { total: 100.50 },
+                    client: { name: 'Test TPV Directo' },
+                    airports: { origin: 'LELL', destination: 'LEBL' },
+                    dates: {
+                        departure: new Date(),
+                        return: new Date()
+                    },
+                    times: {
+                        departure: '10:00',
+                        return: '18:00'
+                    }
+                };
+
+                log('📤 Llamando a backend TPV...', 'warning');
+                log('   URL: http://localhost:5001/api/tpv/iniciar-pago', 'warning');
+                log('   Importe: 100.50€', 'warning');
+
+                const response = await fetch('http://localhost:5001/api/tpv/iniciar-pago', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(datosReserva)
+                });
+
+                log(`   Response status: ${response.status}`, 'warning');
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${text}`);
+                }
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Error desconocido');
+                }
+
+                log('', 'success');
+                log('✅ Parámetros TPV recibidos correctamente', 'success');
+                log(`   Número pedido: ${data.numero_pedido}`, 'success');
+                log(`   Firma: ${data.parametros_tpv.Ds_Signature.substring(0, 30)}...`, 'success');
+                log(`   URL TPV: ${data.parametros_tpv.url_tpv}`, 'success');
+                log('', 'success');
+                log('🎯 TARJETA DE PRUEBA:', 'warning');
+                log('   Número: 4548810000000003', 'warning');
+                log('   CVV: 123', 'warning');
+                log('   Caducidad: 12/25', 'warning');
+                log('   CIP: 123456', 'warning');
+                log('', 'success');
+                log('🚀 Redirigiendo a Redsys en 3 segundos...', 'warning');
+
+                // Crear formulario y enviar a Redsys
+                setTimeout(() => {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = data.parametros_tpv.url_tpv;
+
+                    const campos = {
+                        'Ds_SignatureVersion': data.parametros_tpv.Ds_SignatureVersion,
+                        'Ds_MerchantParameters': data.parametros_tpv.Ds_MerchantParameters,
+                        'Ds_Signature': data.parametros_tpv.Ds_Signature
+                    };
+
+                    for (const [name, value] of Object.entries(campos)) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = name;
+                        input.value = value;
+                        form.appendChild(input);
+                    }
+
+                    document.body.appendChild(form);
+                    log('✅ Formulario creado, enviando...', 'success');
+                    form.submit();
+                }, 3000);
+
+            } catch (error) {
+                log('', 'error');
+                log('❌ Error en test de pago', 'error');
+                log(`   ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
+
