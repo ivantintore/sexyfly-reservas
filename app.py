@@ -15,9 +15,17 @@ from flask_limiter.util import get_remote_address
 import os
 import json
 import base64
+import logging
 from datetime import datetime
 from dotenv import load_dotenv
 from tpv_redsys import TPVRedsys, crear_pago_tpv
+
+# Configurar logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # Cargar variables de entorno
 load_dotenv()
@@ -117,9 +125,7 @@ def iniciar_pago():
                 'error': 'El importe excede el límite permitido (50.000€)'
             }), 400
         
-        print(f'\n📥 Solicitud de pago recibida:')
-        print(f'   Cliente: {datos_cliente.get("client", {}).get("name")}')
-        print(f'   Importe: {importe}€')
+        logger.info(f'📥 Solicitud de pago recibida - Cliente: {datos_cliente.get("client", {}).get("name")}, Importe: {importe}€')
         titular = datos_cliente.get('client', {}).get('name', 'Cliente')
         
         # Descripción del vuelo
@@ -151,10 +157,7 @@ def iniciar_pago():
             'estado': 'pendiente'
         }
         
-        print(f'\n✅ Parámetros TPV generados:')
-        print(f'   Número pedido: {numero_pedido}')
-        print(f'   URL TPV: {parametros_tpv["url_tpv"]}')
-        print(f'   Firma generada: ✅')
+        logger.info(f'✅ TPV - Pedido: {numero_pedido}, URL: {parametros_tpv["url_tpv"]}, Firma: OK')
         
         return jsonify({
             'success': True,
@@ -163,7 +166,7 @@ def iniciar_pago():
         })
     
     except Exception as e:
-        print(f'\n❌ Error generando pago: {str(e)}')
+        logger.error(f'❌ Error generando pago: {str(e)}')
         return jsonify({
             'success': False,
             'error': str(e)
