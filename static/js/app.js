@@ -188,7 +188,12 @@ class SexyFlyApp {
           const priceInfo = this.pricing.calculatePrice(date);
           return {
             price: priceInfo.price,
-            class: priceInfo.cssClass
+            class: priceInfo.cssClass,
+            breakdown: priceInfo.breakdown,  // ← Necesario para tooltips
+            basePrice: priceInfo.basePrice,
+            modifiers: priceInfo.modifiers,
+            isWeekend: priceInfo.isWeekend,
+            isHoliday: priceInfo.isHoliday
           };
         }
       });

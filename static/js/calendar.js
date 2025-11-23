@@ -653,12 +653,25 @@ class SexyFlyCalendar {
     priceInfo.breakdown.forEach(item => {
       const isTotal = item.type === 'total';
       const isBase = item.type === 'base';
+      const isSurcharge = item.type === 'surcharge';
       const cssClass = isTotal ? 'total-line' : (isBase ? 'base-line' : 'modifier-line');
+      
+      // Formatear el monto
+      let amountStr;
+      if (isBase) {
+        amountStr = `${item.amount}€`;
+      } else if (isSurcharge) {
+        amountStr = `+${item.amount}€`;
+      } else if (isTotal) {
+        amountStr = `${item.amount}€`;
+      } else {
+        amountStr = item.description || `${item.amount >= 0 ? '+' : ''}${item.amount}€`;
+      }
       
       tooltipContent += `
         <div class="breakdown-line ${cssClass}">
           <span class="concept">${item.concept}</span>
-          <span class="amount">${item.amount >= 0 ? '+' : ''}${item.amount}€</span>
+          <span class="amount">${amountStr}</span>
         </div>
       `;
     });
