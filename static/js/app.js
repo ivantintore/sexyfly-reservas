@@ -220,7 +220,8 @@ class SexyFlyApp {
             basePrice: priceInfo.basePrice,
             modifiers: priceInfo.modifiers,
             isWeekend: priceInfo.isWeekend,
-            isHoliday: priceInfo.isHoliday
+            isHoliday: priceInfo.isHoliday,
+            isBlocked: priceInfo.isBlocked   // ← Para días bloqueados
           };
         }
       });

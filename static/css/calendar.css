@@ -195,6 +195,38 @@
     background: #fef7f7;
 }
 
+/* Días festivos (con recargo +300€) */
+.calendar-day.holiday:not(.disabled):not(.blocked) {
+    background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+    border: 2px solid #9CA3AF;
+    position: relative;
+}
+
+.calendar-day.holiday:not(.disabled):not(.blocked)::after {
+    content: '🎉';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+.calendar-day.holiday:not(.disabled):not(.blocked):hover {
+    background: linear-gradient(135deg, #D1D5DB 0%, #9CA3AF 100%);
+    border-color: #6B7280;
+    transform: translateY(-2px);
+}
+
+.calendar-day.holiday.weekend:not(.disabled):not(.blocked) {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FED7D7 100%);
+    border: 2px solid #FCA5A5;
+}
+
+.calendar-day.holiday.weekend:not(.disabled):not(.blocked)::after {
+    content: '🎉📅';
+    font-size: 0.6rem;
+}
+
 /* Colores por precio */
 .calendar-day.available:not(.disabled) {
     background: linear-gradient(135deg, #ecfdf5, #d1fae5);

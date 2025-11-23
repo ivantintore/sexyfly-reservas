@@ -260,6 +260,7 @@ class SexyFlyCalendar {
           'calendar-day',
           isDisabled ? 'disabled' : 'available',
           isBlocked ? 'blocked' : '',
+          priceInfo.isHoliday && !isBlocked ? 'holiday' : '',  // ← Festivos en gris
           priceInfo.class,
           isToday ? 'today' : '',
           isWeekend ? 'weekend' : '',
