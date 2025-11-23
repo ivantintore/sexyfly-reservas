@@ -106,9 +106,28 @@ def test_complete_form_cliente_test(driver):
     wait.until(EC.presence_of_element_located((By.TAG_NAME, "form")))
     time.sleep(2)  # Esperar a que cargue completamente
     
-    # Completar horas
-    driver.find_element(By.CSS_SELECTOR, "input[name='departureTime']").send_keys("10:00")
-    driver.find_element(By.CSS_SELECTOR, "input[name='returnTime']").send_keys("18:00")
+    # Hacer clic en el calendario para seleccionar fechas y mostrar los campos
+    # Primer click - fecha de salida
+    calendar_days = driver.find_elements(By.CSS_SELECTOR, ".calendar-day:not(.disabled)")
+    if len(calendar_days) >= 2:
+        calendar_days[0].click()
+        time.sleep(1)
+        
+        # Segundo click - fecha de regreso (buscar de nuevo porque el DOM se actualiza)
+        calendar_days = driver.find_elements(By.CSS_SELECTOR, ".calendar-day:not(.disabled):not(.selected)")
+        if len(calendar_days) >= 1:
+            calendar_days[0].click()
+            time.sleep(1)
+    
+    # Esperar a que se muestren los campos de vuelo
+    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "input[name='departureTime']")))
+    
+    # Verificar que los campos de hora existen y son visibles
+    # Nota: Si tienen valores por defecto (09:00 y 18:00), mejor aún, pero no es obligatorio
+    departure_time = driver.find_element(By.CSS_SELECTOR, "input[name='departureTime']")
+    return_time = driver.find_element(By.CSS_SELECTOR, "input[name='returnTime']")
+    assert departure_time.is_displayed(), "Campo de hora de salida debe estar visible"
+    assert return_time.is_displayed(), "Campo de hora de regreso debe estar visible"
     
     # Completar aeropuertos
     driver.find_element(By.CSS_SELECTOR, "input[name='originICAO']").send_keys("LELL")
@@ -133,8 +152,24 @@ def test_submit_button_enabled(driver):
     wait.until(EC.presence_of_element_located((By.TAG_NAME, "form")))
     time.sleep(2)
     
-    driver.find_element(By.CSS_SELECTOR, "input[name='departureTime']").send_keys("10:00")
-    driver.find_element(By.CSS_SELECTOR, "input[name='returnTime']").send_keys("18:00")
+    # Hacer clic en el calendario para seleccionar fechas y mostrar los campos
+    # Primer click - fecha de salida
+    calendar_days = driver.find_elements(By.CSS_SELECTOR, ".calendar-day:not(.disabled)")
+    if len(calendar_days) >= 2:
+        calendar_days[0].click()
+        time.sleep(1)
+        
+        # Segundo click - fecha de regreso (buscar de nuevo porque el DOM se actualiza)
+        calendar_days = driver.find_elements(By.CSS_SELECTOR, ".calendar-day:not(.disabled):not(.selected)")
+        if len(calendar_days) >= 1:
+            calendar_days[0].click()
+            time.sleep(1)
+    
+    # Esperar a que se muestren los campos de vuelo
+    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "input[name='originICAO']")))
+    
+    # Las horas ya tienen valores por defecto (09:00 y 18:00), no necesitamos cambiarlas
+    # Solo completamos los campos que no tienen valores por defecto
     driver.find_element(By.CSS_SELECTOR, "input[name='originICAO']").send_keys("LELL")
     driver.find_element(By.CSS_SELECTOR, "input[name='destinationICAO']").send_keys("LEBL")
     driver.find_element(By.CSS_SELECTOR, "input[name='clientName']").send_keys("CLIENTE TEST")
