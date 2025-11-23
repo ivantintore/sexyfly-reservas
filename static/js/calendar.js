@@ -219,6 +219,13 @@ class SexyFlyCalendar {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
+    // Calcular fecha final para mostrar en el título
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + (this.options.weeksVisible * 7) - 1);
+    
+    // Actualizar subtítulo con el rango de meses
+    this.updateMonthRangeTitle(startDate, endDate);
+    
     let html = '';
     
     // Renderizar semanas configuradas
@@ -491,6 +498,37 @@ class SexyFlyCalendar {
     if (subtitleElement) {
       subtitleElement.textContent = subtitle;
     }
+  }
+
+  /**
+   * Actualizar título con rango de meses
+   * @private
+   */
+  updateMonthRangeTitle(startDate, endDate) {
+    const subtitleElement = document.getElementById('calendarSubtitle');
+    if (!subtitleElement) return;
+
+    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    
+    const startMonth = monthNames[startDate.getMonth()];
+    const endMonth = monthNames[endDate.getMonth()];
+    const startYear = startDate.getFullYear();
+    const endYear = endDate.getFullYear();
+    
+    let rangeText;
+    if (startMonth === endMonth && startYear === endYear) {
+      // Mismo mes y año
+      rangeText = `${startMonth} ${startYear}`;
+    } else if (startYear === endYear) {
+      // Mismo año, diferentes meses
+      rangeText = `${startMonth} - ${endMonth} ${startYear}`;
+    } else {
+      // Diferentes años
+      rangeText = `${startMonth} ${startYear} - ${endMonth} ${endYear}`;
+    }
+    
+    subtitleElement.textContent = rangeText;
   }
 
   /**

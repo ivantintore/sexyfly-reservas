@@ -57,7 +57,7 @@ const SEXYFLY_CONFIG = {
 
   // ===== CALENDARIO =====
   calendar: {
-    weeksVisible: 4,                    // Semanas mostradas
+    weeksVisible: 8,                    // Semanas mostradas (8 semanas = ~2 meses)
     language: 'es',
     showPrices: true,
     allowSingleDate: false,             // Siempre ida + vuelta
