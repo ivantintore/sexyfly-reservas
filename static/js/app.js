@@ -157,6 +157,33 @@ class SexyFlyApp {
     if (priceUrgente) {
       priceUrgente.textContent = `${SEXYFLY_CONFIG.pricing.urgentPrice}${SEXYFLY_CONFIG.pricing.currency}`;
     }
+    
+    // Cargar festivos nacionales
+    this.loadHolidaysList();
+  }
+
+  /**
+   * Cargar listado de festivos nacionales en la UI
+   * @private
+   */
+  loadHolidaysList() {
+    const holidaysList = document.getElementById('holidays-list');
+    if (!holidaysList) return;
+
+    const holidays = SEXYFLY_CONFIG.holidaysDetailed || [];
+    
+    let html = '';
+    holidays.forEach(holiday => {
+      // Formatear la fecha (MM-DD a "DD MMM")
+      const [month, day] = holiday.date.split('-');
+      const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
+                          'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      const monthName = monthNames[parseInt(month) - 1];
+      
+      html += `<div style="padding: 2px 0;">• ${day} ${monthName} - ${holiday.name}</div>`;
+    });
+    
+    holidaysList.innerHTML = html;
   }
 
   /**
