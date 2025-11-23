@@ -34,7 +34,18 @@ def driver():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--window-size=1920,1080")
     
-    service = Service(ChromeDriverManager().install())
+    # Obtener el path del chromedriver y corregirlo si es necesario
+    driver_path = ChromeDriverManager().install()
+    
+    # Fix para webdriver-manager bug: si detecta THIRD_PARTY_NOTICES como ejecutable
+    if 'THIRD_PARTY_NOTICES' in driver_path:
+        import os
+        driver_dir = os.path.dirname(driver_path)
+        driver_path = os.path.join(driver_dir, 'chromedriver')
+        # Asegurar permisos de ejecución
+        os.chmod(driver_path, 0o755)
+    
+    service = Service(driver_path)
     driver = webdriver.Chrome(service=service, options=chrome_options)
     
     yield driver
