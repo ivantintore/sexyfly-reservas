@@ -556,7 +556,12 @@ class SexyFlyCalendar {
     if (this.selectedDates.departure && this.selectedDates.return) {
       const depPriceInfo = this.getPriceInfo(this.selectedDates.departure);
       const retPriceInfo = this.getPriceInfo(this.selectedDates.return);
-      const total = depPriceInfo.price + retPriceInfo.price;
+      
+      // Si es el mismo día (ida = vuelta), solo cobrar una vez
+      const isSameDay = this.selectedDates.departure.getTime() === this.selectedDates.return.getTime();
+      const total = isSameDay 
+        ? depPriceInfo.price  // Reserva de 1 día: solo cobrar una vez
+        : depPriceInfo.price + retPriceInfo.price;  // Reserva multi-día: suma normal
       
       document.getElementById('departureDate').textContent = 
         this.formatDisplayDate(this.selectedDates.departure);
