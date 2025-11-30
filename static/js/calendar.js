@@ -456,11 +456,10 @@ class SexyFlyCalendar {
       console.log('➡️ CASO 2: Estableciendo fecha de VUELTA');
       
       if (selectedDate.getTime() === this.selectedDates.departure.getTime()) {
-        console.log('⚠️ Misma fecha clickeada, ignorando');
-        return;
-      }
-      
-      if (selectedDate < this.selectedDates.departure) {
+        // Permitir reservas de 1 día (ida = vuelta = mismo día)
+        console.log('✅ Reserva de 1 DÍA: ida = vuelta (mismo día)');
+        this.selectedDates.return = selectedDate;
+      } else if (selectedDate < this.selectedDates.departure) {
         // Intercambiar fechas si selecciona una anterior
         console.log('🔄 Intercambiando fechas (seleccionaste fecha anterior)');
         this.selectedDates.return = this.selectedDates.departure;

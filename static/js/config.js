@@ -60,7 +60,7 @@ const SEXYFLY_CONFIG = {
     weeksVisible: 8,                    // Semanas mostradas (8 semanas = ~2 meses)
     language: 'es',
     showPrices: true,
-    allowSingleDate: false,             // Siempre ida + vuelta
+    allowSingleDate: true,              // Permite reservas de 1 día (ida = vuelta)
     minDate: null,                      // Se calcula dinámicamente (hoy)
     maxDate: null,                      // Se calcula dinámicamente (1 año)
     firstDayOfWeek: 1,                  // 0=Domingo, 1=Lunes
