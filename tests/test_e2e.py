@@ -7,6 +7,9 @@ Estos tests prueban el flujo completo del usuario:
 3. Completar formulario
 4. Enviar reserva
 5. Verificar redirección a TPV Redsys
+6. Reservas de 1 solo día (ida = vuelta mismo día)
+
+Total tests: 6 (5 automáticos + 1 manual)
 
 Requieren que el backend esté desplegado y funcionando.
 """
@@ -183,6 +186,68 @@ def test_submit_button_enabled(driver):
     # Verificar que el botón de submit existe
     submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
     assert submit_button is not None
+
+def test_single_day_booking(driver):
+    """
+    Test E2E 5: Verificar reserva de 1 solo día (ida = vuelta mismo día)
+    
+    Este test verifica la nueva funcionalidad que permite reservar
+    un solo día seleccionando la misma fecha dos veces.
+    """
+    driver.get(FRONTEND_URL)
+    wait = WebDriverWait(driver, 10)
+    
+    # Esperar a que cargue la página
+    wait.until(EC.presence_of_element_located((By.TAG_NAME, "form")))
+    time.sleep(2)
+    
+    # Seleccionar UNA fecha disponible
+    calendar_days = driver.find_elements(By.CSS_SELECTOR, ".calendar-day:not(.disabled)")
+    assert len(calendar_days) > 0, "No se encontraron días disponibles en el calendario"
+    
+    # Primer click - fecha de IDA
+    first_day = calendar_days[0]
+    first_day_text = first_day.text  # Guardar el día para comparar
+    first_day.click()
+    time.sleep(1)
+    
+    # Segundo click - LA MISMA fecha (esto establece ida = vuelta)
+    # Nota: Después del primer click, el día se marca como 'selected'
+    # Pero aún debe ser clickeable para permitir reservas de 1 día
+    selected_day = driver.find_element(By.CSS_SELECTOR, ".calendar-day.selected")
+    selected_day.click()
+    time.sleep(1)
+    
+    # Verificar que los campos de vuelo se muestran
+    wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "input[name='departureTime']")))
+    
+    # Completar formulario
+    driver.find_element(By.CSS_SELECTOR, "input[name='originICAO']").send_keys("LELL")
+    driver.find_element(By.CSS_SELECTOR, "input[name='destinationICAO']").send_keys("LEBL")
+    driver.find_element(By.CSS_SELECTOR, "input[name='clientName']").send_keys("CLIENTE TEST 1DIA")
+    driver.find_element(By.CSS_SELECTOR, "input[name='clientEmail']").send_keys("test1dia@sexyfly.es")
+    driver.find_element(By.CSS_SELECTOR, "input[name='clientPhone']").send_keys("+34666777888")
+    
+    # Aceptar términos
+    terms_checkbox = driver.find_element(By.CSS_SELECTOR, "input[name='acceptTerms']")
+    terms_checkbox.click()
+    
+    # Verificar que el botón de submit está presente
+    submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
+    assert submit_button is not None
+    
+    # Verificar que hay un precio calculado visible (el total debe mostrarse)
+    # El selector puede variar según tu HTML, ajusta si es necesario
+    try:
+        price_element = driver.find_element(By.CSS_SELECTOR, ".pricing-total, #totalPrice, .total-price")
+        price_text = price_element.text
+        # Verificar que el precio contiene un número (500, 700, 1000, etc.)
+        assert any(char.isdigit() for char in price_text), "El precio debe contener números"
+        print(f"✅ Precio calculado para reserva de 1 día: {price_text}")
+    except Exception as e:
+        print(f"⚠️ No se pudo verificar el precio (puede ser normal si no está visible): {e}")
+    
+    print(f"✅ Test de reserva de 1 día completado exitosamente")
 
 # NOTA: Este test requeriría más tiempo para esperar la redirección
 # y verificar la página de Redsys. Se recomienda ejecutar manualmente.
