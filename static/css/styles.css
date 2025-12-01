@@ -214,11 +214,12 @@ select:focus {
 
 /* ===== POLÍTICA DE CANCELACIÓN ===== */
 .cancellation-policy {
-  background: linear-gradient(45deg, #DC2626, #EF4444);
-  color: white;
+  background: #F9FAFB;
+  color: #374151;
   padding: 25px;
   border-radius: 15px;
   margin-top: 20px;
+  border: 2px solid #E5E7EB;
 }
 
 .policy-item {
@@ -226,7 +227,12 @@ select:focus {
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.cancellation-policy h3 {
+  color: #DC2626;
+  font-weight: 700;
 }
 
 .policy-item:last-child {
