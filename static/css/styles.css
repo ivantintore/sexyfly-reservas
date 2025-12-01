@@ -200,16 +200,18 @@ select:focus {
 }
 
 .terms-list li {
-  padding: 10px 0;
+  padding: 10px 0 10px 35px;
   border-bottom: 1px solid #eee;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  position: relative;
+  line-height: 1.6;
 }
 
 .terms-list li::before {
   content: "✈️";
   font-size: 1.2rem;
+  position: absolute;
+  left: 0;
+  top: 8px;
 }
 
 /* ===== POLÍTICA DE CANCELACIÓN ===== */
