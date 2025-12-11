@@ -239,6 +239,36 @@
         </div>
     </div>
 
+    <!-- Enlace Pago Rápido -->
+    <div class="quick-pay-link">
+        <a href="#" id="quickPayLink">Pagar</a>
+    </div>
+
+    <!-- Modal Pago Rápido -->
+    <div id="quickPayModal" class="quick-pay-modal">
+        <div class="quick-pay-modal-content">
+            <button class="quick-pay-close" id="quickPayClose">&times;</button>
+            <h3>Pago Adicional</h3>
+            <p class="quick-pay-subtitle">Introduce el importe y concepto del pago</p>
+            
+            <div class="quick-pay-form">
+                <div class="quick-pay-field">
+                    <label for="quickPayAmount">Importe (€)</label>
+                    <input type="number" id="quickPayAmount" placeholder="1541" min="1" max="50000" step="0.01">
+                </div>
+                
+                <div class="quick-pay-field">
+                    <label for="quickPayDescription">Descripción / Concepto</label>
+                    <input type="text" id="quickPayDescription" placeholder="Ej: Gastos taxis y hoteles vuelo 4-8 Dic" maxlength="100">
+                </div>
+                
+                <button type="button" id="quickPaySubmit" class="quick-pay-btn">
+                    💳 Proceder al Pago
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts - Rutas actualizadas -->
     <script src="/js/config.js?v=3.1.0"></script>
     <script src="/js/pricing.js?v=3.1.0"></script>

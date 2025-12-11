@@ -148,16 +148,155 @@ async function verificarBackendTPV() {
   }
 }
 
+/**
+ * Iniciar pago rápido para gastos adicionales
+ * @param {number} importe - Importe a cobrar
+ * @param {string} descripcion - Descripción del concepto
+ * @returns {Promise<boolean>} True si el proceso se inició correctamente
+ */
+async function iniciarPagoRapido(importe, descripcion) {
+  if (!SEXYFLY_CONFIG.integrations.tpv.enabled) {
+    console.warn('⚠️ TPV desactivado en configuración');
+    return false;
+  }
+
+  // Validar importe
+  const importeNum = parseFloat(importe);
+  if (isNaN(importeNum) || importeNum <= 0) {
+    alert('Por favor, introduce un importe válido mayor a 0€');
+    return false;
+  }
+
+  if (importeNum > 50000) {
+    alert('El importe máximo permitido es 50.000€');
+    return false;
+  }
+
+  console.log('💳 Iniciando pago rápido...');
+  console.log('   Importe:', importeNum + '€');
+  console.log('   Descripción:', descripcion || 'Pago adicional');
+
+  // Construir datos mínimos para el TPV
+  const bookingData = {
+    client: {
+      name: 'Pago adicional',
+      email: '',
+      phone: ''
+    },
+    pricing: {
+      total: importeNum
+    },
+    airports: {
+      origin: 'N/A',
+      destination: 'N/A'
+    },
+    additionalInfo: descripcion || 'Pago adicional de gastos'
+  };
+
+  return iniciarPagoTPV(bookingData);
+}
+
+/**
+ * Inicializar modal de pago rápido
+ */
+function initQuickPayModal() {
+  const link = document.getElementById('quickPayLink');
+  const modal = document.getElementById('quickPayModal');
+  const closeBtn = document.getElementById('quickPayClose');
+  const submitBtn = document.getElementById('quickPaySubmit');
+  const amountInput = document.getElementById('quickPayAmount');
+  const descInput = document.getElementById('quickPayDescription');
+
+  if (!link || !modal) {
+    console.log('ℹ️ Modal de pago rápido no encontrado en esta página');
+    return;
+  }
+
+  // Abrir modal
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    modal.classList.add('show');
+    amountInput.value = '';
+    descInput.value = '';
+    amountInput.focus();
+  });
+
+  // Cerrar modal con botón X
+  closeBtn.addEventListener('click', () => {
+    modal.classList.remove('show');
+  });
+
+  // Cerrar modal al hacer clic fuera
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('show');
+    }
+  });
+
+  // Cerrar con Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('show')) {
+      modal.classList.remove('show');
+    }
+  });
+
+  // Enviar pago
+  submitBtn.addEventListener('click', async () => {
+    const importe = amountInput.value;
+    const descripcion = descInput.value.trim();
+
+    if (!importe || parseFloat(importe) <= 0) {
+      alert('Por favor, introduce un importe válido');
+      amountInput.focus();
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ Procesando...';
+
+    const success = await iniciarPagoRapido(importe, descripcion);
+    
+    if (!success) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '💳 Proceder al Pago';
+    }
+    // Si success es true, se redirige a Redsys automáticamente
+  });
+
+  // Permitir Enter en el campo de importe
+  amountInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      descInput.focus();
+    }
+  });
+
+  // Permitir Enter en descripción para enviar
+  descInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submitBtn.click();
+    }
+  });
+
+  console.log('✅ Modal de pago rápido inicializado');
+}
+
 // Exportar para uso global
 if (typeof window !== 'undefined') {
   window.iniciarPagoTPV = iniciarPagoTPV;
+  window.iniciarPagoRapido = iniciarPagoRapido;
   window.mostrarTarjetasDePrueba = mostrarTarjetasDePrueba;
   window.verificarBackendTPV = verificarBackendTPV;
 }
 
-// Mostrar tarjetas de prueba al cargar (si está en modo test)
+// Inicializar al cargar
 if (typeof window !== 'undefined') {
   window.addEventListener('load', () => {
+    // Inicializar modal de pago rápido
+    initQuickPayModal();
+
+    // Mostrar tarjetas de prueba (si está en modo test)
     if (SEXYFLY_CONFIG.integrations.tpv.enabled && 
         SEXYFLY_CONFIG.integrations.tpv.testMode) {
       setTimeout(mostrarTarjetasDePrueba, 1000);
