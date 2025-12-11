@@ -36,6 +36,7 @@ app = Flask(__name__, static_folder='static', static_url_path='')
 ALLOWED_ORIGINS = [
     "https://sexyfly.es",
     "https://www.sexyfly.es",
+    "https://sexyfly-reservas.vercel.app",
     os.getenv('FRONTEND_URL', 'http://localhost:8000')
 ]
 CORS(app, origins=ALLOWED_ORIGINS)
